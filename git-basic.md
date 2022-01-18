@@ -38,4 +38,4 @@
 
 ## 4. Pull Request(PR) 생성
 - push 완료 후 본인 계정의 github 저장소에 들어오면 Compare & pull request 버튼이 활성화 되어 있음
-
+- pr 올리면 코드 리뷰하고 merge하면 됨
