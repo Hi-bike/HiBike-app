@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_favorites"
+        android:enabled="true"
+        android:title="favorites"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/menu_around"
+        android:enabled="true"
+        android:title="around"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/menu_gps"
+        android:enabled="true"
+        android:title="gps"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/menu_community"
+        android:enabled="true"
+        android:title="community"
+        app:showAsAction="ifRoom"
+        />
+
+    <item
+        android:id="@+id/menu_profile"
+        android:enabled="true"
+        android:title="profile"
+        app:showAsAction="ifRoom"
+        />
+
+</menu>
