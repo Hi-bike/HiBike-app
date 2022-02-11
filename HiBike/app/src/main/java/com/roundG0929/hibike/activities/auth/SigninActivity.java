@@ -43,7 +43,7 @@ public class SigninActivity extends AppCompatActivity {
                 data.setId(editId.getText().toString());
                 data.setPassword(editPwd.getText().toString());
 
-                api.postData(data).enqueue(new Callback<SigninDto>() {
+                api.signin(data).enqueue(new Callback<SigninDto>() {
                     @Override
                     public void onResponse(Call<SigninDto> call, Response<SigninDto> response) {
                         if(response.isSuccessful()){
