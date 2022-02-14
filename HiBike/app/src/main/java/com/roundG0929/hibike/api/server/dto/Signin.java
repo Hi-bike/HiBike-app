@@ -3,7 +3,7 @@ package com.roundG0929.hibike.api.server.dto;
 
 import com.google.gson.annotations.SerializedName;
 
-public class SigninDto {
+public class Signin {
 
     @SerializedName("id") private String id;
     @SerializedName("password") private String password;
