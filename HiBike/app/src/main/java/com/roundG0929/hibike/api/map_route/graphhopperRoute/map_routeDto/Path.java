@@ -1,4 +1,4 @@
-package com.roundG0929.hibike.api.map_route.graphhopper.map_routeDto;
+package com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto;
 
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;

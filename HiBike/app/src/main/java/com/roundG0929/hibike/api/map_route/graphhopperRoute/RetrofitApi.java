@@ -1,6 +1,6 @@
-package com.roundG0929.hibike.api.map_route.graphhopper;
+package com.roundG0929.hibike.api.map_route.graphhopperRoute;
 
-import com.roundG0929.hibike.api.map_route.graphhopper.map_routeDto.GraphhopperResponse;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
