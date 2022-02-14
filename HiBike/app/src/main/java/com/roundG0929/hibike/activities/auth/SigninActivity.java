@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.RetrofitClient;
-import com.roundG0929.hibike.api.server.dto.SigninDto;
+import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.ApiInterface;
 
 import retrofit2.Call;
@@ -39,13 +39,13 @@ public class SigninActivity extends AppCompatActivity {
         signinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SigninDto data = new SigninDto();
+                Signin data = new Signin();
                 data.setId(editId.getText().toString());
                 data.setPassword(editPwd.getText().toString());
 
-                api.signin(data).enqueue(new Callback<SigninDto>() {
+                api.signin(data).enqueue(new Callback<Signin>() {
                     @Override
-                    public void onResponse(Call<SigninDto> call, Response<SigninDto> response) {
+                    public void onResponse(Call<Signin> call, Response<Signin> response) {
                         if(response.isSuccessful()){
                             signupText.setText("success");
                         }else{
@@ -54,7 +54,7 @@ public class SigninActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onFailure(Call<SigninDto> call, Throwable t) {
+                    public void onFailure(Call<Signin> call, Throwable t) {
                         //통신 실패
                         signupText.setText(t.toString());
                     }
