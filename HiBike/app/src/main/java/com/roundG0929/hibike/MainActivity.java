@@ -17,6 +17,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +30,26 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
+import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
+    //테스트객체
+    GraphhopperResponse graphhopperResponse;
+    List<LatLng> coordsForDrawLine = new ArrayList<>();
+    MapFragment mapFragment;
 
     //로그인 버튼
     TextView btn_signin;
@@ -128,7 +142,7 @@ public class MainActivity extends AppCompatActivity {
         //초기맵설정
         //맵 뷰 객체 할당
         FragmentManager fragmentManager = getSupportFragmentManager();
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
@@ -136,9 +150,56 @@ public class MainActivity extends AppCompatActivity {
         //위치추적기능 설정 객체
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
         //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(fusedLocationSource, getApplicationContext());
+        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource);
         //맵객체 설정
         mapFragment.getMapAsync(firstNaverMapSet);
+
+
+
+
+
+        //Dynamic route Test
+
+        TextView testView = findViewById(R.id.testView);
+        Button button = findViewById(R.id.testButton);
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                MapRouteApi mapRouteApi = new MapRouteApi(new LatLng(37.37936693441738, 126.63216836090126),new LatLng(37.380746359234095, 126.61660711969573));
+//        testView.append("\n" + mapRouteApi.getStartPoint().latitude);
+//        testView.append("\n"+mapRouteApi.getStringTest());
+//        testView.append("\n" + mapRouteApi.makeUrl(new LatLng(37.37936693441738, 126.63216836090126),new LatLng(37.380746359234095, 126.61660711969573)));61660711969573
+
+
+                mapRouteApi.getApi().enqueue(new Callback<GraphhopperResponse>() {
+                    @Override
+                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
+                        graphhopperResponse = response.body();
+                        ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
+                        pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
+
+                        for(int i = 0;i<pointsList.size();i++) {
+                            testView.append("\n" + pointsList.get(i).get(0).toString() + ", " + pointsList.get(i).get(1).toString());
+                            coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1),pointsList.get(i).get(0)));
+
+                        }
+
+                        AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
+                        mapFragment.getMapAsync(afterRouteMap);
+                    }
+
+                    @Override
+                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
+
+                    }
+                });
+
+            }
+        });
+
+
+
 
     }
 

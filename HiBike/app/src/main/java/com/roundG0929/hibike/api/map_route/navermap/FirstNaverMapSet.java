@@ -8,6 +8,7 @@ import android.location.LocationManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 
 import com.naver.maps.geometry.LatLng;
@@ -24,11 +25,12 @@ public class FirstNaverMapSet implements OnMapReadyCallback {
     FusedLocationSource fusedLocationSource;
     Context mContext;
 
-    public FirstNaverMapSet(FusedLocationSource fusedLocationSource,Context context) {
+    public FirstNaverMapSet(Context context, FusedLocationSource fusedLocationSource) {
         this.fusedLocationSource = fusedLocationSource;
         this.mContext = context;
     }
 
+    @UiThread
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         double[] latlngList = startLocation();
