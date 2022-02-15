@@ -12,14 +12,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roundG0929.hibike.MainActivity;
-import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.RetrofitClient;
-import com.roundG0929.hibike.api.server.dto.SigninDto;
+import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.ApiInterface;
-
+import com.roundG0929.hibike.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import com.google.firebase.iid.FirebaseInstanceId; //파이어베이스 토큰 관리
 
 public class SigninActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String fcm_token = FirebaseInstanceId.getInstance().getToken(); //파이어베이스 토큰 get
         setContentView(R.layout.activity_signin);
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         editId = (EditText) findViewById(R.id.edit_id);
@@ -43,13 +45,15 @@ public class SigninActivity extends AppCompatActivity {
         btn_signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                SigninDto data = new SigninDto();
+                Signin data = new Signin();
                 data.setId(editId.getText().toString());
                 data.setPassword(editPwd.getText().toString());
+                data.setFcmToken(fcm_token);
 
-                api.signin(data).enqueue(new Callback<SigninDto>() {
+                api.signin(data).enqueue(new Callback<Signin>() {
                     @Override
-                    public void onResponse(Call<SigninDto> call, Response<SigninDto> response) {
+
+                    public void onResponse(Call<Signin> call, Response<Signin> response) {
                         if (response.isSuccessful()) {
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
@@ -57,11 +61,12 @@ public class SigninActivity extends AppCompatActivity {
                             Toast toast = Toast.makeText(getApplicationContext(), "로그인 정보가 일치하지 않습니다. (" + response.message() + ")", Toast.LENGTH_LONG);
 //                            toast.setGravity(Gravity.TOP|Gravity.LEFT, 200, 200);
                             toast.show();
+
                         }
                     }
 
                     @Override
-                    public void onFailure(Call<SigninDto> call, Throwable t) {
+                    public void onFailure(Call<Signin> call, Throwable t) {
                         //통신 실패
                         Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
                     }
