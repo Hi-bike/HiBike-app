@@ -25,7 +25,7 @@ import com.google.firebase.iid.FirebaseInstanceId; //파이어베이스 토큰 �
 public class SigninActivity extends AppCompatActivity {
 
     ApiInterface api;
-    Button btn_signin;
+    Button btnSignin;
     EditText editId;
     EditText editPwd;
     TextView textSignup;
@@ -40,9 +40,9 @@ public class SigninActivity extends AppCompatActivity {
         editPwd = (EditText) findViewById(R.id.edit_password);
         textSignup = (TextView) findViewById(R.id.text_signup);
 
-        btn_signin = (Button) findViewById(R.id.btn_signin);
+        btnSignin = (Button) findViewById(R.id.btn_signin);
 
-        btn_signin.setOnClickListener(new View.OnClickListener() {
+        btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Signin data = new Signin();
@@ -59,9 +59,8 @@ public class SigninActivity extends AppCompatActivity {
                             startActivity(intent);
                         } else {
                             Toast toast = Toast.makeText(getApplicationContext(), "로그인 정보가 일치하지 않습니다. (" + response.message() + ")", Toast.LENGTH_LONG);
-//                            toast.setGravity(Gravity.TOP|Gravity.LEFT, 200, 200);
+                            toast.setGravity(Gravity.TOP, 0, 0);
                             toast.show();
-
                         }
                     }
 
