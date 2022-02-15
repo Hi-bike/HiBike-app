@@ -2,7 +2,9 @@ package com.roundG0929.hibike.activities.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -26,9 +28,12 @@ public class SigninActivity extends AppCompatActivity {
 
     ApiInterface api;
     Button btnSignin;
-    EditText editId;
-    EditText editPwd;
+    EditText editId, editPwd;
     TextView textSignup;
+
+    //유저 아이디 저장
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +45,11 @@ public class SigninActivity extends AppCompatActivity {
         editPwd = (EditText) findViewById(R.id.edit_password);
         textSignup = (TextView) findViewById(R.id.text_signup);
 
-        btnSignin = (Button) findViewById(R.id.btn_signin);
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+        pref.getString("id", "");
 
+        btnSignin = (Button) findViewById(R.id.btn_signin);
         btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -52,9 +60,11 @@ public class SigninActivity extends AppCompatActivity {
 
                 api.signin(data).enqueue(new Callback<Signin>() {
                     @Override
-
                     public void onResponse(Call<Signin> call, Response<Signin> response) {
                         if (response.isSuccessful()) {
+                            editor.putString("id", editId.getText().toString());
+                            editor.apply();
+
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             startActivity(intent);
                         } else {

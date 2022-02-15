@@ -7,8 +7,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -44,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
     //Navigation drawer
     private DrawerLayout drawerLayout;
     private View drawerView;
-
 
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     private FusedLocationSource fusedLocationSource;
@@ -92,15 +93,26 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //로그인 버튼(이미 로그인한 상태면 프로필로 띄어줘야됨
+        //로그인 성공시, 유저 아이디 핸드폰에 저장
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);;
+        SharedPreferences.Editor editor = pref.edit();;
+        String id = pref.getString("id", "");
+
         btn_signin = (TextView) findViewById(R.id.btn_signin);
-        btn_signin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
-                startActivity(intent);
-            }
-        });
+
+        if(id == ""){
+            btn_signin.setText("로그인  >");
+            btn_signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }else{
+            btn_signin.setText(id+"  >");
+            //유저 프로필 보여줄 버튼 + 닉네임으로 변경할 예정 + 로그아웃도 만들어야됨
+        }
 
         //권한요청, 확인
         TedPermission.create()
