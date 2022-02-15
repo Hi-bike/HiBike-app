@@ -13,18 +13,18 @@
         android:orientation="vertical">
 
         <TextView
-            android:id="@+id/signinText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="20dp"
             android:text="회원 로그인"
             android:textStyle="bold"
             android:textSize="20dp"
+            android:textColor="#000000"
             android:textAlignment="center"
             android:gravity="center_horizontal" />
 
         <EditText
-            android:id="@+id/editId"
+            android:id="@+id/edit_id"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_marginBottom="10dp"
@@ -35,7 +35,7 @@
             android:text="" />
 
         <EditText
-            android:id="@+id/editPassword"
+            android:id="@+id/edit_password"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
             android:layout_gravity="center"
@@ -44,7 +44,7 @@
             android:inputType="textPassword" />
 
         <Button
-            android:id="@+id/signinBtn"
+            android:id="@+id/btn_signin"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
             android:layout_gravity="center"
@@ -55,13 +55,12 @@
             />
 
         <TextView
-            android:id="@+id/signup"
+            android:id="@+id/text_signup"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_gravity="center"
             android:text="회원가입"
-            android:textColor="@color/black"
             android:textSize="13dp"
             android:textStyle="bold" />
 
