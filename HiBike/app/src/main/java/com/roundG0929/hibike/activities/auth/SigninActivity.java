@@ -17,6 +17,8 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
+import com.google.firebase.iid.FirebaseInstanceId; //파이어베이스 토큰 관리
+
 public class SigninActivity extends AppCompatActivity {
 
     ApiInterface api;
@@ -28,6 +30,7 @@ public class SigninActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        String fcm_token = FirebaseInstanceId.getInstance().getToken(); //파이어베이스 토큰 get
         setContentView(R.layout.activity_signin);
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         editId = (EditText) findViewById(R.id.editId);
@@ -42,6 +45,7 @@ public class SigninActivity extends AppCompatActivity {
                 Signin data = new Signin();
                 data.setId(editId.getText().toString());
                 data.setPassword(editPwd.getText().toString());
+                data.setFcmToken(fcm_token);
 
                 api.signin(data).enqueue(new Callback<Signin>() {
                     @Override

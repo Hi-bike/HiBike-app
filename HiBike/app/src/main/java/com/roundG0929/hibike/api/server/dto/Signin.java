@@ -7,6 +7,7 @@ public class Signin {
 
     @SerializedName("id") private String id;
     @SerializedName("password") private String password;
+    @SerializedName("fcm_token") private String fcm_token;
     @SerializedName("access_token") private String accessToken;
     @SerializedName("result") private String result;
 
@@ -22,9 +23,9 @@ public class Signin {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void setPassword(String password) { this.password = password; }
+
+    public void setFcmToken(String fcm_token) { this.fcm_token = fcm_token; }
 
     public String getAccessToken() {
         return accessToken;
