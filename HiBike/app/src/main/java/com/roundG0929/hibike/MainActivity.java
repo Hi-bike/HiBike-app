@@ -2,24 +2,25 @@ package com.roundG0929.hibike;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
@@ -35,7 +36,16 @@ import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    Button mainSigninBtn;
+
+    //로그인 버튼
+    TextView btn_signin;
+
+    //Navigation drawer 여는 버튼
+    ImageButton btn_open;
+
+    //Navigation drawer
+    private DrawerLayout drawerLayout;
+    private View drawerView;
 
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     private FusedLocationSource fusedLocationSource;
@@ -62,7 +72,47 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawerView = (View) findViewById(R.id.drawer);
 
+        //Navigation drawer 여는 버튼
+        btn_open = (ImageButton) findViewById(R.id.btn_open);
+        btn_open.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                drawerLayout.openDrawer(drawerView);
+            }
+        });
+
+        // drawer 리스너
+        drawerLayout.setDrawerListener(listener);
+        drawerView.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                return true;
+            }
+        });
+
+        //로그인 성공시, 유저 아이디 핸드폰에 저장
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);;
+        SharedPreferences.Editor editor = pref.edit();;
+        String id = pref.getString("id", "");
+
+        btn_signin = (TextView) findViewById(R.id.btn_signin);
+
+        if(id == ""){
+            btn_signin.setText("로그인  >");
+            btn_signin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
+                    startActivity(intent);
+                }
+            });
+        }else{
+            btn_signin.setText(id+"  >");
+            //유저 프로필 보여줄 버튼 + 닉네임으로 변경할 예정 + 로그아웃도 만들어야됨
+        }
 
         //권한요청, 확인
         TedPermission.create()
@@ -86,21 +136,12 @@ public class MainActivity extends AppCompatActivity {
         //위치추적기능 설정 객체
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
         //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(fusedLocationSource,getApplicationContext());
+        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(fusedLocationSource, getApplicationContext());
         //맵객체 설정
         mapFragment.getMapAsync(firstNaverMapSet);
 
-
-
-        mainSigninBtn = (Button) findViewById(R.id.mainSigninBtn);
-        mainSigninBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
-                startActivity(intent);
-            }
-        });
     }
+
 
     //권한요청결과 리스너(안드로이드 내장) tedpermission과 무관
     @Override
@@ -113,11 +154,21 @@ public class MainActivity extends AppCompatActivity {
             }
             return;
         }
-
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 
+    //Drawer 리스너
+    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
+        @Override
+        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
+        @Override
+        public void onDrawerOpened(@NonNull View drawerView) {}
+        @Override
+        public void onDrawerClosed(@NonNull View drawerView) {}
+        @Override
+        public void onDrawerStateChanged(int newState) {}
+    };
 
     //네이버맵 테스트 CallBack
     public class TestNaverMapCallback implements OnMapReadyCallback {
@@ -127,7 +178,6 @@ public class MainActivity extends AppCompatActivity {
             double[] latlngList = startLocation();
             LatLng latLng = new LatLng(latlngList[0],latlngList[1]);
 
-
             CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng);
             LocationOverlay locationOverlay = naverMap.getLocationOverlay();
 
@@ -136,7 +186,6 @@ public class MainActivity extends AppCompatActivity {
             naverMap.moveCamera(cameraUpdate);
         }
     }
-
 
     //현재위치 가져오기   --- TEST ---
     public double[] startLocation() {
@@ -175,6 +224,5 @@ public class MainActivity extends AppCompatActivity {
 
         return latlng;
     }
-
 
 }

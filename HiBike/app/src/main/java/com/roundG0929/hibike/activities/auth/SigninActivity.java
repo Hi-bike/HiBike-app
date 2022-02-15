@@ -2,17 +2,22 @@ package com.roundG0929.hibike.activities.auth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.ApiInterface;
-
+import com.roundG0929.hibike.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -22,10 +27,13 @@ import com.google.firebase.iid.FirebaseInstanceId; //파이어베이스 토큰 �
 public class SigninActivity extends AppCompatActivity {
 
     ApiInterface api;
-    Button signinBtn;
-    EditText editId;
-    EditText editPwd;
-    TextView signupText;
+    Button btnSignin;
+    EditText editId, editPwd;
+    TextView textSignup;
+
+    //유저 아이디 저장
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,13 +41,16 @@ public class SigninActivity extends AppCompatActivity {
         String fcm_token = FirebaseInstanceId.getInstance().getToken(); //파이어베이스 토큰 get
         setContentView(R.layout.activity_signin);
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
-        editId = (EditText) findViewById(R.id.editId);
-        editPwd = (EditText) findViewById(R.id.editPassword);
-        signupText = (TextView) findViewById(R.id.signup);
+        editId = (EditText) findViewById(R.id.edit_id);
+        editPwd = (EditText) findViewById(R.id.edit_password);
+        textSignup = (TextView) findViewById(R.id.text_signup);
 
-        signinBtn = (Button) findViewById(R.id.signinBtn);
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+        pref.getString("id", "");
 
-        signinBtn.setOnClickListener(new View.OnClickListener() {
+        btnSignin = (Button) findViewById(R.id.btn_signin);
+        btnSignin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Signin data = new Signin();
@@ -50,17 +61,23 @@ public class SigninActivity extends AppCompatActivity {
                 api.signin(data).enqueue(new Callback<Signin>() {
                     @Override
                     public void onResponse(Call<Signin> call, Response<Signin> response) {
-                        if(response.isSuccessful()){
-                            signupText.setText("success");
-                        }else{
-                            signupText.setText(response.message());
+                        if (response.isSuccessful()) {
+                            editor.putString("id", editId.getText().toString());
+                            editor.apply();
+
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        } else {
+                            Toast toast = Toast.makeText(getApplicationContext(), "로그인 정보가 일치하지 않습니다. (" + response.message() + ")", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 0);
+                            toast.show();
                         }
                     }
 
                     @Override
                     public void onFailure(Call<Signin> call, Throwable t) {
                         //통신 실패
-                        signupText.setText(t.toString());
+                        Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
             }
