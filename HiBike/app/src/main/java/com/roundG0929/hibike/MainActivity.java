@@ -30,18 +30,30 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
+import com.roundG0929.hibike.api.server.ApiInterface;
+import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.BasicProfile;
 
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
-    //로그인 버튼
-    TextView btn_signin;
-
+    //hibike server api
+    ApiInterface api;
     //Navigation drawer 여는 버튼
     ImageButton btn_open;
+    //Navigation 안에 있는 버튼들
+    TextView btnSignin;    //로그인 버튼
+    TextView btnDrivingRecord;    //주행 기록 버튼
+    TextView btnPosts;    //게시판?
+
 
     //Navigation drawer
     private DrawerLayout drawerLayout;
@@ -62,15 +74,14 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(MainActivity.this, "권한을 허용하지 않으면 이용할 수 없습니다.", Toast.LENGTH_SHORT).show();
             finish();
         }
-
-
     };
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerView = (View) findViewById(R.id.drawer);
@@ -94,15 +105,15 @@ public class MainActivity extends AppCompatActivity {
         });
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
-        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);;
-        SharedPreferences.Editor editor = pref.edit();;
-        String id = pref.getString("id", "");
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
 
-        btn_signin = (TextView) findViewById(R.id.btn_signin);
+        String id = pref.getString("id", "");
+        btnSignin = (TextView) findViewById(R.id.btn_signin);
 
         if(id == ""){
-            btn_signin.setText("로그인  >");
-            btn_signin.setOnClickListener(new View.OnClickListener() {
+            btnSignin.setText("로그인    >");
+            btnSignin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
@@ -110,8 +121,35 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else{
-            btn_signin.setText(id+"  >");
-            //유저 프로필 보여줄 버튼 + 닉네임으로 변경할 예정 + 로그아웃도 만들어야됨
+            api.getProfile(id).enqueue(new Callback<BasicProfile>() {
+                @Override
+                public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
+                    if(response.isSuccessful()){
+                        String nickname = response.body().getNickname();
+                        btnSignin.setText(nickname+"    >");
+                    }else{
+                        btnSignin.setText(id+"    >");
+                    }
+                }
+                @Override
+                public void onFailure(Call<BasicProfile> call, Throwable t) {
+                    btnSignin.setText(id+"    >");
+                }
+            });
+
+            btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
+            btnDrivingRecord.setText("    주행 기록");
+
+            btnPosts = (TextView) findViewById(R.id.btn_posts);
+            btnPosts.setText("    게시판");
+
+            btnSignin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), BasicProfileActivity.class);
+                    startActivity(intent);
+                }
+            });
         }
 
         //권한요청, 확인
@@ -224,5 +262,4 @@ public class MainActivity extends AppCompatActivity {
 
         return latlng;
     }
-
 }
