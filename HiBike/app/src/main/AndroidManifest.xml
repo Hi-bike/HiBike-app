@@ -19,9 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".activities.auth.BasicProfileActivity"
+            android:theme="@android:style/Theme.Holo.Light.Dialog"
             android:exported="false" />
+
         <activity
             android:name=".activities.auth.SigninActivity"
             android:exported="false" />

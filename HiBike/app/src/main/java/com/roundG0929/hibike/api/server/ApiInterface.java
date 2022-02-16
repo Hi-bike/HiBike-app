@@ -2,7 +2,6 @@ package com.roundG0929.hibike.api.server;
 
 
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
-import com.roundG0929.hibike.api.server.dto.NicknameProfile;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.dto.Signout;
 import com.roundG0929.hibike.api.server.dto.Signup;
@@ -27,7 +26,7 @@ public interface ApiInterface {
     Call<BasicProfile> getProfile(@Query("id") String id);
 
     @POST("api/auth/setting-nickname")
-    Call<NicknameProfile> setNickname(@Body NicknameProfile data);
+    Call<BasicProfile> setNickname(@Body BasicProfile data);
 
 
 }

@@ -9,14 +9,13 @@ public class BasicProfile {
     public String getId(){
         return id;
     }
-    public void setId(String nickname) {
-        this.nickname = nickname;
-    }
-    public void setNickname(String nickname) {
-        this.nickname = nickname;
+    public void setId(String id) {
+        this.id = id;
     }
     public String getNickname(){
         return nickname;
     }
-
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
 }
