@@ -16,9 +16,9 @@
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/imagebtn_states.xml" value="0.488" />
-        <entry key="app/src/main/res/layout/activity_drawer.xml" value="0.5635416666666667" />
-        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5494791666666666" />
-        <entry key="app/src/main/res/layout/activity_signin.xml" value="0.5635416666666667" />
+        <entry key="app/src/main/res/layout/activity_drawer.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_signin.xml" value="0.335" />
       </map>
     </option>
   </component>

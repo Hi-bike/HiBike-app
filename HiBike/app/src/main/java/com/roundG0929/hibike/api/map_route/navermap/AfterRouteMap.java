@@ -39,7 +39,6 @@ public class AfterRouteMap implements OnMapReadyCallback {
         routePoints.addAll(coordsForDrawLine);
     }
 
-    @UiThread
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
 
@@ -53,9 +52,7 @@ public class AfterRouteMap implements OnMapReadyCallback {
         LocationOverlay locationOverlay = routeMap.getLocationOverlay();
         locationOverlay.setVisible(true);
 
-
-
-            //내위치소스
+        //내위치소스
         routeMap.setLocationSource(fusedLocationSource);
         routeMap.setLocationTrackingMode(LocationTrackingMode.NoFollow);
 
@@ -66,7 +63,6 @@ public class AfterRouteMap implements OnMapReadyCallback {
         //길찾기 위치로 이동
         //Toast.makeText(mContext,routePoints.get(0).latitude+","+routePoints.get(0).longitude,Toast.LENGTH_SHORT).show();
         CameraUpdate cameraUpdate = CameraUpdate.scrollTo(routePoints.get(0));
-        locationOverlay.setPosition(routePoints.get(0));
         naverMap.moveCamera(cameraUpdate);
 
         //경로그리기

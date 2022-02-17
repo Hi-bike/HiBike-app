@@ -3,6 +3,7 @@ package com.roundG0929.hibike.api.map_route.navermap;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.widget.Toast;
@@ -57,6 +58,14 @@ public class FirstNaverMapSet implements OnMapReadyCallback {
         //ui 설정
         UiSettings uiSettings = firstMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
+
+        //클릭리스너
+        firstMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
+                Toast.makeText(mContext,"this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude,Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 
