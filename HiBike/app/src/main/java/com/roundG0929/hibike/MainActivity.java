@@ -12,6 +12,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -22,38 +24,47 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.internal.Objects;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
+import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
     //테스트객체
     GraphhopperResponse graphhopperResponse;
     List<LatLng> coordsForDrawLine = new ArrayList<>();
     MapFragment mapFragment;
+    TextView textView;
+    NaverMap naverMapObj;
 
     //hibike server api
     ApiInterface api;
@@ -90,6 +101,10 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        textView = findViewById(R.id.textView);
+
+
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
@@ -185,17 +200,17 @@ public class MainActivity extends AppCompatActivity {
         //위치추적기능 설정 객체
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
         //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource, this);
+        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource, MainActivity.this);
         //맵객체 설정
-        mapFragment.getMapAsync(firstNaverMapSet);
+        mapFragment.getMapAsync(this::onMapReady);
 
 
 
 
 
         //Dynamic route Test
-        Button button = findViewById(R.id.testButton);
 
+        Button button = findViewById(R.id.testButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,12 +225,26 @@ public class MainActivity extends AppCompatActivity {
                         ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
                         pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
 
+                        if (coordsForDrawLine != null){
+                            coordsForDrawLine.clear();
+                        }
                         for(int i = 0;i<pointsList.size();i++) {
                             coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1),pointsList.get(i).get(0)));
                         }
 
-                        AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
-                        mapFragment.getMapAsync(afterRouteMap);
+//                        AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
+//                        mapFragment.getMapAsync(afterRouteMap);
+                        Toast.makeText(getApplicationContext(),"route", Toast.LENGTH_SHORT).show();
+                        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(coordsForDrawLine.get(0));
+                        naverMapObj.moveCamera(cameraUpdate);
+                        //경로그리기
+                        PathOverlay pathOverlay = new PathOverlay();
+                        //경로배열지정
+                        pathOverlay.setCoords(coordsForDrawLine);
+                        //스타일
+                        pathOverlay.setColor(Color.BLUE);
+                        //그리기
+                        pathOverlay.setMap(naverMapObj);
                     }
 
                     @Override
@@ -223,6 +252,8 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 });
+
+
             }
         });
 
@@ -258,4 +289,12 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onDrawerStateChanged(int newState) {}
     };
+
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        naverMapObj = naverMap;
+        MapSetting mapSetting = new MapSetting();
+        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource);
+    }
+
 }
