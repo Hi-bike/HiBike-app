@@ -21,33 +21,30 @@ import com.roundG0929.hibike.R;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-
 import com.google.firebase.iid.FirebaseInstanceId; //파이어베이스 토큰 관리
 
 public class SigninActivity extends AppCompatActivity {
-
     ApiInterface api;
     Button btnSignin;
     EditText editId, editPwd;
     TextView textSignup;
-
-    //유저 아이디 저장
-    SharedPreferences pref;
-    SharedPreferences.Editor editor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String fcm_token = FirebaseInstanceId.getInstance().getToken(); //파이어베이스 토큰 get
         setContentView(R.layout.activity_signin);
+
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         editId = (EditText) findViewById(R.id.edit_id);
         editPwd = (EditText) findViewById(R.id.edit_password);
         textSignup = (TextView) findViewById(R.id.text_signup);
 
-        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        editor = pref.edit();
-        pref.getString("id", "");
+        //유저 아이디 저장
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        String id = pref.getString("id", "");
 
         btnSignin = (Button) findViewById(R.id.btn_signin);
         btnSignin.setOnClickListener(new View.OnClickListener() {

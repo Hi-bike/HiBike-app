@@ -1,6 +1,7 @@
 package com.roundG0929.hibike.api.map_route.navermap;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
@@ -19,16 +20,23 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
+import com.roundG0929.hibike.R;
 
 public class FirstNaverMapSet implements OnMapReadyCallback {
     NaverMap firstMap;
     FusedLocationSource fusedLocationSource;
     Context mContext;
+    private int checkStartEndClick;
 
-    public FirstNaverMapSet(Context context, FusedLocationSource fusedLocationSource) {
+
+    public FirstNaverMapSet(Context context, FusedLocationSource fusedLocationSource, Activity activity) {
         this.fusedLocationSource = fusedLocationSource;
         this.mContext = context;
+        checkStartEndClick = 0;
     }
 
     @UiThread
@@ -59,11 +67,19 @@ public class FirstNaverMapSet implements OnMapReadyCallback {
         UiSettings uiSettings = firstMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
 
-        //클릭리스너
+        //리스너
+            //롱클릭리스너
+        Marker startMarker = new Marker();
+        startMarker.setIcon(MarkerIcons.GREEN);
+        Marker endMarker = new Marker();
+        startMarker.setIcon(MarkerIcons.RED);
         firstMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
                 Toast.makeText(mContext,"this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude,Toast.LENGTH_SHORT).show();
+                Marker marker = new Marker();
+                marker.setPosition(latLng);
+                marker.setMap(firstMap);
             }
         });
     }

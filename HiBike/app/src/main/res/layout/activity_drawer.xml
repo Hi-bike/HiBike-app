@@ -23,21 +23,21 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/btn_driving_record"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:textSize="18dp"
-        android:textColor="#000000"
-        android:text="   주행 정보"/>
+        android:textColor="#000000" />
 
     <TextView
+        android:id="@+id/btn_posts"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
         android:textSize="18dp"
-        android:textColor="#000000"
-        android:text="   게시판"/>
+        android:textColor="#000000" />
 
 </LinearLayout>
