@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="240dp"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="start"
     android:background="#FFFFFF"
     android:id="@+id/drawer"
@@ -12,31 +12,58 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="20dp">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            app:cardCornerRadius="75dp"
+            app:cardElevation="0dp"
+            >
+        <ImageView
+            android:id="@+id/iv_drawer_profile_image"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center"
+            android:background="@drawable/image_rounded_corner"
+            android:src="@drawable/icons_user2"
+            android:scaleType="centerCrop"/>
+        </androidx.cardview.widget.CardView>
     <TextView
-        android:id="@+id/btn_signin"
-        android:layout_width="match_parent"
+        android:id="@+id/btn_signin_or_nickname"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="120dp"
         android:gravity="left"
         android:layout_margin="8dp"
-        android:textSize="25dp"
+        android:textSize="23dp"
         android:textColor="#000000" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="23dp"
+        android:text=">"
+        android:textColor="#000000" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/btn_driving_record"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
+        android:paddingLeft="10dp"
         android:textSize="18dp"
         android:textColor="#000000" />
 
     <TextView
         android:id="@+id/btn_posts"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
+        android:paddingLeft="8dp"
         android:textSize="18dp"
         android:textColor="#000000" />
 
