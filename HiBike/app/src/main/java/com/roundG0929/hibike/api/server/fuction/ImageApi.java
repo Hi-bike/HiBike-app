@@ -45,7 +45,7 @@ public class ImageApi extends Activity{
         }).start();
     }
 
-    public Bitmap getBitmap(String url) {
+    private Bitmap getBitmap(String url) {
         HttpURLConnection connection = null;
         Bitmap retBitmap = null;
         try{
