@@ -20,6 +20,15 @@
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".avtivities.board.ListViewActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".activities.auth.BasicProfileActivity"
             android:exported="false" />
         <activity
