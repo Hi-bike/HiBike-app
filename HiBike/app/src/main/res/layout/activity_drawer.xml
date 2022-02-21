@@ -14,38 +14,50 @@
         android:layout_margin="20dp">
 
     <ImageView
-        android:id="@+id/btn_profile_image"
+        android:id="@+id/iv_profile_image"
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
         android:maxWidth="50dp"
         android:maxHeight="50dp"
-        android:src="@drawable/icons_profile" />
+        android:background="@drawable/image_rounded_corner"
+        android:src="@drawable/icons_user2" />
     <TextView
         android:id="@+id/btn_signin_or_nickname"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:maxWidth="120dp"
         android:gravity="left"
         android:layout_margin="8dp"
         android:textSize="23dp"
         android:textColor="#000000" />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:textSize="23dp"
+        android:text=">"
+        android:textColor="#000000" />
+
     </LinearLayout>
 
     <TextView
         android:id="@+id/btn_driving_record"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
+        android:paddingLeft="10dp"
         android:textSize="18dp"
         android:textColor="#000000" />
 
     <TextView
         android:id="@+id/btn_posts"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="left"
         android:layout_margin="8dp"
+        android:paddingLeft="8dp"
         android:textSize="18dp"
         android:textColor="#000000" />
 

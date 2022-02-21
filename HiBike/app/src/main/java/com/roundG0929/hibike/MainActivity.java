@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
     TextView btnSigninOrNickname;    //로그인 버튼
     TextView btnDrivingRecord;    //주행 기록 버튼
     TextView btnPosts;    //게시판
+    //TODO: drawer에 띄울 프로필 이미지 url 작업
+
+    //다른 activity에서 main component 접근에 이용용
+    public static Context context_main;
+
 
     //Navigation drawer
     private DrawerLayout drawerLayout;
@@ -80,6 +85,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context_main = this;
 
         // 다이얼로그 밖의 화면 흐리게
         WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
@@ -119,7 +125,7 @@ public class MainActivity extends AppCompatActivity {
         btnSigninOrNickname = (TextView) findViewById(R.id.btn_signin_or_nickname);
 
         if(id == ""){
-            btnSigninOrNickname.setText("로그인    >");
+            btnSigninOrNickname.setText("로그인");
             btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -133,9 +139,9 @@ public class MainActivity extends AppCompatActivity {
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
                     if(response.isSuccessful()){
                         String nickname = response.body().getNickname();
-                        btnSigninOrNickname.setText(nickname+"    >");
+                        btnSigninOrNickname.setText(nickname);
                     }else{
-                        btnSigninOrNickname.setText(id+"    >");
+                        btnSigninOrNickname.setText(id);
                     }
                 }
                 @Override
@@ -145,10 +151,10 @@ public class MainActivity extends AppCompatActivity {
             });
 
             btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
-            btnDrivingRecord.setText("    주행 기록");
+            btnDrivingRecord.setText("주행 기록");
 
             btnPosts = (TextView) findViewById(R.id.btn_posts);
-            btnPosts.setText("    게시판");
+            btnPosts.setText("게시판");
 
             btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
                 @Override

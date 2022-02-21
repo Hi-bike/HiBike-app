@@ -1,9 +1,17 @@
 package com.roundG0929.hibike.activities.auth;
 
+import static com.bumptech.glide.load.resource.bitmap.TransformationUtils.rotateImage;
+
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -18,8 +26,15 @@ import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
+import com.roundG0929.hibike.api.server.dto.ProfileImage;
 import com.roundG0929.hibike.api.server.dto.Signout;
 
+import java.io.File;
+import java.io.IOException;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -31,7 +46,9 @@ public class BasicProfileActivity extends Activity {
     EditText editNickname;
     ImageButton btnClose;
     Button btnOk;
-    ImageView viewImage;
+    ImageView ivProfileImage;
+    String oriNickname, mediaPath, id;
+    boolean isImageChanged=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +58,7 @@ public class BasicProfileActivity extends Activity {
 
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         SharedPreferences.Editor editor = pref.edit();
-        String id = pref.getString("id", "");
+        id = pref.getString("id", "");
 
         //hibike server api
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
@@ -61,35 +78,68 @@ public class BasicProfileActivity extends Activity {
         });
 
         //프로필이미지 변경
-        viewImage = (ImageView) findViewById(R.id.btn_profile_image);
-        viewImage.setOnClickListener(new View.OnClickListener() {
+        ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
+        ivProfileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO:프로필 이미지 변경
+                isImageChanged = true;
+                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(intent, 0);
             }
         });
+
+        TextView btnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
+        ImageView profileImage = ((MainActivity)MainActivity.context_main).findViewById(R.id.iv_profile_image);
+        oriNickname = btnSigninOrNickname.getText().toString();
 
         btnOk = (Button) findViewById(R.id.btn_ok);
         btnOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                BasicProfile nicknameProfile = new BasicProfile();
-                nicknameProfile.setId(id);
-                nicknameProfile.setNickname(editNickname.getText().toString());
+                String newNickname = editNickname.getText().toString();
+                //닉네임 변경 여부
+                if(!(oriNickname.equals(newNickname) || newNickname.equals(""))){
+                    //닉네임 변경 api
+                    BasicProfile nicknameProfile = new BasicProfile();
+                    nicknameProfile.setId(id);
+                    nicknameProfile.setNickname(newNickname);
+                    api.setNickname(nicknameProfile).enqueue(new Callback<BasicProfile>() {
+                        @Override
+                        public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                        }
 
-                api.setNickname(nicknameProfile).enqueue(new Callback<BasicProfile>() {
-                    @Override
-                    public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
+                        @Override
+                        public void onFailure(Call<BasicProfile> call, Throwable t) {
+                            Toast.makeText(getApplicationContext(), "통신 실패", Toast.LENGTH_SHORT);
+                        }
+                    });
+                }
+                //이미지 변경 여부
+                if(isImageChanged){
+                    if (mediaPath != null) {
+                        File file = new File(mediaPath);
+                        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+                        RequestBody idToUpload = RequestBody.create(MediaType.parse("text/plain"), id);
+                        api.setProfile(fileToUpload, idToUpload).enqueue(new Callback<ProfileImage>() {
+                            @Override
+                            public void onResponse(Call<ProfileImage> call, Response<ProfileImage> response) {
+                                if (response.isSuccessful()) {
+                                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                                    startActivity(intent);
+                                }
+                            }
 
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        startActivity(intent);
+                            @Override
+                            public void onFailure(Call<ProfileImage> call, Throwable t) {
+                                Toast.makeText(getApplicationContext(), "통신 실패", Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
-
-                    @Override
-                    public void onFailure(Call<BasicProfile> call, Throwable t) {
-                        Toast.makeText(getApplicationContext(), "서버 에러", Toast.LENGTH_SHORT);
-                    }
-                });
+                }
+                finish();
             }
         });
 
@@ -117,10 +167,8 @@ public class BasicProfileActivity extends Activity {
                 startActivity(intent);
             }
         });
-
-        //서버 데이터 베이스에서 닉네임, 아이디 가져오기
-
     }
+
     public void getProfile(String id){
         api.getProfile(id).enqueue(new Callback<BasicProfile>() {
             @Override
@@ -139,5 +187,30 @@ public class BasicProfileActivity extends Activity {
                 editNickname.setText("알 수 없는 오류");
             }
         });
+    }
+
+    @SuppressLint("Range")
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 0 && resultCode == RESULT_OK && data != null) {
+                Uri selectedImage = data.getData();
+
+                Bitmap bitmap = null;
+                try {
+                    bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(),selectedImage);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                ivProfileImage.setImageBitmap(bitmap);
+
+                Cursor cursor = getContentResolver().query(Uri.parse(selectedImage.toString()), null, null, null, null);
+                assert cursor != null;
+                cursor.moveToFirst();
+                mediaPath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
+            }
+        else{
+            Toast.makeText(getApplicationContext(), "실패", Toast.LENGTH_SHORT);
+        }
     }
 }
