@@ -66,8 +66,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
-                android:maxWidth="200dp"
-                android:maxHeight="200dp"
                 android:background="@drawable/image_rounded_corner"
                 android:src="@drawable/icons_user2"
                 android:scaleType="centerCrop"/>
@@ -92,6 +90,7 @@
             android:gravity="left"
             android:hint="변경할 닉네임을 입력"
             android:paddingLeft="7dp"
+            android:paddingTop="3dp"
             android:text=""
             android:textColor="#000000"
             android:textSize="20dp" />
