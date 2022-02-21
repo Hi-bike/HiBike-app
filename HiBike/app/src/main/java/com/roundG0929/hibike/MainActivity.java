@@ -17,7 +17,9 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,6 +38,7 @@ import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
+import com.roundG0929.hibike.api.server.fuction.ImageApi;
 
 import java.util.List;
 
@@ -50,9 +53,13 @@ public class MainActivity extends AppCompatActivity {
     //Navigation drawer 여는 버튼
     ImageButton btn_open;
     //Navigation 안에 있는 버튼들
-    TextView btnSignin;    //로그인 버튼
-    TextView btnDrivingRecord;    //주행 기록 버튼
-    TextView btnPosts;    //게시판?
+    TextView btnSigninOrNickname, btnDrivingRecord, btnPosts;//로그인 버튼
+    ImageView ivProfileImage;
+    String id;
+    ImageApi imageApi;
+
+    //다른 activity에서 main component 접근에 이용용
+    public static Context context_main;
 
 
     //Navigation drawer
@@ -80,6 +87,19 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        context_main = this;
+
+        // 다이얼로그 밖의 화면 흐리게
+        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
+        layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
+        layoutParams.dimAmount = 0.8f;
+        getWindow().setAttributes(layoutParams);
+
+        //로그인 성공시, 유저 아이디 핸드폰에 저장
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        id = pref.getString("id", "");
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
@@ -104,16 +124,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //로그인 성공시, 유저 아이디 핸드폰에 저장
-        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
-
-        String id = pref.getString("id", "");
-        btnSignin = (TextView) findViewById(R.id.btn_signin);
+        btnSigninOrNickname = (TextView) findViewById(R.id.btn_signin_or_nickname);
 
         if(id == ""){
-            btnSignin.setText("로그인    >");
-            btnSignin.setOnClickListener(new View.OnClickListener() {
+            btnSigninOrNickname.setText("로그인");
+            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
@@ -121,29 +136,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             });
         }else{
-            api.getProfile(id).enqueue(new Callback<BasicProfile>() {
-                @Override
-                public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
-                    if(response.isSuccessful()){
-                        String nickname = response.body().getNickname();
-                        btnSignin.setText(nickname+"    >");
-                    }else{
-                        btnSignin.setText(id+"    >");
-                    }
-                }
-                @Override
-                public void onFailure(Call<BasicProfile> call, Throwable t) {
-                    btnSignin.setText(id+"    >");
-                }
-            });
+            getProfile();
+            //프로필 이미지 설정
+            ivProfileImage = (ImageView)findViewById(R.id.iv_drawer_profile_image);
+            imageApi = new ImageApi();
+            imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
             btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
-            btnDrivingRecord.setText("    주행 기록");
+            btnDrivingRecord.setText("주행 기록");
 
             btnPosts = (TextView) findViewById(R.id.btn_posts);
-            btnPosts.setText("    게시판");
+            btnPosts.setText("게시판");
 
-            btnSignin.setOnClickListener(new View.OnClickListener() {
+            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), BasicProfileActivity.class);
@@ -179,7 +184,6 @@ public class MainActivity extends AppCompatActivity {
         mapFragment.getMapAsync(firstNaverMapSet);
 
     }
-
 
     //권한요청결과 리스너(안드로이드 내장) tedpermission과 무관
     @Override
@@ -261,5 +265,22 @@ public class MainActivity extends AppCompatActivity {
         }
 
         return latlng;
+    }
+    private void getProfile(){
+        api.getProfile(id).enqueue(new Callback<BasicProfile>() {
+            @Override
+            public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
+                if(response.isSuccessful()){
+                    String nickname = response.body().getNickname();
+                    btnSigninOrNickname.setText(nickname);
+                }else{
+                    btnSigninOrNickname.setText(id);
+                }
+            }
+            @Override
+            public void onFailure(Call<BasicProfile> call, Throwable t) {
+                btnSigninOrNickname.setText(id);
+            }
+        });
     }
 }

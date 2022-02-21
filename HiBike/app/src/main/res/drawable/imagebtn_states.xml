@@ -6,5 +6,8 @@
     <item android:drawable="@drawable/icons_default_profile" />
     <item android:drawable="@drawable/icons_edit" />
     <item android:drawable="@drawable/icons_profile" />
+    <item android:drawable="@drawable/icons_x" />
+    <item android:drawable="@drawable/icons_user2" />
+
 
 </selector>
