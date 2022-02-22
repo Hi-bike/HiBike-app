@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-
+//For GraphhopperResponse
 public class Points {
     @SerializedName("type")
     String type;
