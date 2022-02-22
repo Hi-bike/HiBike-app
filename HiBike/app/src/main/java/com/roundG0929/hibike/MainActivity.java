@@ -124,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         id = pref.getString("id", "");
 
-        textView = findViewById(R.id.textView);
+        //textView = findViewById(R.id.textView);
 
 
 
@@ -216,7 +216,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         //Dynamic route Test
-        Button button = findViewById(R.id.testButton);
+        Button button = findViewById(R.id.routeButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -253,6 +253,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
                 Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
                 startActivity(findPathIntent);
+                overridePendingTransition(0, 0);
 
             }
         });
