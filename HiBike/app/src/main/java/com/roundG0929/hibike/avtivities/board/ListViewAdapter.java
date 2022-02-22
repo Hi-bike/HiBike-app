@@ -7,7 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import com.roundG0929.hibike.R;
 
 import java.util.ArrayList;
@@ -58,7 +61,15 @@ public class ListViewAdapter extends BaseAdapter {
         titleTextView.setText(listViewItem.getTitle());
         iconImageView.setImageResource(listViewItem.getIcon());
         contentTextView.setText(listViewItem.getContent());
-
+        
+        //각 아이템의 클릭 이벤트
+        LinearLayout cmdArea = (LinearLayout)convertView.findViewById(R.id.cmdArea);
+        cmdArea.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Toast.makeText(view.getContext(), listViewItemList.get(pos).getContent(),Toast.LENGTH_SHORT).show();
+            }
+        });
         return convertView;
     }
 
