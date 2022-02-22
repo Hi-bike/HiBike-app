@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-
+//길찾기 DTO
 public class GraphhopperResponse {
     @SerializedName("hints")
     Hints hints = new Hints();
