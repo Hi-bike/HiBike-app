@@ -17,6 +17,7 @@ import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -41,6 +42,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
+import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -59,11 +61,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
-    //테스트객체
+    //길찾기,맵 관련 객체
     GraphhopperResponse graphhopperResponse;
     List<LatLng> coordsForDrawLine = new ArrayList<>();
     MapFragment mapFragment;
-    TextView textView;
+    public TextView textView;
     NaverMap naverMapObj;
 
     //hibike server api
@@ -209,50 +211,43 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
         //Dynamic route Test
-
         Button button = findViewById(R.id.testButton);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                MapRouteApi mapRouteApi = new MapRouteApi(
-                        new LatLng(37.37936693441738, 126.63216836090126),
-                        new LatLng(37.380746359234095, 126.61660711969573));
+//                MapRouteApi mapRouteApi = new MapRouteApi(
+//                        new LatLng(37.37936693441738, 126.63216836090126),
+//                        new LatLng(37.380746359234095, 126.61660711969573));
+//                mapRouteApi.getApi().enqueue(new Callback<GraphhopperResponse>() {
+//                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
+//                        GraphhopperResponse graphhopperResponse = response.body();
+//                        ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
+//                        pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
+//
+//                        if (coordsForDrawLine != null) {
+//                            coordsForDrawLine.clear();
+//                        }
+//                        for (int i = 0; i < pointsList.size(); i++) {
+//                            coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1), pointsList.get(i).get(0)));
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
+//                        Log.d("getRoutePoints", "onFailure: " + t.toString());
+//                    }
+//                });
+//                //경로그리기
+//                PathOverlay pathOverlay = new PathOverlay();
+//                //경로배열지정
+//                pathOverlay.setCoords(coordsForDrawLine);
+//                //스타일
+//                pathOverlay.setColor(Color.BLUE);
+//                //그리기
+//                pathOverlay.setMap(naverMapObj);
 
-                mapRouteApi.getApi().enqueue(new Callback<GraphhopperResponse>() {
-                    @Override
-                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
-                        graphhopperResponse = response.body();
-                        ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
-                        pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-
-                        if (coordsForDrawLine != null){
-                            coordsForDrawLine.clear();
-                        }
-                        for(int i = 0;i<pointsList.size();i++) {
-                            coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1),pointsList.get(i).get(0)));
-                        }
-
-//                        AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
-//                        mapFragment.getMapAsync(afterRouteMap);
-                        Toast.makeText(getApplicationContext(),"route", Toast.LENGTH_SHORT).show();
-                        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(coordsForDrawLine.get(0));
-                        naverMapObj.moveCamera(cameraUpdate);
-                        //경로그리기
-                        PathOverlay pathOverlay = new PathOverlay();
-                        //경로배열지정
-                        pathOverlay.setCoords(coordsForDrawLine);
-                        //스타일
-                        pathOverlay.setColor(Color.BLUE);
-                        //그리기
-                        pathOverlay.setMap(naverMapObj);
-                    }
-
-                    @Override
-                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
-
-                    }
-                });
-
+                Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
+                startActivity(findPathIntent);
 
             }
         });
@@ -290,11 +285,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onDrawerStateChanged(int newState) {}
     };
 
+
+    //네이버맵 설정메소드
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
         naverMapObj = naverMap;
         MapSetting mapSetting = new MapSetting();
-        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource);
+        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource,MainActivity.this);
     }
+
+
 
 }

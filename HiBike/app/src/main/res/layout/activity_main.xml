@@ -18,12 +18,6 @@
             android:layout_height="match_parent"
             android:id="@+id/map"
             android:name="com.naver.maps.map.MapFragment">
-            <com.naver.maps.map.widget.ZoomControlView
-                android:id="@+id/zoom"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="12dp"
-                android:layout_gravity="end|bottom" />
         </fragment>
 
 

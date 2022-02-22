@@ -1,6 +1,7 @@
 package com.roundG0929.hibike.api.map_route.navermap;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.PointF;
@@ -20,9 +21,13 @@ import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
+import com.roundG0929.hibike.MainActivity;
 
 public class MapSetting {
-    public void firstMapSet(NaverMap naverMap, Context context, FusedLocationSource fusedLocationSource){
+    MainActivity activity;
+
+    public void firstMapSet(NaverMap naverMap, Context context, FusedLocationSource fusedLocationSource, MainActivity activity){
+        this.activity = activity;
         double[] latlngList = startLocation(context);
         LatLng latLng = new LatLng(latlngList[0],latlngList[1]);
 
@@ -59,6 +64,7 @@ public class MapSetting {
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
                 marker.setMap(naverMap);
+                activity.textView.append("this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude);
             }
         });
 
