@@ -124,10 +124,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         id = pref.getString("id", "");
 
-        //textView = findViewById(R.id.textView);
-
-
-
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -220,37 +216,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                MapRouteApi mapRouteApi = new MapRouteApi(
-//                        new LatLng(37.37936693441738, 126.63216836090126),
-//                        new LatLng(37.380746359234095, 126.61660711969573));
-//                mapRouteApi.getApi().enqueue(new Callback<GraphhopperResponse>() {
-//                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
-//                        GraphhopperResponse graphhopperResponse = response.body();
-//                        ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
-//                        pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-//
-//                        if (coordsForDrawLine != null) {
-//                            coordsForDrawLine.clear();
-//                        }
-//                        for (int i = 0; i < pointsList.size(); i++) {
-//                            coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1), pointsList.get(i).get(0)));
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
-//                        Log.d("getRoutePoints", "onFailure: " + t.toString());
-//                    }
-//                });
-//                //경로그리기
-//                PathOverlay pathOverlay = new PathOverlay();
-//                //경로배열지정
-//                pathOverlay.setCoords(coordsForDrawLine);
-//                //스타일
-//                pathOverlay.setColor(Color.BLUE);
-//                //그리기
-//                pathOverlay.setMap(naverMapObj);
-
                 Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
                 startActivity(findPathIntent);
                 overridePendingTransition(0, 0);
