@@ -1,7 +1,6 @@
-package com.roundG0929.hibike.avtivities.board;
+package com.roundG0929.hibike.activities.board;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,10 @@ import com.roundG0929.hibike.R;
 
 import java.util.ArrayList;
 
+
+
 public class ListViewAdapter extends BaseAdapter {
+
     private ImageView iconImageView;
     private TextView titleTextView;
     private TextView contentTextView;

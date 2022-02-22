@@ -1,4 +1,4 @@
-package com.roundG0929.hibike.avtivities.board;
+package com.roundG0929.hibike.activities.board;
 
 import android.graphics.drawable.Drawable;
 

@@ -46,7 +46,7 @@
         </activity>
 
         <activity
-            android:name=".avtivities.board.ListViewActivity"
+            android:name=".activities.board.ListViewActivity"
             android:exported="true">
         </activity>
 

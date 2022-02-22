@@ -54,7 +54,7 @@ import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
-import com.roundG0929.hibike.avtivities.board.ListViewActivity;
+import com.roundG0929.hibike.activities.board.ListViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
