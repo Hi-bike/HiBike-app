@@ -10,7 +10,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.roundG0929.hibike.R;
-import com.roundG0929.hibike.api.map_route.graphhopperRoute.RetrofitApi;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.Signup;

@@ -10,51 +10,32 @@ import android.location.LocationManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.core.app.ActivityCompat;
 
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.MainActivity;
-import com.roundG0929.hibike.R;
 
-public class FirstNaverMapSet implements OnMapReadyCallback {
-    NaverMap firstMap;
-    FusedLocationSource fusedLocationSource;
-    Context mContext;
-    private int checkStartEndClick;
-    Activity activity;
+public class MapSetting {
+    MainActivity activity;
 
-
-    public FirstNaverMapSet(Context context, FusedLocationSource fusedLocationSource, Activity activity) {
-        this.fusedLocationSource = fusedLocationSource;
-        this.mContext = context;
-        checkStartEndClick = 0;
+    public void firstMapSet(NaverMap naverMap, Context context, FusedLocationSource fusedLocationSource, MainActivity activity){
         this.activity = activity;
-    }
-
-    @UiThread
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        double[] latlngList = startLocation();
+        double[] latlngList = startLocation(context);
         LatLng latLng = new LatLng(latlngList[0],latlngList[1]);
 
-        firstMap = naverMap;
-
         //오버레이 설정
-        firstMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true);
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true);
 
         //내 위치오버레이 설정
-        LocationOverlay locationOverlay = firstMap.getLocationOverlay();
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
         locationOverlay.setVisible(true);
 
         //현재위치바로가기 (ux개선)
@@ -63,34 +44,34 @@ public class FirstNaverMapSet implements OnMapReadyCallback {
         naverMap.moveCamera(cameraUpdate);
 
         //내 위치 트래킹 설정
-        firstMap.setLocationSource(fusedLocationSource);
-        firstMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+        naverMap.setLocationSource(fusedLocationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
         //ui 설정
-        UiSettings uiSettings = firstMap.getUiSettings();
+        UiSettings uiSettings = naverMap.getUiSettings();
         uiSettings.setLocationButtonEnabled(true);
 
         //리스너
-            //롱클릭리스너
+        //롱클릭리스너
         Marker startMarker = new Marker();
         startMarker.setIcon(MarkerIcons.GREEN);
         Marker endMarker = new Marker();
         startMarker.setIcon(MarkerIcons.RED);
-        firstMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
+        naverMap.setOnMapLongClickListener(new NaverMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(@NonNull PointF pointF, @NonNull LatLng latLng) {
-                Toast.makeText(mContext,"this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude,Toast.LENGTH_SHORT).show();
+                Toast.makeText(context,"this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude,Toast.LENGTH_SHORT).show();
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
-                marker.setMap(firstMap);
+                marker.setMap(naverMap);
+                activity.textView.append("this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude);
             }
         });
 
     }
 
-
     //현재위치 가져오기
-    public double[] startLocation() {
+    public double[] startLocation(Context mContext) {
         double[] latlng = new double[2];
         latlng[0] = 0;latlng[1]=0;
         LocationManager locationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
@@ -126,5 +107,4 @@ public class FirstNaverMapSet implements OnMapReadyCallback {
 
         return latlng;
     }
-
 }

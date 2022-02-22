@@ -19,6 +19,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
+
+        <meta-data
+            android:name="com.naver.maps.map.CLIENT_ID"
+            android:value="6xi4dmacb3" />
+
+        <activity
+            android:name=".activities.map_route.FindPathActivity"
+            android:exported="false"/>
+
         <activity
             android:name=".activities.auth.SignupActivity"
             android:exported="false" />
@@ -29,10 +38,6 @@
         <activity
             android:name=".activities.auth.SigninActivity"
             android:exported="false" />
-
-        <meta-data
-            android:name="com.naver.maps.map.CLIENT_ID"
-            android:value="6xi4dmacb3" />
 
         <activity
             android:name=".MainActivity"

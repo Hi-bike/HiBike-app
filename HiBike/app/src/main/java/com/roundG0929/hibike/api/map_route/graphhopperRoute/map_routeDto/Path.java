@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 
-
+//For GraphhopperResponse
 public class Path {
     @SerializedName("distance")
     @Expose

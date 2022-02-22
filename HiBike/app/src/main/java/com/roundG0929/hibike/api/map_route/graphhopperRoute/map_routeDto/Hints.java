@@ -3,6 +3,8 @@ package com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto;
 
 import com.google.gson.annotations.SerializedName;
 
+
+//For GraphhopperResponse
 public class Hints {
     @SerializedName("visited_nodes.sum")
     private int visited_nodes_sum;

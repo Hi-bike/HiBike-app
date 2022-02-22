@@ -12,41 +12,64 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
+import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.internal.Objects;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.map.CameraUpdate;
+import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
+import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
+import com.roundG0929.hibike.activities.map_route.FindPathActivity;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
+import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
+import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
+    //길찾기,맵 관련 객체
+    GraphhopperResponse graphhopperResponse;
+    List<LatLng> coordsForDrawLine = new ArrayList<>();
+    MapFragment mapFragment;
+    public TextView textView;
+    NaverMap naverMapObj;
 
     //hibike server api
     ApiInterface api;
@@ -88,12 +111,6 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         context_main = this;
-
-        // 다이얼로그 밖의 화면 흐리게
-        WindowManager.LayoutParams layoutParams = new WindowManager.LayoutParams();
-        layoutParams.flags = WindowManager.LayoutParams.FLAG_DIM_BEHIND;
-        layoutParams.dimAmount = 0.8f;
-        getWindow().setAttributes(layoutParams);
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -168,10 +185,11 @@ public class MainActivity extends AppCompatActivity {
                 .setDeniedMessage("권한 허용이 필요합니다.\n허용하지 않으면 앱이 종료됩니다.")
                 .check();
 
+
         //초기맵설정
         //맵 뷰 객체 할당
         FragmentManager fragmentManager = getSupportFragmentManager();
-        MapFragment mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
+        mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
         if (mapFragment == null) {
             mapFragment = MapFragment.newInstance();
             fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
@@ -179,9 +197,28 @@ public class MainActivity extends AppCompatActivity {
         //위치추적기능 설정 객체
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
         //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(fusedLocationSource, getApplicationContext());
+        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource, MainActivity.this);
         //맵객체 설정
-        mapFragment.getMapAsync(firstNaverMapSet);
+        mapFragment.getMapAsync(this::onMapReady);
+
+
+
+
+
+        //Dynamic route Test
+        Button button = findViewById(R.id.routeButton);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
+                startActivity(findPathIntent);
+                overridePendingTransition(0, 0);
+
+            }
+        });
+
+
+
 
     }
 
@@ -212,21 +249,13 @@ public class MainActivity extends AppCompatActivity {
         public void onDrawerStateChanged(int newState) {}
     };
 
-    //네이버맵 테스트 CallBack
-    public class TestNaverMapCallback implements OnMapReadyCallback {
 
-        @Override
-        public void onMapReady(@NonNull NaverMap naverMap) {
-            double[] latlngList = startLocation();
-            LatLng latLng = new LatLng(latlngList[0],latlngList[1]);
-
-            CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng);
-            LocationOverlay locationOverlay = naverMap.getLocationOverlay();
-
-            locationOverlay.setVisible(true);
-            locationOverlay.setPosition(latLng);
-            naverMap.moveCamera(cameraUpdate);
-        }
+    //네이버맵 설정메소드
+    @Override
+    public void onMapReady(@NonNull NaverMap naverMap) {
+        naverMapObj = naverMap;
+        MapSetting mapSetting = new MapSetting();
+        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource,MainActivity.this);
     }
 
     //현재위치 가져오기   --- TEST ---
