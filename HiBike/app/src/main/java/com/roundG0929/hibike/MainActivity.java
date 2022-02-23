@@ -71,6 +71,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     MapFragment mapFragment;
     public TextView textView;
     NaverMap naverMapObj;
+    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
+    private FusedLocationSource fusedLocationSource;
 
     //hibike server api
     ApiInterface api;
@@ -90,8 +92,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
-    private FusedLocationSource fusedLocationSource;
+
 
 
     //권한 요청 후 승인, 거부 리스너
@@ -220,6 +221,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
+
                 startActivity(findPathIntent);
                 overridePendingTransition(0, 0);
 
@@ -229,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
 
 
-    }
+    }//onCreate()
 
     //권한요청결과 리스너(안드로이드 내장) tedpermission과 무관
     @Override

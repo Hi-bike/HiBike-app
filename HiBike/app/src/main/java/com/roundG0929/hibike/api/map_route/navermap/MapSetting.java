@@ -64,9 +64,34 @@ public class MapSetting {
                 Marker marker = new Marker();
                 marker.setPosition(latLng);
                 marker.setMap(naverMap);
-                activity.textView.append("this \nlatitude : "+latLng.latitude+"\nlongitude : "+latLng.longitude);
             }
         });
+
+    }
+
+    public void routeActivityMapSet(NaverMap naverMap,Context context, FusedLocationSource fusedLocationSource){
+        double[] latlngList = startLocation(context);
+        LatLng latLng = new LatLng(latlngList[0],latlngList[1]);
+
+        //오버레이 설정
+        naverMap.setLayerGroupEnabled(NaverMap.LAYER_GROUP_BICYCLE, true);
+        //내 위치오버레이 설정
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+        locationOverlay.setVisible(true);
+
+        //ui 설정
+        UiSettings uiSettings = naverMap.getUiSettings();
+        uiSettings.setLocationButtonEnabled(true);
+        uiSettings.setCompassEnabled(false);
+
+        //현재위치바로가기 (ux개선)
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng);
+        locationOverlay.setPosition(latLng);
+        naverMap.moveCamera(cameraUpdate);
+
+        //내 위치 트래킹 설정
+        naverMap.setLocationSource(fusedLocationSource);
+        naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
 
     }
 
