@@ -70,6 +70,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     MapFragment mapFragment;
     public TextView textView;
     NaverMap naverMapObj;
+    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
+    private FusedLocationSource fusedLocationSource;
 
     //hibike server api
     ApiInterface api;
@@ -89,8 +91,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
-    private FusedLocationSource fusedLocationSource;
+
 
 
     //권한 요청 후 승인, 거부 리스너
@@ -229,6 +230,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                        for (int i = 0; i < pointsList.size(); i++) {
 //                            coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1), pointsList.get(i).get(0)));
 //                        }
+//                        //경로그리기
+//                        PathOverlay pathOverlay = new PathOverlay();
+//                        //경로배열지정
+//                        pathOverlay.setCoords(coordsForDrawLine);
+//                        //스타일
+//                        pathOverlay.setColor(Color.BLUE);
+//                        //그리기
+//                        pathOverlay.setMap(naverMapObj);
 //                    }
 //
 //                    @Override
@@ -236,16 +245,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 //                        Log.d("getRoutePoints", "onFailure: " + t.toString());
 //                    }
 //                });
-//                //경로그리기
-//                PathOverlay pathOverlay = new PathOverlay();
-//                //경로배열지정
-//                pathOverlay.setCoords(coordsForDrawLine);
-//                //스타일
-//                pathOverlay.setColor(Color.BLUE);
-//                //그리기
-//                pathOverlay.setMap(naverMapObj);
+
 
                 Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
+
                 startActivity(findPathIntent);
                 overridePendingTransition(0, 0);
 

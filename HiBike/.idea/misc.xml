@@ -3,7 +3,6 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1574074074074074" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable/button_rounded_corner.xml" value="0.15625" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.2574074074074074" />
@@ -19,7 +18,6 @@
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.22" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.22" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_map.xml" value="0.17603850050658562" />
-        <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.17603850050658562" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_navigation_drawer.xml" value="0.2046875" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_profile_popup.xml" value="0.28940217391304346" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/activity_profile_setting_popup.xml" value="0.21979166666666666" />
@@ -34,7 +32,9 @@
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/bottom_menu.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/botton_menu.xml" value="0.2682291666666667" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.488" />
+        <entry key="app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.5565" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.488" />
+        <entry key="app/src/main/res/drawable/image_rounded_corner.xml" value="0.5565" />
         <entry key="app/src/main/res/drawable/imagebtn_states.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.2935" />
         <entry key="app/src/main/res/layout/activity_basic_profile.xml" value="0.396875" />

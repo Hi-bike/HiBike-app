@@ -1,17 +1,102 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+
+
+
         <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/map"
             android:name="com.naver.maps.map.MapFragment">
         </fragment>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="120dp"
+                app:cardCornerRadius="10dp"
+                app:cardElevation="5dp"
+                android:background="#ffffffff"
+                app:cardUseCompatPadding="true"
+                >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:layout_margin="5dp">
+                    <ImageButton
+                        android:layout_width="40dp"
+                        android:layout_height="match_parent"
+                        android:src="@drawable/icons_searchroute"
+                        android:scaleType="fitCenter"
+                        android:background="@drawable/round_button"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="2dp"/>
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <EditText
+                            android:id="@+id/startText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:background="#dddddd"
+                            android:hint="출발"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:theme="@style/routeEditText" />
+
+                        <EditText
+                            android:id="@+id/endText"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="2dp"
+                            android:layout_weight="1"
+                            android:background="#dddddd"
+                            android:hint="도착"
+                            android:inputType="text"
+                            android:maxLines="1"
+                            android:theme="@style/routeEditText" />
+                    </LinearLayout>
+                    <ImageButton
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/icons_changedirection"
+                        android:scaleType="fitCenter"
+                        android:background="#ffffff"
+                        />
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <com.naver.maps.map.widget.CompassView
+                android:id="@+id/compass"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"/>
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+
+
     </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
