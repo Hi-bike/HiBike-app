@@ -2,6 +2,12 @@ package com.roundG0929.hibike.activities.board;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.gson.Gson;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.google.gson.stream.JsonReader;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 
@@ -16,9 +22,13 @@ import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.dto.Signin;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
 
 public class ListViewActivity extends AppCompatActivity {
     ApiInterface api;
@@ -35,11 +45,30 @@ public class ListViewActivity extends AppCompatActivity {
         GetPost data = new GetPost();
         data.setPage(page);
 
-        api.getPost(1).enqueue(new Callback<GetPost>() {
+        api.getPost(page).enqueue(new Callback<GetPost>() {
             @Override
             public void onResponse(Call<GetPost> call, Response<GetPost> response) {
                 if (response.isSuccessful()) {
-                    System.out.println(response.body().getResult());
+                    try{
+                        for (int i=1; i<=5; i++){
+                            String res = response.body().getResult().toString();
+                            JsonParser jsonParser = new JsonParser();
+
+                            JsonObject jsonObject = (JsonObject) jsonParser.parse(res);
+                            JsonObject dataObject = (JsonObject) jsonObject.get(Integer.toString(i));
+
+                            JsonElement nickname = dataObject.get("nickname");
+                            JsonElement title = dataObject.get("title");
+                            // 리스트뷰 객체 생성 및 Adapter 설정
+                            listview = (ListView) findViewById(R.id.list_view);
+                            listview.setAdapter(adapter);
+                            // 리스트 뷰 아이템 추가.
+                            adapter.addItem(R.drawable.icons_profile,title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                        }
+                    }
+                    catch (Exception e){
+                    }
+
                 } else {
                     Toast toast = Toast.makeText(getApplicationContext(), "실패 (" + response.message() + ")", Toast.LENGTH_LONG);
                     toast.setGravity(Gravity.TOP, 0, 0);
@@ -53,16 +82,5 @@ public class ListViewActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
             }
         });
-
-        // 리스트뷰 객체 생성 및 Adapter 설정
-        listview = (ListView) findViewById(R.id.list_view);
-        listview.setAdapter(adapter);
-        adapter.addItem(R.drawable.icons_profile,"테스트1","관리자1");
-        adapter.addItem(R.drawable.icons_profile,"테스트2","관리자2");
-        adapter.addItem(R.drawable.icons_profile,"테스트3","관리자3");
-        adapter.addItem(R.drawable.icons_profile,"테스트4","관리자4");
-        adapter.addItem(R.drawable.icons_profile,"테스트5","관리자5");
-        // 리스트 뷰 아이템 추가.
-
     }
 }

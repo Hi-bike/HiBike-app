@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ public class ListViewAdapter extends BaseAdapter {
     private ImageView iconImageView;
     private TextView titleTextView;
     private TextView contentTextView;
+
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>() ;
 
@@ -63,13 +65,13 @@ public class ListViewAdapter extends BaseAdapter {
         titleTextView.setText(listViewItem.getTitle());
         iconImageView.setImageResource(listViewItem.getIcon());
         contentTextView.setText(listViewItem.getContent());
-        
+
         //각 아이템의 클릭 이벤트
         LinearLayout cmdArea = (LinearLayout)convertView.findViewById(R.id.cmdArea);
         cmdArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), listViewItemList.get(pos).getContent(),Toast.LENGTH_SHORT).show();
+                Toast.makeText(view.getContext(), listViewItemList.get(pos).getTitle(),Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;
