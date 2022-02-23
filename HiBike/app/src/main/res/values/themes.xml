@@ -23,7 +23,7 @@
 
     <style name="Theme.HiBike.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
-    <style name="routeEditText" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="routeEditText">
         <item name="colorAccent">@color/deepsky</item>
     </style>
 </resources>

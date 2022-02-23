@@ -8,9 +8,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-
-
-
         <fragment
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -20,7 +17,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
@@ -37,6 +34,7 @@
                     android:orientation="horizontal"
                     android:layout_margin="5dp">
                     <ImageButton
+                        android:id="@+id/findButton"
                         android:layout_width="40dp"
                         android:layout_height="match_parent"
                         android:src="@drawable/icons_searchroute"
@@ -75,6 +73,7 @@
                             android:theme="@style/routeEditText" />
                     </LinearLayout>
                     <ImageButton
+                        android:id="@+id/changeButton"
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_gravity="center"
@@ -84,17 +83,46 @@
                         />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
-
+            <LinearLayout
+                android:id="@+id/selectlayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center"
+                android:visibility="gone">
+                <Button
+                    android:id="@+id/nowlocationButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="내 위치"
+                    android:background="@drawable/button_findpathlayout_selectlocationsource"
+                    android:layout_margin="5dp"
+                    android:gravity="center"
+                    />
+                <Button
+                    android:id="@+id/frommapButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="지도에서 선택"
+                    android:background="@drawable/button_findpathlayout_selectlocationsource"
+                    android:layout_margin="5dp"/>
+                <Button
+                    android:id="@+id/fromsearchButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="25dp"
+                    android:text="검색"
+                    android:background="@drawable/button_findpathlayout_selectlocationsource"
+                    android:layout_margin="5dp"/>
+            </LinearLayout>
+            <Button
+                android:id="@+id/button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
             <com.naver.maps.map.widget.CompassView
                 android:id="@+id/compass"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"/>
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-
         </LinearLayout>
 
 
