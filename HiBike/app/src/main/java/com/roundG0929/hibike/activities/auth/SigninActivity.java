@@ -38,7 +38,6 @@ public class SigninActivity extends AppCompatActivity {
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         editId = (EditText) findViewById(R.id.edit_id);
         editPwd = (EditText) findViewById(R.id.edit_password);
-        textSignup = (TextView) findViewById(R.id.text_signup);
 
         //유저 아이디 저장
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -77,6 +76,15 @@ public class SigninActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
+            }
+        });
+
+        textSignup = (TextView) findViewById(R.id.text_signup);
+        textSignup.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
+                startActivity(intent);
             }
         });
     }
