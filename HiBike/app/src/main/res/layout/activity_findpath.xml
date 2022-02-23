@@ -114,10 +114,6 @@
                     android:background="@drawable/button_findpathlayout_selectlocationsource"
                     android:layout_margin="5dp"/>
             </LinearLayout>
-            <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
             <com.naver.maps.map.widget.CompassView
                 android:id="@+id/compass"
                 android:layout_width="wrap_content"

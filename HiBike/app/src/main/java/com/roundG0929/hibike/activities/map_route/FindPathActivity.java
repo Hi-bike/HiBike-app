@@ -101,40 +101,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         //각 ui listener
-        Button button = findViewById(R.id.button);
-        button.setText("test");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(trackingflag == false){
-                    trackingflag = true;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (trackingflag){
-                                Location location = fusedLocationSource.getLastLocation();
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startText.setText(location.getLatitude() + ", " + location.getLongitude());
-                                    }
-                                });
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }).start();
-                }
-                else if(trackingflag == true){trackingflag = false;}
-//                Location location = fusedLocationSource.getLastLocation();
-//                EditText editText = findViewById(R.id.startText);
-//                editText.setText("");
-//                editText.append(location.getLatitude() + ", " + location.getLongitude());
-            }
-        });
             //출발, 도착 editText
         startText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
