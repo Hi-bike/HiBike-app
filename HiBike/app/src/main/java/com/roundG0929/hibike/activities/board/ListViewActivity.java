@@ -2,49 +2,52 @@ package com.roundG0929.hibike.activities.board;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.google.gson.Gson;
-
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.stream.JsonReader;
-import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
+import android.widget.Button;
 
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.ApiInterface;
-import com.roundG0929.hibike.api.server.dto.Signin;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-
 public class ListViewActivity extends AppCompatActivity {
+    Button btnNext;
     ApiInterface api;
     private ListView listview ;
     private ListViewAdapter adapter;
     int page = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
-
         adapter = new ListViewAdapter();
+
+        btnNext = (Button) findViewById(R.id.btn_next);
+        btnNext.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                page += 1;
+                getItem(page);
+            }
+        });
+        getItem(page);
+    }
+    public void getItem(int page){
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         GetPost data = new GetPost();
         data.setPage(page);
-
         api.getPost(page).enqueue(new Callback<GetPost>() {
             @Override
             public void onResponse(Call<GetPost> call, Response<GetPost> response) {
@@ -59,14 +62,17 @@ public class ListViewActivity extends AppCompatActivity {
 
                             JsonElement nickname = dataObject.get("nickname");
                             JsonElement title = dataObject.get("title");
+                            JsonElement id = dataObject.get("id");
                             // 리스트뷰 객체 생성 및 Adapter 설정
                             listview = (ListView) findViewById(R.id.list_view);
                             listview.setAdapter(adapter);
                             // 리스트 뷰 아이템 추가.
-                            adapter.addItem(R.drawable.icons_profile,title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                            adapter.addItem(R.drawable.icons_profile,id.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
                         }
                     }
                     catch (Exception e){
+                        Toast toast = Toast.makeText(getApplicationContext(), "마지막 페이지", Toast.LENGTH_LONG);
+                        toast.show();
                     }
 
                 } else {

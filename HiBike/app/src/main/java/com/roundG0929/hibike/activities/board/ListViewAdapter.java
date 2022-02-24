@@ -22,6 +22,7 @@ public class ListViewAdapter extends BaseAdapter {
     private ImageView iconImageView;
     private TextView titleTextView;
     private TextView contentTextView;
+    private TextView idTextView;
 
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>() ;
@@ -57,6 +58,7 @@ public class ListViewAdapter extends BaseAdapter {
         iconImageView = (ImageView) convertView.findViewById(R.id.imageView);
         titleTextView = (TextView) convertView.findViewById(R.id.textView1);
         contentTextView = (TextView) convertView.findViewById(R.id.textView2);
+        idTextView = (TextView) convertView.findViewById(R.id.textView3);
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
         ListViewItem listViewItem = listViewItemList.get(position);
@@ -65,13 +67,14 @@ public class ListViewAdapter extends BaseAdapter {
         titleTextView.setText(listViewItem.getTitle());
         iconImageView.setImageResource(listViewItem.getIcon());
         contentTextView.setText(listViewItem.getContent());
-
+        idTextView.setText(listViewItem.getId());
         //각 아이템의 클릭 이벤트
         LinearLayout cmdArea = (LinearLayout)convertView.findViewById(R.id.cmdArea);
         cmdArea.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Toast.makeText(view.getContext(), listViewItemList.get(pos).getTitle(),Toast.LENGTH_SHORT).show();
+                System.out.println(listViewItemList.get(pos).getId());
+                //Toast.makeText(view.getContext(), listViewItemList.get(pos).getId(),Toast.LENGTH_SHORT).show();
             }
         });
         return convertView;
@@ -90,19 +93,14 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수.
-    public void addItem(int icon, String title, String content) {
+    public void addItem(int icon, String id, String title, String content) {
         ListViewItem item = new ListViewItem();
 
         item.setIcon(icon);
         item.setTitle(title);
         item.setContent(content);
+        item.setId(id);
 
         listViewItemList.add(item);
     }
-
-    // 아이템 데이터 추가를 위한 함수. ( Test 용 )
-//    public void addItem() {
-//        ListViewItem item = new ListViewItem();
-//        listViewItemList.add(item);
-//    }
 }
