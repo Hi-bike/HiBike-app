@@ -95,6 +95,13 @@ public class MapSetting {
 
     }
 
+    public void selectFromMapSet(NaverMap naverMap,LatLng startPoint){
+
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(startPoint);
+        LocationOverlay locationOverlay = naverMap.getLocationOverlay();
+        locationOverlay.setVisible(false);
+    }
+
     //현재위치 가져오기
     public double[] startLocation(Context mContext) {
         double[] latlng = new double[2];
