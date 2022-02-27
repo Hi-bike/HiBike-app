@@ -39,6 +39,8 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.ZoomControlView;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 
@@ -46,6 +48,9 @@ import org.w3c.dom.Text;
 
 import gun0912.tedkeyboardobserver.BaseKeyboardObserver;
 import gun0912.tedkeyboardobserver.TedKeyboardObserver;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class FindPathActivity extends AppCompatActivity implements OnMapReadyCallback {
     //지도, 길찾기 변수(객체)
@@ -63,6 +68,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     //ui 객체
     EditText startText;
     EditText endText;
+    ImageButton startTextCancle;
+    ImageButton endTextCancle;
     ImageButton findButton;
     ImageButton changeButton;
     LinearLayout uiLayout;
@@ -82,6 +89,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         //ui 객체 할당
         startText = findViewById(R.id.startText);
         endText = findViewById(R.id.endText);
+        startTextCancle = findViewById(R.id.startTextCancle);
+        endTextCancle = findViewById(R.id.endTextCancle);
         findButton = findViewById(R.id.findButton);
         changeButton = findViewById(R.id.changeButton);
         uiLayout = findViewById(R.id.uiLayout);
@@ -150,6 +159,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
             //출발, 도착 editText
+        startText.setTextIsSelectable(true);
+        startText.setShowSoftInputOnFocus(false);
+        startText.setLongClickable(false);
         startText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -158,8 +170,20 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }else{
                     selectlayout.setVisibility(View.GONE);
                 }
+
             }
         });
+        startText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(startText.isFocused()){
+                    startText.clearFocus();
+                }
+            }
+        });
+        endText.setTextIsSelectable(true);
+        endText.setShowSoftInputOnFocus(false);
+        endText.setLongClickable(false);
         endText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View view, boolean b) {
@@ -170,6 +194,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         });
+        endText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(endText.isFocused()){
+                    endText.clearFocus();
+                }
+            }
+        });
         new TedKeyboardObserver(this).listen(new BaseKeyboardObserver.OnKeyboardListener() { //키보드 상태변환 리스너(show, hide)
             @Override
             public void onKeyboardChange(boolean isShow) {
@@ -177,6 +209,22 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     startText.clearFocus();
                     endText.clearFocus();
                 }
+            }
+        });
+
+            //start, end 취소 버튼
+        startTextCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startText.setText("");
+                startEndPoint[0] = null;
+            }
+        });
+        endTextCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                endText.setText("");
+                startEndPoint[1] = null;
             }
         });
 
@@ -197,6 +245,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     endText.setText(startEndPoint[1].latitude +", "+startEndPoint[1].longitude);
                 }
 
+                startText.clearFocus();
+                endText.clearFocus();
             }
         });
                 //지도에서 선택
@@ -210,12 +260,18 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 targetPoint.setVisibility(View.VISIBLE);
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(startText.getWindowToken(),0);
+
+                startText.clearFocus();
+                endText.clearFocus();
             }
         });
                 //검색
         fromsearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                startText.clearFocus();
+                endText.clearFocus();
             }
         });
         //fromMapButton 후 위치 결정 버튼
@@ -239,6 +295,17 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
 
+//                new MapRouteApi().getApi(startEndPoint[0],startEndPoint[1]).enqueue(new Callback<GraphhopperResponse>() {
+//                    @Override
+//                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
+//
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
+//
+//                    }
+//                });
             }
         });
 

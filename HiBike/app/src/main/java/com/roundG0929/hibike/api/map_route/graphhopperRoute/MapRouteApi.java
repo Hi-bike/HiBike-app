@@ -34,6 +34,13 @@ public class MapRouteApi {
     MapRouteApiInterface mapRouteApiInterface;
 
 
+    public MapRouteApi() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://graphhopper.com/api/1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        mapRouteApiInterface = retrofit.create(MapRouteApi.MapRouteApiInterface.class);
+    }
     public MapRouteApi(@NonNull LatLng startPoint,@NonNull LatLng endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
