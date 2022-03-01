@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/icons_list" />
+    <item android:drawable="@drawable/icons_back" />
+    <item android:drawable="@drawable/icons_bicycle" />
+    <item android:drawable="@drawable/icons_default_profile" />
+    <item android:drawable="@drawable/icons_edit" />
+    <item android:drawable="@drawable/icons_profile" />
+    <item android:drawable="@drawable/icons_x" />
+    <item android:drawable="@drawable/icons_user2" />
+
+
+</selector>
