@@ -12,21 +12,5 @@
                 android:topRightRadius="3dp"/>
         </shape>
     </item>
-    <!--클릭 시-->
-    <item android:state_pressed="true">
-        <shape>
-            <!--배경 -->
-            <solid android:color="#FF03A9F4"/>
-            <corners
-                android:bottomLeftRadius="3dp"
-                android:bottomRightRadius="3dp"
-                android:topLeftRadius="3dp"
-                android:topRightRadius="3dp"/>
-        </shape>
-    </item>
-
-
-
-
 
 </selector>

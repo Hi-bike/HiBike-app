@@ -9,4 +9,5 @@
     <color name="white">#FFFFFFFF</color>
     <color name="sky">#6CD1FF</color>
     <color name="deepsky">#FF03A9F4</color>
+    <color name="gray">#DDDDDD</color>
 </resources>

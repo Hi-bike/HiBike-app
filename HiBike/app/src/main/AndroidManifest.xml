@@ -30,6 +30,7 @@
 
         <activity
             android:name=".activities.auth.SignupActivity"
+            android:windowSoftInputMode="adjustResize"
             android:exported="false" />
         <activity
             android:name=".activities.auth.BasicProfileActivity"
