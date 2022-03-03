@@ -28,6 +28,7 @@
             android:name=".activities.map_route.FindPathActivity"
             android:exported="false"/>
 
+
         <activity
             android:name=".activities.auth.SignupActivity"
             android:exported="false" />
@@ -40,6 +41,16 @@
             android:exported="false" />
 
         <activity
+            android:name=".activities.board.ListViewActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".activities.board.ViewContentsActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -48,6 +59,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
 
         <service
             android:name="fcm.MyFirebaseMessagingService"
