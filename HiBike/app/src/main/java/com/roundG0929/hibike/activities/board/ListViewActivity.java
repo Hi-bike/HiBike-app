@@ -55,19 +55,20 @@ public class ListViewActivity extends AppCompatActivity {
                     try{
                         for (int i=1; i<=5; i++){
                             String res = response.body().getResult().toString();
+                            System.out.println(res);
                             JsonParser jsonParser = new JsonParser();
-
                             JsonObject jsonObject = (JsonObject) jsonParser.parse(res);
                             JsonObject dataObject = (JsonObject) jsonObject.get(Integer.toString(i));
 
                             JsonElement nickname = dataObject.get("nickname");
                             JsonElement title = dataObject.get("title");
-                            JsonElement id = dataObject.get("id");
+                            JsonElement content = dataObject.get("contents");
+
                             // 리스트뷰 객체 생성 및 Adapter 설정
                             listview = (ListView) findViewById(R.id.list_view);
                             listview.setAdapter(adapter);
                             // 리스트 뷰 아이템 추가.
-                            adapter.addItem(R.drawable.icons_profile,id.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                            adapter.addItem(R.drawable.icons_profile,content.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
                         }
                     }
                     catch (Exception e){

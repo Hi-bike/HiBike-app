@@ -41,6 +41,16 @@
             android:exported="false" />
 
         <activity
+            android:name=".activities.board.ListViewActivity"
+            android:exported="false">
+        </activity>
+
+        <activity
+            android:name=".activities.board.ViewContentsActivity"
+            android:exported="true">
+        </activity>
+
+        <activity
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
@@ -50,10 +60,7 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".activities.board.ListViewActivity"
-            android:exported="true">
-        </activity>
+
 
         <service
             android:name="fcm.MyFirebaseMessagingService"
