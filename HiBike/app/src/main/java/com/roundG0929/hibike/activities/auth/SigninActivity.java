@@ -1,20 +1,19 @@
 package com.roundG0929.hibike.activities.auth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
+import androidx.appcompat.widget.Toolbar;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.Html;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -37,6 +36,7 @@ public class SigninActivity extends AppCompatActivity {
     Button btnSignin;
     EditText editId, editPwd;
     TextView textSignup;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,24 +100,48 @@ public class SigninActivity extends AppCompatActivity {
         btnSignin.setClickable(false);
         btnSignin.setBackgroundColor(Color.parseColor("#DDDDDD"));
 
-        editPwd.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-            }
+        editId.addTextChangedListener(textWatcher);
+        editPwd.addTextChangedListener(textWatcher);
 
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        //회원가입 밑줄
+        textSignup.setPaintFlags(textSignup.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+        ImageView imageView;
+
+        //툴바
+       Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //뒤로가기
+        getSupportActionBar().setDisplayShowTitleEnabled(false); //기본타이틀x
+
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(editable.length() > 0) {
                 btnSignin.setClickable(true);
                 btnSignin.setBackgroundColor(Color.parseColor("#6CD1FF"));
             }
 
-            @Override
-            public void afterTextChanged(Editable editable) {
-            }
-        });
-        //회원가입 밑줄
-        textSignup.setPaintFlags(textSignup.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
-        ImageView imageView;
-    }
-
+        }
+    };
 }

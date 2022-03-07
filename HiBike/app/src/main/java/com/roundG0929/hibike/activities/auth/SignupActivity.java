@@ -1,12 +1,20 @@
 package com.roundG0929.hibike.activities.auth;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.roundG0929.hibike.R;
@@ -70,6 +78,20 @@ public class SignupActivity extends AppCompatActivity {
                 });
             }
         });
+        //내용이 있을 때만 버튼 색 활성화
+        btnSignup.setClickable(false);
+        btnSignup.setBackgroundColor(Color.parseColor("#DDDDDD"));
+
+        etId.addTextChangedListener(textWatcher);
+        etNickname.addTextChangedListener(textWatcher);
+        etPassword.addTextChangedListener(textWatcher);
+        etPasswordCheck.addTextChangedListener(textWatcher);
+
+        //툴바
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //뒤로가기
+        getSupportActionBar().setDisplayShowTitleEnabled(false); //기본타이틀x
     }
     private String nullCheck(){
         if(etId.getText().toString().equals("")){
@@ -85,5 +107,35 @@ public class SignupActivity extends AppCompatActivity {
             return "비밀번호를 확인해주세요";
         }
         return "";
+
+    }
+    private final TextWatcher textWatcher = new TextWatcher() {
+        @Override
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        @Override
+        public void afterTextChanged(Editable editable) {
+            if(editable.length() > 0) {
+                btnSignup.setClickable(true);
+                btnSignup.setBackgroundColor(Color.parseColor("#6CD1FF"));
+            }
+
+        }
+    };
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:{
+                finish();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
