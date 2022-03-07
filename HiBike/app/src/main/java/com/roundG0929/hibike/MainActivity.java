@@ -54,6 +54,7 @@ import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
+import com.roundG0929.hibike.activities.board.ListViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -164,7 +165,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             btnDrivingRecord.setText("주행 기록");
 
             btnPosts = (TextView) findViewById(R.id.btn_posts);
-            btnPosts.setText("게시판");
+            btnPosts.setText("자유게시판");
+
+            btnPosts.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), ListViewActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
                 @Override

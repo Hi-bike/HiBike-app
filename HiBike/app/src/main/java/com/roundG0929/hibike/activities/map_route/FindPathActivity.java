@@ -337,7 +337,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         super.finish();
         overridePendingTransition(0, 0);
     }//onFinish()
-    //------------------------------------------Lifecycle------------------------------------------
+    //Lifecycle
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
