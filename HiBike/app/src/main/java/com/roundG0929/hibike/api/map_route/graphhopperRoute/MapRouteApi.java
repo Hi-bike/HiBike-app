@@ -60,6 +60,8 @@ public class MapRouteApi {
         //DTO클래스로 받기(동적url사용)
         @GET
         Call<GraphhopperResponse> getResponseObject(@Url String url);
+
+
     }
 
     //길찾기url(String)생성

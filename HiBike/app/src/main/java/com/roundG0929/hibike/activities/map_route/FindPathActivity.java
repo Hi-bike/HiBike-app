@@ -2,6 +2,7 @@ package com.roundG0929.hibike.activities.map_route;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
@@ -272,6 +273,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
                 startText.clearFocus();
                 endText.clearFocus();
+                Intent searchPlaceintent = new Intent(getApplicationContext(),SearchPlaceActivity.class);
+                startActivity(searchPlaceintent);
             }
         });
         //fromMapButton 후 위치 결정 버튼
