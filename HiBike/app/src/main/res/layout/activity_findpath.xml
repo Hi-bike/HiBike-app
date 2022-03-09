@@ -63,7 +63,7 @@
                                 android:hint="출발"
                                 android:inputType="text"
                                 android:maxLines="1"
-                                android:theme="@style/routeEditText"/>
+                                android:theme="@style/routeEditText" />
                             <ImageButton
                                 android:id="@+id/startTextCancle"
                                 android:layout_width="35dp"
@@ -72,7 +72,7 @@
                                 android:layout_gravity="right|center"
                                 android:src="@drawable/icons_close"
                                 android:scaleType="fitCenter"
-                                android:background="#00000000"/>
+                                android:background="#00000000" />
                         </FrameLayout>
 
                         <FrameLayout

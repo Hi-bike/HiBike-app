@@ -53,6 +53,8 @@ public class MapRouteApi {
 
     //retrofit 인터페이스
     public interface MapRouteApiInterface {
+        //37.385543484360994, 126.63869459743177
+        //37.37206394611004, 126.63389587406694
         //json객체 그대로 받기
         @GET("route?point={startpoint}&point={endpoint}&profile=bike&locale=kr&calc_points=true&points_encoded=false&key=8543250c-bd7b-4aa7-a013-ad631125b667")
         Call<Object> getdata(@Path("startpoint") String startpoint,@Path("endpoint") String endpoint);

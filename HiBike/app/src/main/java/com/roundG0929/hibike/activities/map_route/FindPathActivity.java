@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,10 +43,14 @@ import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
+import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 
 import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import gun0912.tedkeyboardobserver.BaseKeyboardObserver;
 import gun0912.tedkeyboardobserver.TedKeyboardObserver;
@@ -298,17 +303,32 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
 
-//                new MapRouteApi().getApi(startEndPoint[0],startEndPoint[1]).enqueue(new Callback<GraphhopperResponse>() {
-//                    @Override
-//                    public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
-//
-//                    }
-//                });
+                if(startEndPoint[0] == null || startEndPoint[1] == null){
+                    Toast.makeText(getApplicationContext(),"경로 지정이 필요합니다.",Toast.LENGTH_SHORT).show();
+                }else{
+                    new MapRouteApi().getApi(startEndPoint[0],startEndPoint[1]).enqueue(new Callback<GraphhopperResponse>() {
+                        @Override
+                        public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
+                            GraphhopperResponse graphhopperResponse = new GraphhopperResponse();
+                            graphhopperResponse = response.body();
+                            ArrayList<ArrayList<Double>> pointList = new ArrayList<>();
+                            pointList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
+                            List<LatLng> coordsForDrawLine = new ArrayList<>();
+
+                            for(int i = 0;i<pointList.size();i++){
+                                coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
+                            }
+
+                            AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
+                            mapFragment.getMapAsync(afterRouteMap);
+                        }
+
+                        @Override
+                        public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
+
+                        }
+                    });
+                }
             }
         });
 
