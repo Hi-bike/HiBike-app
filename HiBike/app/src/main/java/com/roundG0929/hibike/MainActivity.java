@@ -18,6 +18,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
@@ -92,7 +93,10 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private DrawerLayout drawerLayout;
     private View drawerView;
 
-
+    //뒤로가기 두번 누를시, 앱 종료
+    private long backKeyPressedTime = 0;
+    Toast toast;
+    boolean isDrawerOpened;
 
 
     //권한 요청 후 승인, 거부 리스너
@@ -131,6 +135,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public void onClick(View view) {
                 drawerLayout.openDrawer(drawerView);
+                isDrawerOpened = true;
             }
         });
 
@@ -211,10 +216,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         //맵객체 설정
         mapFragment.getMapAsync(this::onMapReady);
 
-
-
-
-
         //Dynamic route Test
         Button button = findViewById(R.id.routeButton);
         button.setOnClickListener(new View.OnClickListener() {
@@ -227,9 +228,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
             }
         });
-
-
-
 
     }//onCreate()
 
@@ -260,6 +258,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         public void onDrawerStateChanged(int newState) {}
     };
 
+    @Override
+    public void onBackPressed() {
+        if(isDrawerOpened){
+            drawerLayout.closeDrawer(Gravity.LEFT);
+            isDrawerOpened = false;
+        }
+        else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+            backKeyPressedTime = System.currentTimeMillis();
+            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+            toast.show();
+            return;
+        }
+        else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+            finish();
+            toast.cancel();
+        }
+    }
 
     //네이버맵 설정메소드
     @Override
