@@ -147,6 +147,7 @@ public class BasicProfileActivity extends Activity {
                 @Override
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
                     Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(intent);
                 }
 
@@ -196,6 +197,7 @@ public class BasicProfileActivity extends Activity {
         editor.remove("id");
         editor.commit();
         Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }
 
