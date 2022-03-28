@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ import com.naver.maps.map.CameraPosition;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.ZoomControlView;
@@ -318,14 +320,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
                             }
-
-                            AfterRouteMap afterRouteMap = new AfterRouteMap(getApplicationContext(),fusedLocationSource,graphhopperResponse,coordsForDrawLine);
-                            mapFragment.getMapAsync(afterRouteMap);
+                            //경로그리기
+                            PathOverlay pathOverlay = new PathOverlay();
+                            pathOverlay.setCoords(coordsForDrawLine);
+                            pathOverlay.setColor(Color.BLUE);
+                            pathOverlay.setMap(naverMapObj);
                         }
-
                         @Override
                         public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
-
+                            Toast.makeText(getApplicationContext(),"불러오기 실패",Toast.LENGTH_SHORT).show();
                         }
                     });
                 }
