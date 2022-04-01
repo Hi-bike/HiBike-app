@@ -24,7 +24,8 @@
                 android:layout_gravity="center"
                 android:text="회원가입"
                 android:textColor="@color/black"
-                android:textSize="20sp">
+                android:textSize="20sp"
+                android:textStyle="bold">
 
             </TextView>
 

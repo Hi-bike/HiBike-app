@@ -78,14 +78,6 @@ public class SignupActivity extends AppCompatActivity {
                 });
             }
         });
-        //내용이 있을 때만 버튼 색 활성화
-        btnSignup.setClickable(false);
-        btnSignup.setBackgroundColor(Color.parseColor("#DDDDDD"));
-
-        etId.addTextChangedListener(textWatcher);
-        etNickname.addTextChangedListener(textWatcher);
-        etPassword.addTextChangedListener(textWatcher);
-        etPasswordCheck.addTextChangedListener(textWatcher);
 
         //툴바
         Toolbar toolbar = findViewById(R.id.toolbar);
@@ -109,25 +101,7 @@ public class SignupActivity extends AppCompatActivity {
         return "";
 
     }
-    private final TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            if(editable.length() > 0) {
-                btnSignup.setClickable(true);
-                btnSignup.setBackgroundColor(Color.parseColor("#6CD1FF"));
-            }
-
-        }
-    };
-
+    //툴바 뒤로가기
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){

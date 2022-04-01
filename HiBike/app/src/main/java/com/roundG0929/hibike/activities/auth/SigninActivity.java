@@ -97,13 +97,6 @@ public class SigninActivity extends AppCompatActivity {
             }
         });
 
-        //내용이 있을 때만 버튼 색 활성화
-        btnSignin.setClickable(false);
-        btnSignin.setBackgroundColor(Color.parseColor("#DDDDDD"));
-
-        editId.addTextChangedListener(textWatcher);
-        editPwd.addTextChangedListener(textWatcher);
-
         //회원가입 밑줄
         textSignup.setPaintFlags(textSignup.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
         ImageView imageView;
@@ -115,7 +108,7 @@ public class SigninActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(false); //기본타이틀x
 
     }
-
+    //툴바 뒤로가기
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()){
@@ -127,22 +120,4 @@ public class SigninActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private final TextWatcher textWatcher = new TextWatcher() {
-        @Override
-        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-        }
-
-        @Override
-        public void afterTextChanged(Editable editable) {
-            if(editable.length() > 0) {
-                btnSignin.setClickable(true);
-                btnSignin.setBackgroundColor(Color.parseColor("#6CD1FF"));
-            }
-
-        }
-    };
 }

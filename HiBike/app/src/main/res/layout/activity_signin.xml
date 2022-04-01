@@ -25,7 +25,8 @@
                 android:layout_gravity="center"
                 android:text="로그인"
                 android:textColor="@color/black"
-                android:textSize="20sp">
+                android:textSize="20sp"
+                android:textStyle="bold">
 
             </TextView>
 
