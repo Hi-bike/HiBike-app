@@ -1,13 +1,17 @@
 package com.roundG0929.hibike.api.map_route.kakaoLocal.searchPlaceDto;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Meta {
     @SerializedName("pageable_count")
+    @Expose
     int pageable_count;
     @SerializedName("total_count")
+    @Expose
     int total_count;
     @SerializedName("is_end")
+    @Expose
     boolean is_end;
 
     public int getPageable_count() {

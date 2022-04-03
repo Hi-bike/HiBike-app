@@ -60,6 +60,7 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_searchplace.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/item_searchplace.xml" value="0.396875" />
       </map>
     </option>
   </component>

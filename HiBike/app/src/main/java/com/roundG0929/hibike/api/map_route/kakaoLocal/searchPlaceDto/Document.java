@@ -1,47 +1,54 @@
 package com.roundG0929.hibike.api.map_route.kakaoLocal.searchPlaceDto;
 
+import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 public class Document {
-    @SerializedName("placename")
-    String placename;
+    @SerializedName("place_name")
+    @Expose
+    String place_name;
     @SerializedName("distance")
-    int distance;
+    @Expose
+    String distance;
     @SerializedName("place_url")
+    @Expose
     String place_url;
     @SerializedName("category_name")
+    @Expose
     String category_name;
     @SerializedName("address_name")
+    @Expose
     String address_name;
     @SerializedName("road_address_name")
+    @Expose
     String road_address_name;
     @SerializedName("id")
+    @Expose
     String id;
     @SerializedName("phone")
+    @Expose
     String phone;
     @SerializedName("category_group_code")
+    @Expose
     String category_group_code;
     @SerializedName("category_group_name")
+    @Expose
     String category_group_name;
     @SerializedName("x")
-    double x;
+    @Expose
+    String x;
     @SerializedName("y")
-    double y;
+    @Expose
+    String y;
 
 
-    public String getPlacename() {
-        return placename;
-    }
 
-    public void setPlacename(String placename) {
-        this.placename = placename;
-    }
 
-    public int getDistance() {
+    public String getDistance() {
         return distance;
     }
 
-    public void setDistance(int distance) {
+    public void setDistance(String distance) {
         this.distance = distance;
     }
 
@@ -109,19 +116,27 @@ public class Document {
         this.category_group_name = category_group_name;
     }
 
-    public double getX() {
+    public String getX() {
         return x;
     }
 
-    public void setX(double x) {
+    public void setX(String x) {
         this.x = x;
     }
 
-    public double getY() {
+    public String getY() {
         return y;
     }
 
-    public void setY(double y) {
+    public void setY(String y) {
         this.y = y;
+    }
+
+    public String getPlace_name() {
+        return place_name;
+    }
+
+    public void setPlace_name(String place_name) {
+        this.place_name = place_name;
     }
 }
