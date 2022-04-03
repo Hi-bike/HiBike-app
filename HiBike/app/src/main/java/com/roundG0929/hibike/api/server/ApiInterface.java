@@ -7,6 +7,7 @@ import com.roundG0929.hibike.api.server.dto.ProfileImage;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.dto.Signout;
 import com.roundG0929.hibike.api.server.dto.Signup;
+import com.roundG0929.hibike.api.server.dto.SendPost;
 import java.util.List;
 
 import okhttp3.MultipartBody;
@@ -44,4 +45,7 @@ public interface ApiInterface {
     @GET("api/board/posts/{page}")
     //Call<Object> getdata();
     Call<GetPost> getPost (@Path("page") int page);
+
+    @POST("api/board/post")
+    Call<SendPost> sendPost(@Body SendPost data);
 }

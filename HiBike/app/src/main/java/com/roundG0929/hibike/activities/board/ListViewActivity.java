@@ -7,6 +7,9 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.roundG0929.hibike.R;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
@@ -14,7 +17,9 @@ import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Button;
 
+import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.ApiInterface;
 
@@ -24,6 +29,7 @@ import retrofit2.Response;
 
 public class ListViewActivity extends AppCompatActivity {
     Button btnNext;
+    Button btnPost;
     ApiInterface api;
     private ListView listview ;
     private ListViewAdapter adapter;
@@ -33,6 +39,15 @@ public class ListViewActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
         adapter = new ListViewAdapter();
+
+        btnPost = (Button) findViewById(R.id.btn_post);
+        btnPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), WritePostActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnNext = (Button) findViewById(R.id.btn_next);
         btnNext.setOnClickListener(new View.OnClickListener() {
@@ -57,7 +72,7 @@ public class ListViewActivity extends AppCompatActivity {
                             String res = response.body().getResult().toString();
                             System.out.println(res);
                             JsonParser jsonParser = new JsonParser();
-                            JsonObject jsonObject = (JsonObject) jsonParser.parse(res);
+                            JsonObject jsonObject = (JsonObject) jsonParser.parse(res.replaceAll("\\s",""));
                             JsonObject dataObject = (JsonObject) jsonObject.get(Integer.toString(i));
 
                             JsonElement nickname = dataObject.get("nickname");
@@ -68,7 +83,7 @@ public class ListViewActivity extends AppCompatActivity {
                             listview = (ListView) findViewById(R.id.list_view);
                             listview.setAdapter(adapter);
                             // 리스트 뷰 아이템 추가.
-                            adapter.addItem(R.drawable.icons_profile,content.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                            adapter.addItem(R.drawable.icons_user2,content.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
                         }
                     }
                     catch (Exception e){
