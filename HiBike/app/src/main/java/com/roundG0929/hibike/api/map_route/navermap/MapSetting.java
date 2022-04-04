@@ -123,7 +123,7 @@ public class MapSetting {
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }else{
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Toast.makeText(mContext, "use gps", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(mContext, "use gps", Toast.LENGTH_SHORT).show();
             }
 
             if(location != null){

@@ -37,13 +37,16 @@ public class SearchPlaceApi {
     }
     //retrofit 인터페이스
     public interface SearchPlaceApiInterface {
+        //raw 값 받기
         @GET("v2/local/search/keyword.json")
         Call<Object> searchPlaceKeywordRaw(@Header("Authorization") String key,
                                         @Query("query")String keyword);
-
+        //KakaoLocalSearch(DTO) 객체로 받기
         @GET("v2/local/search/keyword.json")
         Call<KakaoLocalSearch> searchPlaceKeyword(@Header("Authorization") String key,
-                                                  @Query("query")String keyword);
+                                                  @Query("query")String keyword,
+                                                  @Query("x")String longitude,
+                                                  @Query("y")String latitude);
 
     }
 
@@ -54,8 +57,12 @@ public class SearchPlaceApi {
 
         return  responseCallRaw;
     }
-    public Call<KakaoLocalSearch> getApi(){
-        Call<KakaoLocalSearch> responseCall = searchPlaceApiInterface.searchPlaceKeyword(apikey,apikeyword);
+
+    //longitude 경도 (x좌표라 생각 0~180), latitude 위도 (y좌표라 생각 0~90)
+    public Call<KakaoLocalSearch> getApi(String keyword,String longitude,String latitude){
+        this.apikeyword = keyword;
+
+        Call<KakaoLocalSearch> responseCall = searchPlaceApiInterface.searchPlaceKeyword(apikey,apikeyword,longitude,latitude);
 
         return responseCall;
     }

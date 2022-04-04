@@ -19,6 +19,10 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -278,10 +282,23 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             @Override
             public void onClick(View view) {
 
+
+                Intent searchPlaceintent = new Intent(getApplicationContext(),SearchPlaceActivity.class);
+                Location location = fusedLocationSource.getLastLocation();
+                searchPlaceintent.putExtra("longitude",location.getLongitude());
+                searchPlaceintent.putExtra("latitude",location.getLatitude());
+
+                //0 이면 출발(start), 1 이면 도착(end)
+                if(startText.isFocused()){
+                    searchPlaceintent.putExtra("startOrend",0);
+                }else if(endText.isFocused()){
+                    searchPlaceintent.putExtra("startOrend",1);
+                }
+
                 startText.clearFocus();
                 endText.clearFocus();
-                Intent searchPlaceintent = new Intent(getApplicationContext(),SearchPlaceActivity.class);
-                startActivity(searchPlaceintent);
+
+                searchPlaceForResult.launch(searchPlaceintent);
             }
         });
         //fromMapButton 후 위치 결정 버튼
@@ -364,6 +381,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         overridePendingTransition(0, 0);
     }//onFinish()
     //Lifecycle
+    //Lifecycle
+
+
 
     @Override
     public void onMapReady(@NonNull NaverMap naverMap) {
@@ -400,6 +420,32 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             endText.setText(latlngString);
         }
     }
+
+    ActivityResultLauncher<Intent> searchPlaceForResult = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if(result.getResultCode() == 101){
+                        Intent intent = result.getData();
+                        int startOrend = intent.getIntExtra("startOrend",-1);
+                        LatLng searchplaceLatlng = new LatLng(Double.parseDouble(intent.getStringExtra("y")),Double.parseDouble(intent.getStringExtra("x")));
+                        String place_name = intent.getStringExtra("place_name");
+                        Toast.makeText(getApplicationContext(),place_name,Toast.LENGTH_SHORT).show();
+                        if(startOrend == 0){
+                            startEndPoint[0] = searchplaceLatlng;
+                            startText.setText(searchplaceLatlng.latitude + ", " + searchplaceLatlng.longitude);
+
+                        }else if(startOrend == 1){
+                            startEndPoint[1] = searchplaceLatlng;
+                            endText.setText(searchplaceLatlng.latitude + ", " + searchplaceLatlng.longitude);
+                        }else{
+                            Toast.makeText(getApplicationContext(),"검색 위치 불러오기 오류입니다.",Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }
+            }
+    );
 
 //    //EditText 외부 터치시 키보드 숨기기
 //    @Override
