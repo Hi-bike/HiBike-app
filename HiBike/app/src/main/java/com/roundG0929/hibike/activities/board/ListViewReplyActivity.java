@@ -13,59 +13,43 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Button;
 
-import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.api.server.RetrofitClient;
-import com.roundG0929.hibike.api.server.dto.BasicProfile;
-import com.roundG0929.hibike.api.server.dto.GetPost;
+import com.roundG0929.hibike.api.server.dto.GetReply;
 import com.roundG0929.hibike.api.server.ApiInterface;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class ListViewActivity extends AppCompatActivity {
-    Button btnNext;
-    Button btnPost;
+public class ListViewReplyActivity extends AppCompatActivity {
+    Button btnSend;
+    EditText editReply;
     ApiInterface api;
     private ListView listview ;
-    private ListViewAdapter adapter;
+    private ListViewReplyAdapter adapter;
     int page = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_view);
-        adapter = new ListViewAdapter();
+        setContentView(R.layout.activity_reply_list_view);
 
-        btnPost = (Button) findViewById(R.id.btn_post);
-        btnPost.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), WritePostActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        btnNext = (Button) findViewById(R.id.btn_next);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                page += 1;
-                getItem(page);
-            }
-        });
+        editReply = (EditText) findViewById(R.id.edit_reply);
+        adapter = new ListViewReplyAdapter();
         getItem(page);
     }
     public void getItem(int page){
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
-        GetPost data = new GetPost();
+        GetReply data = new GetReply();
         data.setPage(page);
-        api.getPost(page).enqueue(new Callback<GetPost>() {
+        data.setPost_id(1);
+        api.getReply(page,1).enqueue(new Callback<GetReply>() {
             @Override
-            public void onResponse(Call<GetPost> call, Response<GetPost> response) {
+            public void onResponse(Call<GetReply> call, Response<GetReply> response) {
                 if (response.isSuccessful()) {
                     try{
                         for (int i=1; i<=5; i++){
@@ -76,15 +60,14 @@ public class ListViewActivity extends AppCompatActivity {
                             JsonObject dataObject = (JsonObject) jsonObject.get(Integer.toString(i));
 
                             JsonElement nickname = dataObject.get("nickname");
-                            JsonElement title = dataObject.get("title");
                             JsonElement content = dataObject.get("contents");
-                            JsonElement id = dataObject.get("id");
-                            System.out.println(id);
+
                             // 리스트뷰 객체 생성 및 Adapter 설정
                             listview = (ListView) findViewById(R.id.list_view);
                             listview.setAdapter(adapter);
                             // 리스트 뷰 아이템 추가.
-                            adapter.addItem(R.drawable.icons_user2,content.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                            System.out.println(nickname);
+                            adapter.addItem(R.drawable.icons_user2,content.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
                         }
                     }
                     catch (Exception e){
@@ -100,7 +83,7 @@ public class ListViewActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<GetPost> call, Throwable t) {
+            public void onFailure(Call<GetReply> call, Throwable t) {
                 //통신 실패
                 Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
             }

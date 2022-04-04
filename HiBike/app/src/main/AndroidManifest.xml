@@ -51,6 +51,12 @@
         </activity>
 
         <activity
+            android:name=".activities.board.ListViewReplyActivity"
+            android:exported="true"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity
             android:name=".activities.board.WritePostActivity"
             android:exported="true">
         </activity>
