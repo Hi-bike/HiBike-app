@@ -79,6 +79,7 @@ public class ListViewAdapter extends BaseAdapter {
                 Bundle bundle = new Bundle();
                 bundle.putString("Title", listViewItem.getTitle());
                 bundle.putString("Content", listViewItem.getContent());
+                bundle.putInt("post_id", listViewItem.getPostId());
                 intent.putExtras(bundle);
                 context.startActivity(intent);
             }
@@ -99,14 +100,14 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수.
-    public void addItem(int icon, String content, String title, String nickname) {
+    public void addItem(int icon, String content, String title, String nickname, int post_id) {
         ListViewItem item = new ListViewItem();
 
         item.setIcon(icon);
         item.setTitle(title);
         item.setContent(content);
         item.setId(nickname);
-
+        item.setPostId(post_id);
         listViewItemList.add(item);
     }
 }

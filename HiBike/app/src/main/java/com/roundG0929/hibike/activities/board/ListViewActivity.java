@@ -22,6 +22,7 @@ import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.ApiInterface;
+import com.roundG0929.hibike.api.server.dto.GetPostContent;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -62,6 +63,7 @@ public class ListViewActivity extends AppCompatActivity {
     public void getItem(int page){
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         GetPost data = new GetPost();
+        GetPostContent data2 = new GetPostContent();
         data.setPage(page);
         api.getPost(page).enqueue(new Callback<GetPost>() {
             @Override
@@ -70,26 +72,51 @@ public class ListViewActivity extends AppCompatActivity {
                     try{
                         for (int i=1; i<=5; i++){
                             String res = response.body().getResult().toString();
-                            System.out.println(res);
+                            //System.out.println(res);
                             JsonParser jsonParser = new JsonParser();
                             JsonObject jsonObject = (JsonObject) jsonParser.parse(res.replaceAll("\\s",""));
                             JsonObject dataObject = (JsonObject) jsonObject.get(Integer.toString(i));
-
-                            JsonElement nickname = dataObject.get("nickname");
-                            JsonElement title = dataObject.get("title");
-                            JsonElement content = dataObject.get("contents");
                             JsonElement id = dataObject.get("id");
-                            System.out.println(id);
-                            // 리스트뷰 객체 생성 및 Adapter 설정
-                            listview = (ListView) findViewById(R.id.list_view);
-                            listview.setAdapter(adapter);
-                            // 리스트 뷰 아이템 추가.
-                            adapter.addItem(R.drawable.icons_user2,content.toString(),title.toString().replaceAll("\\\"",""),nickname.toString().replaceAll("\\\"",""));
+                            String str_id = id.toString();
+                            str_id = str_id.replaceAll(".0","");
+
+                            int post_id = Integer.parseInt(str_id);
+                            data2.setPost_id(post_id);
+                            api.getPostContent(post_id).enqueue(new Callback<GetPostContent>() {
+                                @Override
+                                public void onResponse(Call<GetPostContent> call, Response<GetPostContent> response) {
+                                    if (response.isSuccessful()) {
+                                        try {
+                                            String title = response.body().getTitle().toString();
+                                            String content = response.body().getContents().toString();
+                                            String nickname = response.body().getNickname().toString();
+
+                                            // 리스트뷰 객체 생성 및 Adapter 설정
+                                            listview = (ListView) findViewById(R.id.list_view);
+                                            listview.setAdapter(adapter);
+                                            // 리스트 뷰 아이템 추가.
+                                            adapter.addItem(R.drawable.icons_user2,content,title,nickname,post_id);
+
+                                        } catch (Exception e) {
+                                            Toast toast = Toast.makeText(getApplicationContext(), "Error", Toast.LENGTH_LONG);
+                                            toast.show();
+                                        }
+                                    }
+                                    else {
+                                        Toast toast = Toast.makeText(getApplicationContext(), "실패 (" + response.message() + ")", Toast.LENGTH_LONG);
+                                        toast.setGravity(Gravity.TOP, 0, 0);
+                                        toast.show();
+                                    }
+                                }
+                                @Override
+                                public void onFailure(Call<GetPostContent> call, Throwable t) {
+                                    //통신 실패
+                                    Toast.makeText(getApplicationContext(), t.toString(), Toast.LENGTH_LONG).show();
+                                }
+                            });
                         }
                     }
                     catch (Exception e){
-                        Toast toast = Toast.makeText(getApplicationContext(), "마지막 페이지", Toast.LENGTH_LONG);
-                        toast.show();
                     }
 
                 } else {

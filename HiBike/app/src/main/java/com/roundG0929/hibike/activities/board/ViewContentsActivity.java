@@ -21,21 +21,27 @@ public class ViewContentsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_view_board);
         Intent intent = getIntent();
         Bundle bundle = intent.getExtras();
+        int post_id = 0;
         if (bundle != null) {
             String title = bundle.getString("Title");
             String content = bundle.getString("Content");
             content = content.replaceAll("\\\"", "");
+            post_id = bundle.getInt("post_id");
             titleTextView = (TextView) findViewById(R.id.bdTitle);
             contentsTextView = (TextView) findViewById(R.id.bdContents);
             titleTextView.setText(title);
             contentsTextView.setText(content);
         }
         btnViewReply = (Button) findViewById(R.id.btn_view_reply);
+        int finalPost_id = post_id;
         btnViewReply.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ListViewReplyActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                Bundle bundle = new Bundle();
+                bundle.putInt("post_id", finalPost_id);
+                intent.putExtras(bundle);
                 startActivity(intent);
             }
         });
