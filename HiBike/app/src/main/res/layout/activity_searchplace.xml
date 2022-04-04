@@ -17,6 +17,7 @@
         android:text="call" />
 
     <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/placeListRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
