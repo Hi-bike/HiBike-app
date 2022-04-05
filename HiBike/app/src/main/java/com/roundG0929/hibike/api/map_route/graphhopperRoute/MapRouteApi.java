@@ -34,6 +34,13 @@ public class MapRouteApi {
     MapRouteApiInterface mapRouteApiInterface;
 
 
+    public MapRouteApi() {
+        retrofit = new Retrofit.Builder()
+                .baseUrl("https://graphhopper.com/api/1/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        mapRouteApiInterface = retrofit.create(MapRouteApi.MapRouteApiInterface.class);
+    }
     public MapRouteApi(@NonNull LatLng startPoint,@NonNull LatLng endPoint) {
         this.startPoint = startPoint;
         this.endPoint = endPoint;
@@ -46,6 +53,8 @@ public class MapRouteApi {
 
     //retrofit 인터페이스
     public interface MapRouteApiInterface {
+        //37.385543484360994, 126.63869459743177
+        //37.37206394611004, 126.63389587406694
         //json객체 그대로 받기
         @GET("route?point={startpoint}&point={endpoint}&profile=bike&locale=kr&calc_points=true&points_encoded=false&key=8543250c-bd7b-4aa7-a013-ad631125b667")
         Call<Object> getdata(@Path("startpoint") String startpoint,@Path("endpoint") String endpoint);
@@ -53,6 +62,8 @@ public class MapRouteApi {
         //DTO클래스로 받기(동적url사용)
         @GET
         Call<GraphhopperResponse> getResponseObject(@Url String url);
+
+
     }
 
     //길찾기url(String)생성
