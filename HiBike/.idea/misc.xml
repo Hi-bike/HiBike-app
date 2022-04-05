@@ -42,16 +42,14 @@
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/fragment_profile.xml" value="0.20742753623188406" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/bottom_menu.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/botton_menu.xml" value="0.2682291666666667" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.13072916666666667" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.19895833333333332" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.24739583333333334" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.19895833333333332" />
-        <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_reply_list_view.xml" value="0.209375" />
-        <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_sendpost.xml" value="0.13802083333333334" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.19895833333333332" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signup.xml" value="0.19895833333333332" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_view_board.xml" value="0.14606741573033707" />
-        <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.1" />
-        <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_reply.xml" value="0.24947916666666667" />
+        <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.19895833333333332" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/imagebtn_states.xml" value="0.488" />
@@ -59,10 +57,18 @@
         <entry key="app/src/main/res/layout/activity_basic_profile.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_drawer.xml" value="0.25" />
         <entry key="app/src/main/res/layout/activity_findpath.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/activity_list_view.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_reply_list_view.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/activity_riding.xml" value="0.375" />
         <entry key="app/src/main/res/layout/activity_searchplace.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/activity_sendpost.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_signup.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/activity_view_board.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/item_searchplace.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/list_item.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/list_item_reply.xml" value="0.396875" />
       </map>
     </option>
   </component>
