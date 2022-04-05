@@ -30,6 +30,9 @@
         <activity
             android:name=".activities.map_route.SearchPlaceActivity"
             android:exported="false"/>
+        <activity
+            android:name=".activities.map_route.RidingActivity"
+            android:exported="false"/>
 
 
         <activity
