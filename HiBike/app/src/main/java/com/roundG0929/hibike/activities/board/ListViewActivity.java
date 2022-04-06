@@ -1,6 +1,7 @@
 package com.roundG0929.hibike.activities.board;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -56,10 +57,12 @@ public class ListViewActivity extends AppCompatActivity {
             public void onClick(View view) {
                 page += 1;
                 getItem(page);
+
             }
         });
         getItem(page);
     }
+
     public void getItem(int page){
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         GetPost data = new GetPost();
@@ -133,4 +136,6 @@ public class ListViewActivity extends AppCompatActivity {
             }
         });
     }
+
+
 }

@@ -2,17 +2,11 @@ package com.roundG0929.hibike.activities.board;
 
 import android.content.Intent;
 import android.os.Bundle;
-<<<<<<< HEAD
-import android.view.MenuItem;
-=======
 import android.view.View;
 import android.widget.Button;
->>>>>>> 15f7d44d084df8f74ea4482e55756faf7f8bfa9b
 import android.widget.TextView;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
 
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.dto.SendPost;
@@ -38,13 +32,6 @@ public class ViewContentsActivity extends AppCompatActivity {
             titleTextView.setText(title);
             contentsTextView.setText(content);
         }
-<<<<<<< HEAD
-        //툴바
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true); //뒤로가기
-        getSupportActionBar().setDisplayShowTitleEnabled(false); //기본타이틀x
-
         btnViewReply = (Button) findViewById(R.id.btn_view_reply);
         int finalPost_id = post_id;
         btnViewReply.setOnClickListener(new View.OnClickListener() {
@@ -58,19 +45,5 @@ public class ViewContentsActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
->>>>>>> 15f7d44d084df8f74ea4482e55756faf7f8bfa9b
     }
-    //툴바 뒤로가기
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{
-                finish();
-                return true;
-            }
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-
 }

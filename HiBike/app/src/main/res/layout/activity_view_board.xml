@@ -7,6 +7,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="center|top"
         android:orientation="vertical">
 
         <androidx.appcompat.widget.Toolbar
@@ -33,19 +34,14 @@
             android:id="@+id/bdTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-<<<<<<< HEAD
+            android:layout_marginTop="5dp"
             android:layout_marginBottom="10dp"
-=======
-            android:layout_marginTop="100dp"
-            android:layout_marginBottom="20dp"
->>>>>>> 15f7d44d084df8f74ea4482e55756faf7f8bfa9b
             android:gravity="center_horizontal"
             android:text="제목"
             android:textAlignment="center"
             android:textColor="#000000"
             android:textSize="25dp"
             android:textStyle="bold" />
-<<<<<<< HEAD
 
         <View
             android:id="@+id/View"
@@ -54,22 +50,11 @@
             android:layout_marginBottom="20dp"
             android:background="#DDDDDD" />
 
-=======
-        <View
-            android:background="#50bcdf"
-            android:layout_width="match_parent"
-            android:layout_height="2px" />
->>>>>>> 15f7d44d084df8f74ea4482e55756faf7f8bfa9b
         <TextView
             android:id="@+id/bdContents"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-<<<<<<< HEAD
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-=======
-            android:layout_marginTop="20dp"
->>>>>>> 15f7d44d084df8f74ea4482e55756faf7f8bfa9b
+            android:layout_height="match_parent"
+            android:layout_weight="4"
             android:gravity="center_horizontal"
             android:text="내용"
             android:textAlignment="center"
@@ -78,16 +63,13 @@
 
         <Button
             android:id="@+id/btn_view_reply"
-            android:background='@drawable/round_button'
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="125dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginTop="350dp"
+            android:background='@drawable/round_button'
             android:text="댓글 보기"
-            android:textSize="13sp"
             android:textColor="#ffffff"
-            android:textStyle="bold"/>
+            android:textSize="13sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
 </FrameLayout>
