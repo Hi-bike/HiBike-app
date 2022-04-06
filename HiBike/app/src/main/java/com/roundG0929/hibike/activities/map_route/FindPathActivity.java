@@ -72,7 +72,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     private FusedLocationProviderClient fusedLocationProviderClient;
     boolean trackingflag = false;  //위치추적flag
-    Handler handler=new Handler();
+    Handler     handler=new Handler();
     MapSetting mapSetting = new MapSetting();
     LatLng[] startEndPoint = new LatLng[2]; //0 start, 1 end
     int startOrendFlag = -1; //0 start, 1 end
