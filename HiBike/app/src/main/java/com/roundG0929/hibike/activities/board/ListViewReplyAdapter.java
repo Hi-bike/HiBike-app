@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 
 
-public class ListViewAdapter extends BaseAdapter {
+public class ListViewReplyAdapter extends BaseAdapter {
 
     private ImageView iconImageView;
     private TextView titleTextView;
@@ -30,8 +30,7 @@ public class ListViewAdapter extends BaseAdapter {
     private ArrayList<ListViewItem> listViewItemList = new ArrayList<ListViewItem>() ;
 
     // ListViewAdapter의 생성자
-    public ListViewAdapter() {
-
+    public ListViewReplyAdapter() {
     }
 
     // Adapter에 사용되는 데이터의 개수를 리턴. : 필수 구현
@@ -53,12 +52,12 @@ public class ListViewAdapter extends BaseAdapter {
         // "listview_item" Layout을 inflate하여 convertView 참조 획득.
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.list_item, parent, false);
+            convertView = inflater.inflate(R.layout.list_item_reply, parent, false);
         }
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
         iconImageView = (ImageView) convertView.findViewById(R.id.imageView);
-        titleTextView = (TextView) convertView.findViewById(R.id.textView1);
+        contentTextView = (TextView) convertView.findViewById(R.id.textView1);
         nicknameTextView = (TextView) convertView.findViewById(R.id.textView2);
         //contentTextView = (TextView) convertView.findViewById(R.id.textView3);
 
@@ -66,24 +65,12 @@ public class ListViewAdapter extends BaseAdapter {
         ListViewItem listViewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영 ( Test 중 )
-        titleTextView.setText(listViewItem.getTitle());
+        contentTextView.setText(listViewItem.getContent());
         iconImageView.setImageResource(listViewItem.getIcon());
         //contentTextView.setText(listViewItem.getContent());
         nicknameTextView.setText(listViewItem.getNickname());
         //각 아이템의 클릭 이벤트
         LinearLayout cmdArea = (LinearLayout)convertView.findViewById(R.id.cmdArea);
-        cmdArea.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(view.getContext(), ViewContentsActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("Title", listViewItem.getTitle());
-                bundle.putString("Content", listViewItem.getContent());
-                bundle.putInt("post_id", listViewItem.getPostId());
-                intent.putExtras(bundle);
-                context.startActivity(intent);
-            }
-        });
         return convertView;
     }
 
@@ -100,14 +87,13 @@ public class ListViewAdapter extends BaseAdapter {
     }
 
     // 아이템 데이터 추가를 위한 함수.
-    public void addItem(int icon, String content, String title, String nickname, int post_id) {
+    public void addItem(int icon, String content, String nickname) {
         ListViewItem item = new ListViewItem();
 
         item.setIcon(icon);
-        item.setTitle(title);
         item.setContent(content);
         item.setId(nickname);
-        item.setPostId(post_id);
+
         listViewItemList.add(item);
     }
 }

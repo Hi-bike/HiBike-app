@@ -46,6 +46,7 @@ import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
+import com.roundG0929.hibike.activities.map_route.RidingActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -217,8 +218,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mapFragment.getMapAsync(this::onMapReady);
 
         //Dynamic route Test
-        Button button = findViewById(R.id.routeButton);
-        button.setOnClickListener(new View.OnClickListener() {
+        Button routebutton = findViewById(R.id.routeButton);
+        routebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent findPathIntent = new Intent(getApplicationContext(), FindPathActivity.class);
@@ -226,6 +227,16 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 startActivity(findPathIntent);
                 overridePendingTransition(0, 0);
 
+            }
+        });
+
+        Button ridingButton = findViewById(R.id.ridingButton);
+        ridingButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent ridingIntent = new Intent(getApplicationContext(), RidingActivity.class);
+
+                startActivity(ridingIntent);
             }
         });
 
@@ -305,7 +316,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
             }else{
                 location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                Toast.makeText(getApplicationContext(), "use gps", Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getApplicationContext(), "use gps", Toast.LENGTH_SHORT).show();
             }
 
             if(location != null){

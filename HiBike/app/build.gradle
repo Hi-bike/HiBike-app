@@ -55,6 +55,8 @@ dependencies {
 
     //구글플레이서비스
     implementation 'com.google.android.gms:play-services-location:19.0.1'
+    //구글 place(장소검색)
+    implementation 'com.google.android.libraries.places:places:2.5.0'
     //네이버맵
     implementation 'com.naver.maps:map-sdk:3.12.0'
     //테드퍼미션(권한관리)
