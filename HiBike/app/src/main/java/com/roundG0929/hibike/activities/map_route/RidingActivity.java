@@ -248,7 +248,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         convertDpToPx(getApplicationContext(),100),
                         convertDpToPx(getApplicationContext(),30),
                         convertDpToPx(getApplicationContext(),100));
-                cameraUpdate.animate(CameraAnimation.Fly);
+                cameraUpdate.animate(CameraAnimation.Easing);
                 naverMapObj.moveCamera(cameraUpdate);
             }
         });
@@ -263,7 +263,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     }
 
 
-    //남서쪽 북동쪽 좌표 구하기 FOR 주행종료후 카메라 위치이동
+    //남서쪽 북동쪽 좌표 구하기 (FOR 주행종료후 카메라 위치이동)
     private ArrayList<LatLng> getLatLngBounds(ArrayList<LatLng> record){
         double minLng = record.get(0).longitude;
         double minLat = record.get(0).latitude;
