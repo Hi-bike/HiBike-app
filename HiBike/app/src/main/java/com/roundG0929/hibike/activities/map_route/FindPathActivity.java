@@ -72,7 +72,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     private FusedLocationProviderClient fusedLocationProviderClient;
     boolean trackingflag = false;  //위치추적flag
-    Handler handler=new Handler();
+    Handler     handler=new Handler();
     MapSetting mapSetting = new MapSetting();
     LatLng[] startEndPoint = new LatLng[2]; //0 start, 1 end
     int startOrendFlag = -1; //0 start, 1 end
@@ -342,6 +342,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             pathOverlay.setCoords(coordsForDrawLine);
                             pathOverlay.setColor(Color.BLUE);
                             pathOverlay.setMap(naverMapObj);
+
+
+                            for(int i = 0; coordsForDrawLine.size()-1>i;i++){
+                                PathOverlay areaTestPathOverlay = new PathOverlay();
+                                areaTestPathOverlay.setColor(Color.GREEN);
+                                areaTestPathOverlay.setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
+                                areaTestPathOverlay.setMap(naverMapObj);
+                            }
                         }
                         @Override
                         public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
@@ -371,6 +379,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         });
+
+
+
+
+        // test--------------------------------------------------------------
+
 
 
     }//onCreate()
