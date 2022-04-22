@@ -27,6 +27,15 @@
             android:textSize="40dp"
             android:textColor="#ffffff" />
         <TextView
+            android:id="@+id/distText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="start"
+            android:text="0"
+            android:textSize="40dp"
+            android:textColor="#ffffff" />
+
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="km/h"
@@ -111,10 +120,10 @@
     </LinearLayout>
 
     <Button
-        android:id="@+id/ridingStopButton"
+        android:id="@+id/ridingGoAndStopButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="주행종료"
+        android:text="주행 시작"
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="20dp"/>
 

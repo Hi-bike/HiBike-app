@@ -1,8 +1,11 @@
 package com.roundG0929.hibike.activities.map_route;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -10,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -39,39 +43,51 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.api.server.ApiInterface;
+import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.PostRiding;
 
 import java.util.ArrayList;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RidingActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     //일반변수 선언
     NaverMap naverMapObj;
     MapFragment mapFragment;
+    ApiInterface api;
     private FusedLocationSource fusedLocationSource;
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     MapSetting mapSetting = new MapSetting();
     LatLng beforeLatLng = new LatLng(0,0);   //속도측정
     LatLng nowLatLng = new LatLng(0,0);   //속도측정
+
     double speed;
-    boolean ridingStartFlag = true;
+    boolean ridingStartFlag = false;
     ArrayList<LatLng> ridingPointRecord = new ArrayList<>(); //주행시 경위도 저장 list
     double totalDistance = 0; //주행총거리
     double pointDistance = 0; //속도측정, 총거리측정용 순간 거리
     long starTime;
     long endTime;
     int totalTime_second;
-
+    String userId;
 
     //ui 객체 선언
     TextView speedText;
     TextView totalDistanceText;
     TextView totalTimeText;
     TextView averageSpeedText;
-    Button ridingStopButton;
+    Button ridingGoAndStopButton;
     PolylineOverlay ridingPointRecordLine = new PolylineOverlay(); //경로선
     LinearLayout resultLayout;
     FrameLayout speedLayout;
     LocationOverlay locationOverlay; // 현재위치 표시 오버레이
+
+    //test ui
+    TextView distText;//timeText,
 
 
     @Override
@@ -79,25 +95,35 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_riding);
 
+        //userId
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        userId = pref.getString("id", "");
+
         //ui 객체 할당
         speedText = findViewById(R.id.speedText);
-        ridingStopButton = findViewById(R.id.ridingStopButton);
+        ridingGoAndStopButton = findViewById(R.id.ridingGoAndStopButton);
         totalDistanceText = findViewById(R.id.totalDistanceText);
         totalTimeText = findViewById(R.id.totalTimeText);
         averageSpeedText = findViewById(R.id.averageSpeedText);
         resultLayout = findViewById(R.id.resultLayout);
         speedLayout = findViewById(R.id.speedLayout);
 
+        //test ui
+//        timeText = findViewById(R.id.timeText);
+        distText = findViewById(R.id.distText);
+
+        //server connect
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
+
         //경로선 속성지정
-        ridingPointRecordLine.setColor(Color.GREEN); //색상
-
-
+        ridingPointRecordLine.setColor(Color.BLUE); //색상
 
         //위치권환 확인
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-
 
         //초기맵설정
         //맵 뷰 객체 할당
@@ -114,14 +140,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
 
-
-        ridingStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showMessage();
-            }
-        });
-
+        //TODO:첫 줌 인 화면 (현재 위치 얻어오는 법)
+//        CameraUpdate cameraUpdate = CameraUpdate.zoomTo(15)
+//                .animate(CameraAnimation.Easing);
+//        naverMapObj.moveCamera(cameraUpdate);
 
         //실시간 속도 표출 thread
         Handler ridingHandler = new Handler();
@@ -148,13 +170,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 beforeLatLng = new LatLng(fusedLocationSource.getLastLocation());
                 nowLatLng = new LatLng(fusedLocationSource.getLastLocation());
+
                 ridingPointRecord.add(nowLatLng);
+
                 while (ridingStartFlag){
                     try {
                         Thread.sleep(995);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                     beforeLatLng = nowLatLng;
                     nowLatLng = new LatLng(fusedLocationSource.getLastLocation());
                     ridingPointRecord.add(nowLatLng);
@@ -171,27 +196,34 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     //속도 km/h
                     speed = Double.parseDouble(String.format("%.1f", pointDistance * 3.6));
 
-
                     //ui 반영
                     ridingHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             speedText.setText(speed+"");
+                            distText.setText(String.format("%.1f", pointDistance)+"");
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
                         }
                     });
                     Log.d("ridingThread", "run: ");
                 }
+            }
+        });
 
-
-
+        ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ridingStartFlag) {
+                    ridingStartFlag = true;
+                    ridingGoAndStopButton.setText("주행 종료");
+                    ridingThread.start();
+                } else if(ridingStartFlag){
+                    showMessage();
+                }
 
             }
         });
-        ridingThread.start();
-
-
 
         //----------test code--------------
         //point1 : 37.37611121808619, 126.63768694859772
@@ -204,6 +236,15 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 //        speedText.setText(Double.toString(speed));
     }//onCreate
 
+    // 주행 중, 뒤로가기 버튼 누를 시
+    @Override
+    public void onBackPressed() {
+        if(ridingStartFlag) {
+            showMessage();
+        }else{
+            finish();
+        }
+    }
 
 
     @Override
@@ -214,6 +255,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         //naverMap.getUiSettings().setLocationButtonEnabled(false);
     }
 
+    private LatLng getNowLatLngAverage(){
+        LatLng l1 = new LatLng(fusedLocationSource.getLastLocation());
+        LatLng l2 = new LatLng(fusedLocationSource.getLastLocation());
+        LatLng l3 = new LatLng(fusedLocationSource.getLastLocation());
+
+        double aveLatitude = (l1.latitude + l2.latitude + l3.latitude) / 3;
+        double aveLongitude = (l1.longitude + l2.longitude + l3.longitude) / 3;
+
+        return new LatLng(aveLatitude, aveLongitude);
+    }
 
     //주행종료 다이얼로그
     private void showMessage(){
@@ -250,6 +301,36 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         convertDpToPx(getApplicationContext(),100));
                 cameraUpdate.animate(CameraAnimation.Easing);
                 naverMapObj.moveCamera(cameraUpdate);
+
+                PostRiding data = new PostRiding();
+                data.setUserId(userId);
+                data.setRidingTime(result_minute +" : "+result_second);
+                data.setAveSpeed(String.format("%.1f", pointDistance)+"");
+                data.setAveDistance(totalDistance+"");
+
+                api.postRiding(data).enqueue(new Callback<PostRiding>() {
+                    @Override
+                    public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
+                        if(!response.isSuccessful()){
+                            Toast toast = Toast.makeText(getApplicationContext(), "error. (" + response.message() + ")", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 0);
+                            toast.show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<PostRiding> call, Throwable t) {}
+                });
+
+                ridingGoAndStopButton.setText("나가기");
+                ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+//                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                        startActivity(intent);
+                        finish();
+                    }
+                });
             }
         });
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {

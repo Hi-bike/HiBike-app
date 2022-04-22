@@ -3,6 +3,10 @@ package com.roundG0929.hibike.api.server;
 
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.GetPost;
+import com.roundG0929.hibike.api.server.dto.GetRidingAll;
+import com.roundG0929.hibike.api.server.dto.GetRidingOne;
+import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
+import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.ProfileImage;
 import com.roundG0929.hibike.api.server.dto.SendReply;
 import com.roundG0929.hibike.api.server.dto.Signin;
@@ -67,4 +71,16 @@ public interface ApiInterface {
 
     @POST("api/board/reply")
     Call<SendReply> sendReply(@Body SendReply data);
+
+    @GET("api/auth/rone/{id}")
+    Call<GetRidingOne> getRidingInfoOne(@Path("id") int id);
+
+    @POST("api/auth/rone")
+    Call<PostRiding> postRiding(@Body PostRiding data);
+
+    @GET("api/auth/rtotal/{userId}")
+    Call<GetRidingTotal> getRidingTotal(@Path("userId") String userId);
+
+    @GET("api/auth/rall/{userId}/{page}")
+    Call<GetRidingAll> getRidingAll(@Path("userId") String userId, @Path("page") int page);
 }
