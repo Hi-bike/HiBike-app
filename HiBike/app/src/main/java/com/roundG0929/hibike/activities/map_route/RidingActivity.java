@@ -306,7 +306,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 data.setUserId(userId);
                 data.setRidingTime(result_minute +" : "+result_second);
                 data.setAveSpeed(String.format("%.1f", pointDistance)+"");
-                data.setAveDistance(totalDistance+"");
+                data.setDistance(totalDistance+"");
+
+                // TODO: 도착, 출발 지역 api
+                data.setStartingPoint("출발지");
+                data.setEndPoint("도착지");
 
                 api.postRiding(data).enqueue(new Callback<PostRiding>() {
                     @Override

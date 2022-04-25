@@ -6,7 +6,9 @@ public class PostRiding {
     @SerializedName("user_id")String userId;
     @SerializedName("riding_time")String ridingTime;
     @SerializedName("ave_speed")String aveSpeed;
-    @SerializedName("ave_distance")String aveDistance;
+    @SerializedName("distance")String distance;
+    @SerializedName("starting_point")String startingPoint;
+    @SerializedName("end_point")String endPoint;
 
     public String getUserId() {
         return userId;
@@ -32,11 +34,27 @@ public class PostRiding {
         this.aveSpeed = aveSpeed;
     }
 
-    public String getAveDistance() {
-        return aveDistance;
+    public String getDistance() {
+        return distance;
     }
 
-    public void setAveDistance(String aveDistance) {
-        this.aveDistance = aveDistance;
+    public void setDistance(String distance) {
+        this.distance = distance;
+    }
+
+    public String getStartingPoint() {
+        return startingPoint;
+    }
+
+    public void setStartingPoint(String startingPoint) {
+        this.startingPoint = startingPoint;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
     }
 }

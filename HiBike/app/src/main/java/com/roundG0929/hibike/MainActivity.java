@@ -47,6 +47,7 @@ import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.activities.map_route.RidingActivity;
+import com.roundG0929.hibike.activities.riding_record.RidingRecordActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -81,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     //Navigation drawer 여는 버튼
     ImageButton btn_open;
     //Navigation 안에 있는 버튼들
-    TextView btnSigninOrNickname, btnDrivingRecord, btnPosts;//로그인 버튼
+    TextView btnSigninOrNickname, btnRidingRecord, btnPosts;//로그인 버튼
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
@@ -167,8 +168,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             imageApi = new ImageApi();
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
-            btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
-            btnDrivingRecord.setText("주행 기록");
+            btnRidingRecord = (TextView) findViewById(R.id.btn_riding_record);
+            btnRidingRecord.setText("주행 기록");
+            btnRidingRecord.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), RidingRecordActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             btnPosts = (TextView) findViewById(R.id.btn_posts);
             btnPosts.setText("자유게시판");
