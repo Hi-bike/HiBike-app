@@ -64,6 +64,8 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     MapSetting mapSetting = new MapSetting();
     LatLng beforeLatLng = new LatLng(0,0);   //속도측정
     LatLng nowLatLng = new LatLng(0,0);   //속도측정
+    LatLng startingPoint = new LatLng(0,0);;
+    LatLng endPoint = new LatLng(0,0);;
 
     double speed;
     boolean ridingStartFlag = false;
@@ -140,11 +142,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
 
-        //TODO:첫 줌 인 화면 (현재 위치 얻어오는 법)
-//        CameraUpdate cameraUpdate = CameraUpdate.zoomTo(15)
-//                .animate(CameraAnimation.Easing);
-//        naverMapObj.moveCamera(cameraUpdate);
-
         //실시간 속도 표출 thread
         Handler ridingHandler = new Handler();
         Thread ridingThread = new Thread(new Runnable() {
@@ -170,6 +167,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 beforeLatLng = new LatLng(fusedLocationSource.getLastLocation());
                 nowLatLng = new LatLng(fusedLocationSource.getLastLocation());
+
+                //시작 지점
+                startingPoint = nowLatLng;
 
                 ridingPointRecord.add(nowLatLng);
 
@@ -253,17 +253,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         locationOverlay = naverMap.getLocationOverlay();
         mapSetting.routeActivityMapSet(naverMapObj,getApplicationContext(),fusedLocationSource);
         //naverMap.getUiSettings().setLocationButtonEnabled(false);
-    }
-
-    private LatLng getNowLatLngAverage(){
-        LatLng l1 = new LatLng(fusedLocationSource.getLastLocation());
-        LatLng l2 = new LatLng(fusedLocationSource.getLastLocation());
-        LatLng l3 = new LatLng(fusedLocationSource.getLastLocation());
-
-        double aveLatitude = (l1.latitude + l2.latitude + l3.latitude) / 3;
-        double aveLongitude = (l1.longitude + l2.longitude + l3.longitude) / 3;
-
-        return new LatLng(aveLatitude, aveLongitude);
+        CameraUpdate cameraUpdate = CameraUpdate.zoomTo(17.0)
+                .animate(CameraAnimation.Easing);
+        naverMap.moveCamera(cameraUpdate);
     }
 
     //주행종료 다이얼로그
@@ -302,15 +294,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 cameraUpdate.animate(CameraAnimation.Easing);
                 naverMapObj.moveCamera(cameraUpdate);
 
+                startingPoint = ridingPointRecord.get(0);
+                endPoint = ridingPointRecord.get(ridingPointRecord.size() - 1);
+
                 PostRiding data = new PostRiding();
                 data.setUserId(userId);
                 data.setRidingTime(result_minute +" : "+result_second);
-                data.setAveSpeed(String.format("%.1f", pointDistance)+"");
+                data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
                 data.setDistance(totalDistance+"");
-
-                // TODO: 도착, 출발 지역 api
-                data.setStartingPoint("출발지");
-                data.setEndPoint("도착지");
+                data.setStartingPoint(startingPoint.latitude+","+startingPoint.longitude);
+                data.setEndPoint(endPoint.latitude+","+endPoint.longitude);
 
                 api.postRiding(data).enqueue(new Callback<PostRiding>() {
                     @Override
@@ -325,13 +318,12 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     public void onFailure(Call<PostRiding> call, Throwable t) {}
                 });
 
+                //TODO: 주행 경로 캡쳐 후 이미지 저장
+
                 ridingGoAndStopButton.setText("나가기");
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-//                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                        startActivity(intent);
                         finish();
                     }
                 });

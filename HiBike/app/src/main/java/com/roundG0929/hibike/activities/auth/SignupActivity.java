@@ -37,7 +37,6 @@ public class SignupActivity extends AppCompatActivity {
         btnSignup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //TODO: 회원가입 가능 여부 체크
                 String nullCheck = nullCheck();
                 if (!nullCheck.equals("")) {
                     Toast.makeText(getApplicationContext(), nullCheck, Toast.LENGTH_SHORT).show();

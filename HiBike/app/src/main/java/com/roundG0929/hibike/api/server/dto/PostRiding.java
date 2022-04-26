@@ -10,6 +10,22 @@ public class PostRiding {
     @SerializedName("starting_point")String startingPoint;
     @SerializedName("end_point")String endPoint;
 
+    public String getStartingPoint() {
+        return startingPoint;
+    }
+
+    public void setStartingPoint(String startingPoint) {
+        this.startingPoint = startingPoint;
+    }
+
+    public String getEndPoint() {
+        return endPoint;
+    }
+
+    public void setEndPoint(String endPoint) {
+        this.endPoint = endPoint;
+    }
+
     public String getUserId() {
         return userId;
     }
@@ -42,19 +58,5 @@ public class PostRiding {
         this.distance = distance;
     }
 
-    public String getStartingPoint() {
-        return startingPoint;
-    }
 
-    public void setStartingPoint(String startingPoint) {
-        this.startingPoint = startingPoint;
-    }
-
-    public String getEndPoint() {
-        return endPoint;
-    }
-
-    public void setEndPoint(String endPoint) {
-        this.endPoint = endPoint;
-    }
 }

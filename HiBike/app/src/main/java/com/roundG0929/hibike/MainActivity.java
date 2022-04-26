@@ -12,45 +12,31 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
-import android.graphics.PointF;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.internal.Objects;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.LocationOverlay;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.naver.maps.map.util.MarkerIcons;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.activities.map_route.RidingActivity;
-import com.roundG0929.hibike.activities.riding_record.RidingRecordActivity;
-import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
+import com.roundG0929.hibike.activities.riding_record.RidingRecordListActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
-import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.server.ApiInterface;
@@ -61,7 +47,6 @@ import com.roundG0929.hibike.activities.board.ListViewActivity;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -173,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             btnRidingRecord.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), RidingRecordActivity.class);
+                    Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
                     startActivity(intent);
                 }
             });

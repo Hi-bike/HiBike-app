@@ -22,6 +22,9 @@
         <activity
             android:name=".activities.riding_record.RidingRecordActivity"
             android:exported="false" />
+        <activity
+            android:name=".activities.riding_record.RidingRecordListActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -48,17 +51,17 @@
             android:exported="false" />
         <activity
             android:name=".activities.board.ListViewActivity"
-            android:exported="false"></activity>
+            android:exported="false" />
         <activity
             android:name=".activities.board.ViewContentsActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".activities.board.ListViewReplyActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.board.WritePostActivity"
-            android:exported="true"></activity>
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
