@@ -8,6 +8,7 @@ import com.roundG0929.hibike.api.server.dto.GetRidingOne;
 import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.ProfileImage;
+import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.SendReply;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.dto.Signout;
@@ -83,4 +84,8 @@ public interface ApiInterface {
 
     @GET("api/auth/rall/{userId}/{page}")
     Call<GetRidingAll> getRidingAll(@Path("userId") String userId, @Path("page") int page);
+
+    @Multipart
+    @POST("/api/auth/rimage") //프로필 사진 업데이트
+    Call<RidingImage> setRidingImage (@Part MultipartBody.Part file, @Part("unique_id") RequestBody param);
 }

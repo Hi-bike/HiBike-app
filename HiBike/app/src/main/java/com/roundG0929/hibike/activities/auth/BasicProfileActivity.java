@@ -150,9 +150,11 @@ public class BasicProfileActivity extends Activity {
                 @Override
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
                     if (response.isSuccessful()) {
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                        startActivity(intent);
+                        if (!isImageChanged){
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
                     } else {
                         Toast.makeText(getApplicationContext(), response.code()+"", Toast.LENGTH_SHORT);
                     }
@@ -164,9 +166,7 @@ public class BasicProfileActivity extends Activity {
             });
         }
         if(isImageChanged){ //이미지 변경 여부
-            Log.v("profile_image","1");
             if (mediaPath != null) {
-                Log.v("profile_image","2");
                 File file = new File(mediaPath);
                 RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
                 MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);

@@ -7,9 +7,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -46,9 +48,19 @@ import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
+import com.roundG0929.hibike.api.server.dto.ProfileImage;
+import com.roundG0929.hibike.api.server.dto.RidingImage;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Random;
+import java.util.UUID;
 
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -75,7 +87,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     long starTime;
     long endTime;
     int totalTime_second;
-    String userId;
+    String userId, uniqueId;
 
     //ui 객체 선언
     TextView speedText;
@@ -297,13 +309,18 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 startingPoint = ridingPointRecord.get(0);
                 endPoint = ridingPointRecord.get(ridingPointRecord.size() - 1);
 
+                uniqueId = getUniqueId();
+
                 PostRiding data = new PostRiding();
                 data.setUserId(userId);
+                data.setUniqueId(uniqueId);
                 data.setRidingTime(result_minute +" : "+result_second);
                 data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
                 data.setDistance(totalDistance+"");
                 data.setStartingPoint(startingPoint.latitude+","+startingPoint.longitude);
                 data.setEndPoint(endPoint.latitude+","+endPoint.longitude);
+
+                Log.e("uniqueId", uniqueId);
 
                 api.postRiding(data).enqueue(new Callback<PostRiding>() {
                     @Override
@@ -319,6 +336,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 });
 
                 //TODO: 주행 경로 캡쳐 후 이미지 저장
+                postRidingImage();
 
                 ridingGoAndStopButton.setText("나가기");
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
@@ -331,9 +349,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         });
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
+            public void onClick(DialogInterface dialogInterface, int i) {}
         });
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -395,4 +411,49 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
     }
+
+    public String getUniqueId() {
+        String uniqueId = UUID.randomUUID().toString().substring(0,8);
+        return uniqueId;
+    }
+
+    public void postRidingImage(){
+        View rootView = getWindow().getDecorView();
+        File file = ScreenShot(rootView);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        RequestBody idToUpload = RequestBody.create(MediaType.parse("text/plain"), uniqueId);
+        api.setRidingImage(fileToUpload,idToUpload).enqueue(new Callback<RidingImage>() {
+            @Override
+            public void onResponse(Call<RidingImage> call, Response<RidingImage> response) {
+                if (response.isSuccessful()) {
+                    Log.v("image", "success");
+                } else {
+                    Log.v("image", response.message());
+                }
+            }
+            @Override
+            public void onFailure(Call<RidingImage> call, Throwable t) {}
+        });
+    }
+    public File ScreenShot(View view){
+        view.setDrawingCacheEnabled(true);  //화면에 뿌릴때 캐시를 사용하게 한다
+        Bitmap screenBitmap = view.getDrawingCache();   //캐시를 비트맵으로 변환
+        String filename = "screenshot.png";
+        File file = new File(Environment.getExternalStorageDirectory()+"/Pictures", filename);  //Pictures폴더 screenshot.png 파일
+        FileOutputStream os = null;
+        try{
+            os = new FileOutputStream(file);
+            screenBitmap.compress(Bitmap.CompressFormat.PNG, 90, os);   //비트맵을 PNG파일로 변환
+            os.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        view.setDrawingCacheEnabled(false);
+        return file;
+    }
+
+
 }

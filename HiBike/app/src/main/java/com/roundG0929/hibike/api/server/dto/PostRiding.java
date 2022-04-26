@@ -4,11 +4,20 @@ import com.google.gson.annotations.SerializedName;
 
 public class PostRiding {
     @SerializedName("user_id")String userId;
+    @SerializedName("unique_id")String uniqueId;
     @SerializedName("riding_time")String ridingTime;
     @SerializedName("ave_speed")String aveSpeed;
     @SerializedName("distance")String distance;
     @SerializedName("starting_point")String startingPoint;
     @SerializedName("end_point")String endPoint;
+
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 
     public String getStartingPoint() {
         return startingPoint;
