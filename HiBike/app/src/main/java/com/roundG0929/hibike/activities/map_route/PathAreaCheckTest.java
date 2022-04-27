@@ -48,15 +48,15 @@ public class PathAreaCheckTest {
         constant_startpoint = getConstant(gradient_Area,startPoint);
 
 
-        ArrayList<LatLng> twoPoints = getTargetPoints(gradient_Area,startPoint,0.00003);
+        ArrayList<LatLng> twoPoints = getTargetPoints(gradient_Area,startPoint,0.00008);
         areaPoints.add(twoPoints.get(0));
         areaPoints.add(twoPoints.get(1));
-        twoPoints = getTargetPoints(gradient_Area,endPoint,0.00003);
+        twoPoints = getTargetPoints(gradient_Area,endPoint,0.00008);
         areaPoints.add(twoPoints.get(1));
         areaPoints.add(twoPoints.get(0));
 
         //순환을 위한 첫 point 추가
-        twoPoints = getTargetPoints(gradient_Area,startPoint,0.00003);
+        twoPoints = getTargetPoints(gradient_Area,startPoint,0.00008);
         areaPoints.add(twoPoints.get(0));
 
         return  areaPoints;
