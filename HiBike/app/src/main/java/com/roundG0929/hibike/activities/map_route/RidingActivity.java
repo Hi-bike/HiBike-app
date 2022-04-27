@@ -406,7 +406,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         return (rad * 180 / Math.PI);
     }
 
-
+    //dp단위 px로 변환
     public int convertDpToPx(Context context,int dp){
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
