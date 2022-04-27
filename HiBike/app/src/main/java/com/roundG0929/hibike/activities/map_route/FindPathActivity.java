@@ -37,10 +37,15 @@ import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.geometry.LatLngBounds;
+import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraPosition;
+import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
@@ -317,10 +322,17 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-            //길찾기버튼 findButton
+            //길찾기버튼 findButton, 선그리기 객체
+        PathOverlay pathOverlay = new PathOverlay();
+        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>();
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+//                if(areaTestPathOverlay.size() != 0){
+//                    for(int i = 0; coordsForDrawLine.size()-1>i;i++){
+//                        areaTestPathOverlay.get(i).setMap(null);
+//                    }
+//                }
 
                 if(startEndPoint[0] == null || startEndPoint[1] == null){
                     Toast.makeText(getApplicationContext(),"경로 지정이 필요합니다.",Toast.LENGTH_SHORT).show();
@@ -338,18 +350,44 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
                             }
                             //경로그리기
-                            PathOverlay pathOverlay = new PathOverlay();
                             pathOverlay.setCoords(coordsForDrawLine);
                             pathOverlay.setColor(Color.BLUE);
                             pathOverlay.setMap(naverMapObj);
 
 
                             for(int i = 0; coordsForDrawLine.size()-1>i;i++){
-                                PathOverlay areaTestPathOverlay = new PathOverlay();
-                                areaTestPathOverlay.setColor(Color.GREEN);
-                                areaTestPathOverlay.setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
-                                areaTestPathOverlay.setMap(naverMapObj);
+                                areaTestPathOverlay.add(new PathOverlay());
+                                areaTestPathOverlay.get(i).setColor(Color.GREEN);
+                                areaTestPathOverlay.get(i).setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
+                                areaTestPathOverlay.get(i).setMap(naverMapObj);
+
+//                                PathOverlay areaTestPathOverlay = new PathOverlay();
+//                                areaTestPathOverlay.setColor(Color.GREEN);
+//                                areaTestPathOverlay.setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
+//                                areaTestPathOverlay.setMap(naverMapObj);
                             }
+
+
+                            Marker marker = new Marker();
+                            marker.setPosition(startEndPoint[0]);
+                            marker.setMap(naverMapObj);
+                            marker.setOnClickListener(new Overlay.OnClickListener() {
+                                @Override
+                                public boolean onClick(@NonNull Overlay overlay) {
+                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+                                    naverMapObj.moveCamera(cameraUpdate);
+                                    return false;
+                                }
+                            });
+
+                            LatLngBounds latLngBounds = new LatLngBounds(coordsForDrawLine.get(0),coordsForDrawLine.get(coordsForDrawLine.size()-1));
+                            CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds,
+                                    convertDpToPx(getApplicationContext(),50),
+                                    convertDpToPx(getApplicationContext(),200),
+                                    convertDpToPx(getApplicationContext(),50),
+                                    convertDpToPx(getApplicationContext(),100));
+                            cameraUpdate.animate(CameraAnimation.Easing);
+                            naverMapObj.moveCamera(cameraUpdate);
                         }
                         @Override
                         public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
@@ -460,6 +498,34 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
     );
+
+
+    //남서쪽 북동쪽 좌표 구하기 (FOR 길찾기 후 카메라 위치이동)
+    private ArrayList<LatLng> getLatLngBounds(ArrayList<LatLng> record){
+        double minLng = record.get(0).longitude;
+        double minLat = record.get(0).latitude;
+        double maxLng = record.get(0).longitude;
+        double maxLat = record.get(0).latitude;
+        for(int i = 0;record.size()>i;i++){
+            if(minLng>record.get(i).longitude){minLng=record.get(i).longitude;}
+            if(minLat>record.get(i).latitude){minLat=record.get(i).latitude;}
+            if(maxLng<record.get(i).longitude){maxLng=record.get(i).longitude;}
+            if(maxLat<record.get(i).latitude){maxLat=record.get(i).latitude;}
+        }
+        LatLng latLng_SW = new LatLng(minLat,minLng);
+        LatLng latLng_NE = new LatLng(maxLat,maxLng);
+
+        ArrayList<LatLng> resultList = new ArrayList<>();
+        resultList.add(latLng_SW);
+        resultList.add(latLng_NE);
+
+        return resultList;
+    }
+    //dp단위 px로 변환
+    public int convertDpToPx(Context context,int dp){
+        float density = context.getResources().getDisplayMetrics().density;
+        return Math.round((float) dp * density);
+    }
 
 //    //EditText 외부 터치시 키보드 숨기기
 //    @Override
