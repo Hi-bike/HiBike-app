@@ -8,8 +8,9 @@ public class RidingRecord {
     private String distance;
     private String starting_point;
     private String end_point;
+    private String uniqueId;
 
-    RidingRecord(int ridingId, String createTime, String ridingTime, String aveSpeed, String distance, String starting_point, String end_point){
+    RidingRecord(int ridingId, String createTime, String ridingTime, String aveSpeed, String distance, String starting_point, String end_point, String uniqueId){
         this.ridingId = ridingId;
         this.createTime = createTime;
         this.ridingTime = ridingTime;
@@ -17,6 +18,7 @@ public class RidingRecord {
         this.distance = distance;
         this.starting_point = starting_point;
         this.end_point = end_point;
+        this.uniqueId = uniqueId;
     }
 
     public int getRidingId() {
@@ -74,4 +76,11 @@ public class RidingRecord {
         this.end_point = end_point;
     }
 
+    public String getUniqueId() {
+        return uniqueId;
+    }
+
+    public void setUniqueId(String uniqueId) {
+        this.uniqueId = uniqueId;
+    }
 }

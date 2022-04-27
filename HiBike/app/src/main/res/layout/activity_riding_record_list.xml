@@ -10,27 +10,41 @@
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
+        android:layout_height="55dp"
         android:background="#ffffff"
         android:text="주행 기록"
         android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_riding_total"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="#EDEDED"
+        android:text="총 거리: 0m | 총 시간: 0"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        />
+
     <View
         android:id="@+id/line"
         android:layout_width="wrap_content"
         android:layout_height="2dp"
         android:background="#4EA0E4"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        app:layout_constraintTop_toBottomOf="@+id/tv_riding_total"
         tools:ignore="MissingConstraints" />
-
 
     <ListView
         android:id="@+id/listview_riding"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="42dp"
+        android:layout_marginTop="111dp"
         android:layout_marginEnd="50dp"
         android:background="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"

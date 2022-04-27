@@ -149,6 +149,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         //위치소스
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
+
         //맵객체 설정
         mapFragment.getMapAsync(this::onMapReady);
 
@@ -264,7 +265,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         naverMapObj = naverMap;
         locationOverlay = naverMap.getLocationOverlay();
         mapSetting.routeActivityMapSet(naverMapObj,getApplicationContext(),fusedLocationSource);
-        //naverMap.getUiSettings().setLocationButtonEnabled(false);
         CameraUpdate cameraUpdate = CameraUpdate.zoomTo(17.0)
                 .animate(CameraAnimation.Easing);
         naverMap.moveCamera(cameraUpdate);
