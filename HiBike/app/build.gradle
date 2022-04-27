@@ -73,4 +73,8 @@ dependencies {
 
     //json object
     implementation 'org.json:json:20190722'
+
+    //lottie (에니메이션뷰 활용)
+    implementation 'com.airbnb.android:lottie:5.0.3'
+
 }

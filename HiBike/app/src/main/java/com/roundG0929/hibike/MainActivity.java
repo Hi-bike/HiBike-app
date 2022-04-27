@@ -2,11 +2,13 @@ package com.roundG0929.hibike;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.cardview.widget.CardView;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -57,6 +59,7 @@ import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 import com.roundG0929.hibike.activities.board.ListViewActivity;
+import com.roundG0929.hibike.api.weather.WeatherApi;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,25 +69,19 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
-    //길찾기,맵 관련 객체
-    GraphhopperResponse graphhopperResponse;
-    List<LatLng> coordsForDrawLine = new ArrayList<>();
-    MapFragment mapFragment;
-    public TextView textView;
-    NaverMap naverMapObj;
-    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
-    private FusedLocationSource fusedLocationSource;
-
+public class MainActivity extends AppCompatActivity{
     //hibike server api
     ApiInterface api;
     //Navigation drawer 여는 버튼
-    ImageButton btn_open;
+    CardView btn_open;
     //Navigation 안에 있는 버튼들
-    TextView btnSigninOrNickname, btnDrivingRecord, btnPosts;//로그인 버튼
+    TextView btnSigninOrNickname, btnDrivingRecord; // 주행기록, 로그인, 프로필변경
+    CardView btnPosts;//게시판
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
+
+
 
     //다른 activity에서 main component 접근에 이용용
     public static Context context_main;
@@ -113,11 +110,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_2);
         context_main = this;
+
+        getWindow().setNavigationBarColor(Color.WHITE);//네이게이션바 투명
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -131,7 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         drawerView = (View) findViewById(R.id.drawer);
 
         //Navigation drawer 여는 버튼
-        btn_open = (ImageButton) findViewById(R.id.btn_open);
+        btn_open = findViewById(R.id.btn_open);
         btn_open.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -170,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
             btnDrivingRecord.setText("주행 기록");
 
-            btnPosts = (TextView) findViewById(R.id.btn_posts);
-            btnPosts.setText("자유게시판");
+            btnPosts = findViewById(R.id.btn_posts);
+            //btnPosts.setText("자유게시판");
 
             btnPosts.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -202,23 +202,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .check();
 
 
-        //초기맵설정
-        //맵 뷰 객체 할당
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance();
-            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
-        }
-        //위치추적기능 설정 객체
-        fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
-        //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource, MainActivity.this);
-        //맵객체 설정
-        mapFragment.getMapAsync(this::onMapReady);
-
-        //Dynamic route Test
-        Button routebutton = findViewById(R.id.routeButton);
+        //길찾기버튼
+        CardView routebutton = findViewById(R.id.routeButton);
         routebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,7 +215,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button ridingButton = findViewById(R.id.ridingButton);
+        //주행버튼
+        CardView ridingButton = findViewById(R.id.ridingButton);
         ridingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,19 +226,31 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //=================== TEST =======================
+        //날씨버튼
+        CardView weatherButton = findViewById(R.id.weatherCard);
+        weatherButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                new WeatherApi().getApiRaw().enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+
+                    }
+                });
+            }
+        });
+
     }//onCreate()
 
     //권한요청결과 리스너(안드로이드 내장) tedpermission과 무관
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        //위치추적기능 설정 객체 권한설정 대응
-        if(fusedLocationSource.onRequestPermissionsResult(requestCode,permissions,grantResults)){
-            if(!fusedLocationSource.isActivated()){
-                //firstMap.setLocationTrackingMode(LocationTrackingMode.None);
-            }
-            return;
-        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
@@ -287,51 +285,6 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     }
 
-    //네이버맵 설정메소드
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        naverMapObj = naverMap;
-        MapSetting mapSetting = new MapSetting();
-        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource,MainActivity.this);
-    }
-
-    //현재위치 가져오기   --- TEST ---
-    public double[] startLocation() {
-        double[] latlng = new double[2];
-        latlng[0] = 0;latlng[1]=0;
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location;
-
-        //위치권한 확인
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getApplicationContext(),"권한 허용이 필요합니다.",Toast.LENGTH_SHORT).show();
-            return latlng;
-        }
-
-        //위치가져오기 GPS 수신 없으면 NETWORK 위치 사용 후 알림
-        try {
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Toast.makeText(getApplicationContext(), "위치정보가 정확하지 않습니다 야외에서 사용해주세요", Toast.LENGTH_SHORT).show();
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }else{
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                //Toast.makeText(getApplicationContext(), "use gps", Toast.LENGTH_SHORT).show();
-            }
-
-            if(location != null){
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                latlng[0] = latitude;
-                latlng[1] = longitude;
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return latlng;
-    }
     private void getProfile(){
         api.getProfile(id).enqueue(new Callback<BasicProfile>() {
             @Override
