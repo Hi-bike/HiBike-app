@@ -214,7 +214,6 @@ public class RidingRecordListActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View view) {
                     // uniqueId 넘기기
-//                    Toast.makeText(context, ridingRecord.getRidingId()+"", Toast.LENGTH_SHORT).show();
                     Intent intent = new Intent(getApplicationContext(), RidingRecordActivity.class);
                     intent.putExtra("uniqueId", ridingRecord.getUniqueId());
                     intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
