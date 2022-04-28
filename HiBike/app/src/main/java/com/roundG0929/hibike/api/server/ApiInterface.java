@@ -79,8 +79,8 @@ public interface ApiInterface {
     @POST("api/board/reply")
     Call<SendReply> sendReply(@Body SendReply data);
 
-    @GET("api/auth/rone/{id}")
-    Call<GetRidingOne> getRidingInfoOne(@Path("id") int id);
+    @GET("api/auth/rone/{uniqueId}")
+    Call<GetRidingOne> getRidingInfoOne(@Path("unique_id") String uniqueId);
 
     @POST("api/auth/rone")
     Call<PostRiding> postRiding(@Body PostRiding data);

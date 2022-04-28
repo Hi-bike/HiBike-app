@@ -119,6 +119,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                             Log.e("JSONException", e.toString());
                         }
                     }
+
                 } else {
                     isLast = true;
                 }
@@ -205,7 +206,6 @@ public class RidingRecordListActivity extends AppCompatActivity {
             tv_starting_point = (TextView) convertView.findViewById(R.id.tv_starting_point);
             tv_unique_id = (TextView) convertView.findViewById(R.id.tv_unique_id);
 
-            //TODO: 데이터 받아와서 처리
             tv_riding_id.setText(ridingRecord.getRidingId()+"");
             tv_route.setText(ridingRecord.getStarting_point()+ " > " + ridingRecord.getEnd_point());
             tv_riding_info.setText(

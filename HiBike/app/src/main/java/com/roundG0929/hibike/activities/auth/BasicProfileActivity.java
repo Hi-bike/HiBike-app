@@ -227,7 +227,6 @@ public class BasicProfileActivity extends Activity {
                     e.printStackTrace();
                 }
                 Glide.with(this).load(selectedImage).into(ivProfileImage);
-//                ivProfileImage.setImageBitmap(bitmap);
 
                 Cursor cursor = getContentResolver().query(Uri.parse(selectedImage.toString()), null, null, null, null);
                 assert cursor != null;

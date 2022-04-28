@@ -350,13 +350,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     public void onFailure(Call<PostRiding> call, Throwable t) {}
                 });
 
-                //TODO: 주행 경로 캡쳐 후 이미지 저장
-                postRidingImage();
-
                 ridingGoAndStopButton.setText("나가기");
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        postRidingImage();
                         finish();
                     }
                 });
