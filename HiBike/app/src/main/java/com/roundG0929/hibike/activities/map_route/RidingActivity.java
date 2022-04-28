@@ -242,7 +242,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 naverMapObj.setLocationTrackingMode(LocationTrackingMode.None);
 
                 ArrayList<LatLng> forMakeLatLngBounds = getLatLngBounds(ridingPointRecord);
-                LatLngBounds latLngBounds = new LatLngBounds(forMakeLatLngBounds.get(0),forMakeLatLngBounds.get(forMakeLatLngBounds.size()-1));
+                LatLngBounds latLngBounds = new LatLngBounds(forMakeLatLngBounds.get(0),forMakeLatLngBounds.get(1));
                 CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds,
                         convertDpToPx(getApplicationContext(),30),
                         convertDpToPx(getApplicationContext(),100),

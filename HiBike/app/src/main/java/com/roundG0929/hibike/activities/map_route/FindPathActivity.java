@@ -35,6 +35,7 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.CancellationToken;
 import com.google.android.gms.tasks.OnTokenCanceledListener;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -344,7 +345,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             graphhopperResponse = response.body();
                             ArrayList<ArrayList<Double>> pointList = new ArrayList<>();
                             pointList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-                            List<LatLng> coordsForDrawLine = new ArrayList<>();
+                            ArrayList<LatLng> coordsForDrawLine = new ArrayList<>();
 
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
@@ -374,17 +375,24 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             marker.setOnClickListener(new Overlay.OnClickListener() {
                                 @Override
                                 public boolean onClick(@NonNull Overlay overlay) {
+                                    naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
+                                            0,convertDpToPx(getApplicationContext(),300));
                                     CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
                                     naverMapObj.moveCamera(cameraUpdate);
+                                    LinearLayout linearLayout = findViewById(R.id.informationBottomSheet);
+                                    BottomSheetBehavior behavior = BottomSheetBehavior.from(linearLayout);
+                                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                    naverMapObj.setContentPadding(0,0,0,0);
                                     return false;
                                 }
                             });
 
-                            LatLngBounds latLngBounds = new LatLngBounds(coordsForDrawLine.get(0),coordsForDrawLine.get(coordsForDrawLine.size()-1));
+                            ArrayList<LatLng> forMakeLatLngBounds = getLatLngBounds(coordsForDrawLine);
+                            LatLngBounds latLngBounds = new LatLngBounds(forMakeLatLngBounds.get(0),forMakeLatLngBounds.get(1));
                             CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds,
-                                    convertDpToPx(getApplicationContext(),50),
+                                    convertDpToPx(getApplicationContext(),60),
                                     convertDpToPx(getApplicationContext(),200),
-                                    convertDpToPx(getApplicationContext(),50),
+                                    convertDpToPx(getApplicationContext(),60),
                                     convertDpToPx(getApplicationContext(),100));
                             cameraUpdate.animate(CameraAnimation.Easing);
                             naverMapObj.moveCamera(cameraUpdate);
