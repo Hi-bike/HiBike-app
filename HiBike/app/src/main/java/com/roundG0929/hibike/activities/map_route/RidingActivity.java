@@ -4,16 +4,14 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -30,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -38,24 +37,30 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.roundG0929.hibike.MainActivity;
+import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
+import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
+import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
-import com.roundG0929.hibike.api.server.dto.ProfileImage;
+import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
 import com.roundG0929.hibike.api.server.dto.RidingImage;
+import com.roundG0929.hibike.api.server.dto.RidingRegion;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Random;
 import java.util.UUID;
 
 import okhttp3.MediaType;
@@ -71,6 +76,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     NaverMap naverMapObj;
     MapFragment mapFragment;
     ApiInterface api;
+    NaverApiInterface nApi;
     private FusedLocationSource fusedLocationSource;
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     MapSetting mapSetting = new MapSetting();
@@ -86,8 +92,12 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     double pointDistance = 0; //속도측정, 총거리측정용 순간 거리
     long starTime;
     long endTime;
-    int totalTime_second;
+    int totalTime_second, result_second, result_minute;;
     String userId, uniqueId;
+    PostRiding data;
+    double averageSpeed;
+    int swich = 0;
+
 
     //ui 객체 선언
     TextView speedText;
@@ -123,13 +133,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         averageSpeedText = findViewById(R.id.averageSpeedText);
         resultLayout = findViewById(R.id.resultLayout);
         speedLayout = findViewById(R.id.speedLayout);
-
+        data = new PostRiding();
         //test ui
 //        timeText = findViewById(R.id.timeText);
         distText = findViewById(R.id.distText);
 
         //server connect
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
+
+        //naver connect
+        nApi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
 
         //경로선 속성지정
         ridingPointRecordLine.setColor(Color.BLUE); //색상
@@ -281,11 +294,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 ridingStartFlag = false;
 
                 totalTime_second = (int) ((endTime - starTime)/1000);
-                int result_second = totalTime_second % 60;
-                int result_minute = totalTime_second / 60;
+                result_second = totalTime_second % 60;
+                result_minute = totalTime_second / 60;
                 speedLayout.setVisibility(View.GONE);
                 resultLayout.setVisibility(View.VISIBLE);
-                double averageSpeed = (totalDistance/totalTime_second)*3.6;
+                averageSpeed = (totalDistance/totalTime_second)*3.6;
 
                 totalDistance = Double.parseDouble(String.format("%.1f", totalDistance));
 
@@ -308,19 +321,23 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 startingPoint = ridingPointRecord.get(0);
                 endPoint = ridingPointRecord.get(ridingPointRecord.size() - 1);
-
                 uniqueId = getUniqueId();
+                // 좌표 -> 주소
 
-                PostRiding data = new PostRiding();
+                ReverseGeocodingGenerator sprg = new ReverseGeocodingGenerator(startingPoint.longitude, startingPoint.latitude);
+                ReverseGeocodingGenerator eprg = new ReverseGeocodingGenerator(endPoint.longitude, endPoint.latitude);
+
+                Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
+                new RGCall().execute(callSp);
+
+                Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
+                new RGCall().execute(callEp);
+
                 data.setUserId(userId);
                 data.setUniqueId(uniqueId);
                 data.setRidingTime(result_minute +" : "+result_second);
                 data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
                 data.setDistance(totalDistance+"");
-                data.setStartingPoint(startingPoint.latitude+","+startingPoint.longitude);
-                data.setEndPoint(endPoint.latitude+","+endPoint.longitude);
-
-                Log.e("uniqueId", uniqueId);
 
                 api.postRiding(data).enqueue(new Callback<PostRiding>() {
                     @Override
@@ -425,7 +442,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         RequestBody idToUpload = RequestBody.create(MediaType.parse("text/plain"), uniqueId);
         api.setRidingImage(fileToUpload,idToUpload).enqueue(new Callback<RidingImage>() {
             @Override
-            public void onResponse(Call<RidingImage> call, Response<RidingImage> response) {
+            public void onResponse(retrofit2.Call<RidingImage> call, Response<RidingImage> response) {
                 if (response.isSuccessful()) {
                     Log.v("image", "success");
                 } else {
@@ -433,7 +450,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
             @Override
-            public void onFailure(Call<RidingImage> call, Throwable t) {}
+            public void onFailure(retrofit2.Call<RidingImage> call, Throwable t) {}
         });
     }
     public File ScreenShot(View view){
@@ -455,5 +472,73 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         return file;
     }
 
+    private class RGCall extends AsyncTask<Call, Void, String> {
+        @Override
+        public String doInBackground(Call[] params) {
+            try {
+                Call<ReverseGeocodingDto> call = params[0];
+                Response<ReverseGeocodingDto> response = call.execute();
+                Object result = response.body().getResult();
+                return HibikeUtils.objectToJson(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
 
+        @Override
+        public void onPostExecute(String result) {
+            String json = result;
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
+                JSONObject regionObject = jsonObject.getJSONObject("region");
+                String area1 = regionObject.getJSONObject("area1").getString("name");
+                String area2 = regionObject.getJSONObject("area2").getString("name");
+                String area3 = regionObject.getJSONObject("area3").getString("name");
+
+                RidingRegion ridingRegion = new RidingRegion();
+
+                if (swich == 0) {
+                    ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                    ridingRegion.setKind("starting");
+                    ridingRegion.setUniqueId(uniqueId);
+                    api.setRidingRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                        @Override
+                        public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                            if (response.isSuccessful()) {
+                                swich = 1;
+                            }else{
+                                Log.e("ridingRigion", response.message());
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<RidingRegion> call, Throwable t) {}
+                    });
+
+                } else {
+                    ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                    ridingRegion.setKind("end");
+                    ridingRegion.setUniqueId(uniqueId);
+                    api.setRidingRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                        @Override
+                        public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                            if (response.isSuccessful()) {
+                                swich = 0;
+                            } else {
+                                Log.e("ridingRigion", response.message());
+                            }
+                        }
+                        @Override
+                        public void onFailure(Call<RidingRegion> call, Throwable t) {}
+                    });
+
+                }
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
 }

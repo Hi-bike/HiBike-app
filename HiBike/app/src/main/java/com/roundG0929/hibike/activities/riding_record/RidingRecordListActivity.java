@@ -20,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
@@ -99,7 +100,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                 ArrayList<Object> records = (ArrayList<Object>) response.body().getResult();
                 if (records.size() > 0){
                     for (Object record : records) {
-                        String json = objectToJSON(record);
+                        String json = HibikeUtils.objectToJson(record);
                         try {
                             JSONObject jsonObject = new JSONObject(json);
                             String createTime = jsonObject.getString("create_time").substring(0,10);
@@ -107,12 +108,11 @@ public class RidingRecordListActivity extends AppCompatActivity {
                             String aveSpeed = jsonObject.getString("ave_speed")+"km/h";
                             String[] ridingTime = jsonObject.getString("riding_time").split(" : ");
                             String time = ridingTime[0] + "분" + ridingTime[1] + "초";
-                            //TODO: 위치 지역 표시
-                            String startingPoint = jsonObject.getString("starting_point").substring(0,5);
-                            String endPoint = jsonObject.getString("end_point").substring(0,5);
+                            String startingPoint = jsonObject.getString("starting_region");
+                            String endPoint = jsonObject.getString("end_region");
                             String uniqueId = jsonObject.getString("unique_id");
-                            adapter.addItem(
-                                    new RidingRecord(count--, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
+
+                            adapter.addItem(new RidingRecord(count--, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
                             adapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
@@ -226,9 +226,6 @@ public class RidingRecordListActivity extends AppCompatActivity {
         }
     }
 
-    public String objectToJSON(Object object) {
-        Gson gson = new Gson();
-        return gson.toJson(object);
-    }
+
 
 }

@@ -10,7 +10,11 @@ import android.widget.TextView;
 import com.roundG0929.hibike.R;
 
 public class RidingRecordActivity extends AppCompatActivity {
+    String uniqueId;
+
+    //ui
     TextView tv_unique_id;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,10 +24,9 @@ public class RidingRecordActivity extends AppCompatActivity {
         tv_unique_id = findViewById(R.id.tv_unique_id);
 
         Intent intent = getIntent();
-        String uniqueId = intent.getStringExtra("uniqueId");
+        uniqueId = intent.getStringExtra("uniqueId");
 
-        Log.v("uniqueId", uniqueId);
-        tv_unique_id.setText(uniqueId);
+
     }
 
     @Override
