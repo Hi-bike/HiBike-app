@@ -4,7 +4,6 @@ import com.google.gson.annotations.SerializedName;
 
 public class RidingRegion {
     @SerializedName("region") String region;
-    @SerializedName("kind") String kind;
     @SerializedName("unique_id") String uniqueId;
 
     public String getRegion() {
@@ -15,13 +14,6 @@ public class RidingRegion {
         this.region = region;
     }
 
-    public String getKind() {
-        return kind;
-    }
-
-    public void setKind(String kind) {
-        this.kind = kind;
-    }
 
     public String getUniqueId() {
         return uniqueId;

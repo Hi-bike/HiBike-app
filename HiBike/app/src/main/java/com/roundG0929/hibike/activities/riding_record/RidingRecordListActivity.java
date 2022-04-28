@@ -65,9 +65,9 @@ public class RidingRecordListActivity extends AppCompatActivity {
 
         //user id
         id = pref.getString("id", "");
+        getTotalInfo();
 
         tv_riding_total = findViewById(R.id.tv_riding_total);
-        getTotalInfo();
 
         listView = (ListView) findViewById(R.id.listview_riding);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
@@ -147,9 +147,16 @@ public class RidingRecordListActivity extends AppCompatActivity {
                     String totalDistance = response.body().getTotalDistance();
                     int distance = (int) Math.round(Double.parseDouble(totalDistance));
                     String[] totalTime = response.body().getTotalTime().split(" : ");
-                    String time = totalTime[0] + "분" + totalTime[1] + "초";
+                    String time="";
+                    try {
+                        time = totalTime[0] + "분" + totalTime[1] + "초";
+                        tv_riding_total.setText("총 거리: " + distance +"m | "+"총 시간: " + time);
+                    } catch (Exception e) {
+                        tv_riding_total.setText("총 거리: 0m"+" | "+"총 시간: 0 : 0");
+                    }
+
                     count = response.body().getCount();
-                    tv_riding_total.setText("총 거리: " + distance +"m | "+"총 시간: " + time);
+
                 } else {
                     Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                 }

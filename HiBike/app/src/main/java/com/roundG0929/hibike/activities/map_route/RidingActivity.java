@@ -96,8 +96,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     String userId, uniqueId;
     PostRiding data;
     double averageSpeed;
-    int swich = 0;
-
 
     //ui 객체 선언
     TextView speedText;
@@ -109,7 +107,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     LinearLayout resultLayout;
     FrameLayout speedLayout;
     LocationOverlay locationOverlay; // 현재위치 표시 오버레이
-
+    boolean sw = true;
     //test ui
     TextView distText;//timeText,
 
@@ -328,10 +326,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 ReverseGeocodingGenerator eprg = new ReverseGeocodingGenerator(endPoint.longitude, endPoint.latitude);
 
                 Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
-                new RGCall().execute(callSp);
+                new SRGCall().execute(callSp);
 
                 Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
-                new RGCall().execute(callEp);
+                new ERGCall().execute(callEp);
 
                 data.setUserId(userId);
                 data.setUniqueId(uniqueId);
@@ -472,7 +470,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         return file;
     }
 
-    private class RGCall extends AsyncTask<Call, Void, String> {
+    private class SRGCall extends AsyncTask<Call, Void, String> {
         @Override
         public String doInBackground(Call[] params) {
             try {
@@ -499,43 +497,72 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 RidingRegion ridingRegion = new RidingRegion();
 
-                if (swich == 0) {
-                    ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
-                    ridingRegion.setKind("starting");
-                    ridingRegion.setUniqueId(uniqueId);
-                    api.setRidingRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
-                        @Override
-                        public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                ridingRegion.setUniqueId(uniqueId);
+                api.setRidingSRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                    @Override
+                    public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                        if (response.isSuccessful()) {
+                            Log.v("secess", response.message());
+                        }else{
+                            Log.e("ridingRigion", response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RidingRegion> call, Throwable t) {
+                        Log.e("ridingRigion", t.toString());
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class ERGCall extends AsyncTask<Call, Void, String> {
+        @Override
+        public String doInBackground(Call[] params) {
+            try {
+                Call<ReverseGeocodingDto> call = params[0];
+                Response<ReverseGeocodingDto> response = call.execute();
+                Object result = response.body().getResult();
+                return HibikeUtils.objectToJson(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            String json = result;
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
+                JSONObject regionObject = jsonObject.getJSONObject("region");
+                String area1 = regionObject.getJSONObject("area1").getString("name");
+                String area2 = regionObject.getJSONObject("area2").getString("name");
+                String area3 = regionObject.getJSONObject("area3").getString("name");
+
+                RidingRegion ridingRegion = new RidingRegion();
+
+                ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                ridingRegion.setUniqueId(uniqueId);
+                api.setRidingERegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                    @Override
+                    public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
                             if (response.isSuccessful()) {
-                                swich = 1;
+                                Log.v("secess", response.message());
                             }else{
-                                Log.e("ridingRigion", response.message());
-                            }
+                            Log.e("ridingRigion", response.message());
                         }
+                    }
 
-                        @Override
-                        public void onFailure(Call<RidingRegion> call, Throwable t) {}
-                    });
-
-                } else {
-                    ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
-                    ridingRegion.setKind("end");
-                    ridingRegion.setUniqueId(uniqueId);
-                    api.setRidingRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
-                        @Override
-                        public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
-                            if (response.isSuccessful()) {
-                                swich = 0;
-                            } else {
-                                Log.e("ridingRigion", response.message());
-                            }
-                        }
-                        @Override
-                        public void onFailure(Call<RidingRegion> call, Throwable t) {}
-                    });
-
-                }
-
+                    @Override
+                    public void onFailure(Call<RidingRegion> call, Throwable t) {
+                        Log.e("ridingRigion", t.toString());
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }

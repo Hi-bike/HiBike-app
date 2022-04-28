@@ -95,6 +95,9 @@ public interface ApiInterface {
     @POST("api/auth/rimage") //프로필 사진 업데이트
     Call<RidingImage> setRidingImage (@Part MultipartBody.Part file, @Part("unique_id") RequestBody param);
 
-    @POST("api/auth/riding-region")
-    Call<RidingRegion> setRidingRegion(@Body RidingRegion ridingRegion);
+    @POST("api/auth/sregion")
+    Call<RidingRegion> setRidingSRegion(@Body RidingRegion ridingRegion);
+
+    @POST("api/auth/eregion")
+    Call<RidingRegion> setRidingERegion(@Body RidingRegion ridingRegion);
 }
