@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
+
+
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="290dp"
     android:layout_height="400dp"
-    android:background="#ffffff"
+    android:background="@drawable/view_rounded"
     tools:context=".activities.auth.BasicProfileActivity"
     android:orientation="vertical"
     >
@@ -67,7 +69,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:background="@drawable/image_rounded_corner"
-                android:src="@drawable/icons_user2"
+                android:src="@drawable/cyclist"
                 android:scaleType="centerCrop"/>
         </androidx.cardview.widget.CardView>
 
@@ -87,13 +89,13 @@
             android:layout_gravity="center"
             android:layout_marginTop="17dp"
             android:background="@drawable/edittext_rounded_corner"
-            android:gravity="left"
+            android:gravity="center_vertical"
             android:hint="변경할 닉네임을 입력"
             android:paddingLeft="7dp"
             android:paddingTop="3dp"
             android:text=""
             android:textColor="#000000"
-            android:textSize="20dp" />
+            android:textSize="17dp" />
 
         <Button
             android:id="@+id/btn_ok"

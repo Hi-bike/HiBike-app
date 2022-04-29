@@ -7,28 +7,45 @@
     android:layout_height="match_parent"
     tools:context=".activities.riding_record.RidingRecordListActivity">
 
-    <TextView
-        android:id="@+id/tv_title"
+
+    <LinearLayout
+        android:id="@+id/ll"
         android:layout_width="match_parent"
         android:layout_height="55dp"
-        android:background="#ffffff"
-        android:text="주행 기록"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        android:orientation="horizontal"
+        tools:ignore="MissingConstraints">
+
+
+        <TextView
+            android:id="@+id/tv_title"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:background="#ffffff"
+            android:gravity="center_vertical"
+            android:text="📝 주행 기록"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:paddingLeft="30dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+    </LinearLayout>
+
+
 
     <TextView
         android:id="@+id/tv_riding_total"
         android:layout_width="match_parent"
-        android:layout_height="55dp"
-        android:background="#EDEDED"
-        android:text="총 거리: 0m | 총 시간: 0"
-        android:gravity="center"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        android:layout_height="30dp"
+        android:background="#4DB4B4B5"
+        android:text="총 거리: 0m | 총 시간: 0 분"
+        android:gravity="center_vertical"
+        android:textSize="15dp"
+        android:paddingLeft="40dp"
+        app:layout_constraintTop_toBottomOf="@+id/ll"
         />
 
     <View
@@ -44,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="50dp"
-        android:layout_marginTop="111dp"
+        android:layout_marginTop="82dp"
         android:layout_marginEnd="50dp"
         android:background="#ffffff"
         app:layout_constraintEnd_toEndOf="parent"

@@ -79,7 +79,7 @@ public interface ApiInterface {
     @POST("api/board/reply")
     Call<SendReply> sendReply(@Body SendReply data);
 
-    @GET("api/auth/rone/{uniqueId}")
+    @GET("api/auth/rone/{unique_id}")
     Call<GetRidingOne> getRidingInfoOne(@Path("unique_id") String uniqueId);
 
     @POST("api/auth/rone")

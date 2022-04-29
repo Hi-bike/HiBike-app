@@ -8,6 +8,7 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.annotations.SerializedName;
 import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
@@ -51,24 +52,53 @@ public class RidingRecordActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<GetRidingOne> call, Response<GetRidingOne> response) {
                 if (response.isSuccessful()) {
-                    String json = HibikeUtils.objectToJson(response.body());
+
+                    String json = HibikeUtils.objectToJson(response.body().getResult());
                     try {
                         JSONObject jsonObject = new JSONObject(json);
+                        Log.d("json", json);
                         //TODO: 데이터 출력
+                        String createTime = jsonObject.getString("create_time");
+                        String distance = jsonObject.getString("distance");
+                        String aveSpeed = jsonObject.getString("ave_speed");
+                        String ridingTime = jsonObject.getString("riding_time");
+                        String startingRegion = jsonObject.getString("starting_region");
+                        String endRegion = jsonObject.getString("end_region");
+
+                        String[] splitedTime = createTime.split(" ");
+                        createTime = splitedTime[0] + " " + splitedTime[1] + " " + splitedTime[2] + " " + splitedTime[3];
+
+                        String[] splitedRidingTime = ridingTime.split(" : ");
+                        ridingTime = splitedRidingTime[0] + "분 " + splitedRidingTime[1]+"초 ";
+
+
+
+                        tvRoute.setText(startingRegion + " > " + endRegion);
+                        tvCreateTime.setText(createTime);
+                        tvTime.setText(tvTime.getText() +"    "+ ridingTime);
+                        tvSpeed.setText(tvSpeed.getText() +"    "+ aveSpeed+" km/h");
+                        tvDistance.setText(tvDistance.getText() +"    "+ distance);
+
                     } catch (JSONException e) {
-                        e.printStackTrace();
+                        Log.e("eeee", e.toString());
                     }
+                } else {
+                    Log.e("error", response.message());
                 }
             }
 
             @Override
             public void onFailure(Call<GetRidingOne> call, Throwable t) {
-
+                Log.e("tttt", t.toString());
             }
         });
+//        try {
+//            imageApi = new ImageApi();
+//            imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
+//        } catch (Exception e) {
+//
+//        }
 
-        imageApi = new ImageApi();
-        imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
 
 
     }

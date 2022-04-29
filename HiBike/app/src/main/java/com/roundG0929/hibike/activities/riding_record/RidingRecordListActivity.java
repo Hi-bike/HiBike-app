@@ -150,10 +150,10 @@ public class RidingRecordListActivity extends AppCompatActivity {
                     String[] totalTime = response.body().getTotalTime().split(" : ");
                     String time="";
                     try {
-                        time = totalTime[0] + "분" + totalTime[1] + "초";
-                        tv_riding_total.setText("총 거리: " + distance +"m | "+"총 시간: " + time);
+                        time = totalTime[0] + "분 " + totalTime[1] + "초";
+                        tv_riding_total.setText("총 거리: " + distance +"m  "+"  총 시간: " + time);
                     } catch (Exception e) {
-                        tv_riding_total.setText("총 거리: 0m"+" | "+"총 시간: 0 : 0");
+                        tv_riding_total.setText("총 거리: 0m"+"  "+"총 시간: 0분 : 0초");
                     }
 
                     count = response.body().getCount();

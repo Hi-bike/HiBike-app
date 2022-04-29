@@ -47,36 +47,72 @@
                 android:layout_weight="4"
                 android:weightSum="11"
                 android:layout_height="50dp">
+                <View
+                    android:layout_width="wrap_content"
+                    android:layout_height="2dp"
+                    android:background="#4EA0E4"
+                    tools:ignore="MissingConstraints" />
 
                 <TextView
                     android:id="@+id/tv_route"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"/>
+                    android:layout_weight="1.5"
+                    android:textSize="17dp"
+                    android:gravity="center_vertical"
+                    android:text="(경로)"
+                    android:paddingLeft="15dp"
+                    android:textColor="#4857AC"
+                    />
+
 
                 <TextView
                     android:id="@+id/tv_create_time"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"/>
+                    android:layout_weight="1.5"
+                    android:textSize="20dp"
+                    android:gravity="center_vertical"
+                    android:text="(생성 시간)"
+                    android:paddingLeft="15dp"
+                    android:textColor="#4857AC"
+                    />
 
                 <TextView
                     android:id="@+id/tv_time"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"/>
+                    android:layout_weight="1.7"
+                    android:textSize="17dp"
+                    android:gravity="center_vertical"
+                    android:text="주행 시간"
+                    android:paddingLeft="15dp"
+                    android:textColor="#4857AC"
+                    />
 
                 <TextView
                     android:id="@+id/tv_distance"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"/>
+                    android:layout_weight="1.7"
+                    android:textSize="17dp"
+                    android:gravity="center_vertical"
+                    android:text="주행 거리"
+                    android:paddingLeft="15dp"
+                    android:textColor="#4857AC"
+                    />
 
                 <TextView
                     android:id="@+id/tv_speed"
                     android:layout_width="match_parent"
                     android:layout_height="0dp"
-                    android:layout_weight="2"/>
+                    android:layout_weight="1.7"
+                    android:textSize="17dp"
+                    android:gravity="center_vertical"
+                    android:text="평균 속도"
+                    android:paddingLeft="15dp"
+                    android:textColor="#4857AC"
+                    />
 
 
             </LinearLayout>

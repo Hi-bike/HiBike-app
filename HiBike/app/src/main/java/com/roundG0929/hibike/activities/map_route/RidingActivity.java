@@ -354,7 +354,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        postRidingImage();
+//                        postRidingImage();
                         finish();
                     }
                 });

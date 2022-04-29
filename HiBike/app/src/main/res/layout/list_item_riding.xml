@@ -16,7 +16,7 @@
 
         <TextView
             android:id="@+id/tv_riding_id"
-            android:layout_width="70dp"
+            android:layout_width="60dp"
             android:background="#ffffff"
             android:text="아이디"
             android:layout_height="match_parent"
@@ -35,8 +35,7 @@
                 android:layout_weight="100"
                 android:background="#ffffff"
                 android:gravity="center_vertical"
-                android:textStyle="bold"
-                android:textSize="17dp"
+                android:textSize="13dp"
                 android:paddingLeft="10dp"
                 android:text="출발지 > 목적지 or 일반 주행" />
             <LinearLayout
