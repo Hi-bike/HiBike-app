@@ -19,6 +19,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
+        <activity
+            android:name=".activities.riding_record.RidingRecordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".activities.riding_record.RidingRecordListActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="com.naver.maps.map.CLIENT_ID"
@@ -26,15 +32,13 @@
 
         <activity
             android:name=".activities.map_route.FindPathActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.map_route.SearchPlaceActivity"
-            android:exported="false"/>
+            android:exported="false" />
         <activity
             android:name=".activities.map_route.RidingActivity"
-            android:exported="false"/>
-
-
+            android:exported="false" />
         <activity
             android:name=".activities.auth.SignupActivity"
             android:exported="false" />
@@ -45,28 +49,19 @@
         <activity
             android:name=".activities.auth.SigninActivity"
             android:exported="false" />
-
         <activity
             android:name=".activities.board.ListViewActivity"
-            android:exported="false">
-        </activity>
-
+            android:exported="false" />
         <activity
             android:name=".activities.board.ViewContentsActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true" />
         <activity
             android:name=".activities.board.ListViewReplyActivity"
             android:exported="true"
-            android:windowSoftInputMode="adjustResize">
-        </activity>
-
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".activities.board.WritePostActivity"
-            android:exported="true">
-        </activity>
-
+            android:exported="true" />
         <activity
             android:name=".MainActivity"
             android:exported="true">
@@ -76,8 +71,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
 
         <service
             android:name="fcm.MyFirebaseMessagingService"

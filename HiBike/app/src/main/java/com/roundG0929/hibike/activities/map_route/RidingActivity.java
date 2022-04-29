@@ -1,15 +1,19 @@
 package com.roundG0929.hibike.activities.map_route;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.location.Location;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -24,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -32,46 +37,79 @@ import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
-import com.roundG0929.hibike.MainActivity;
+import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
+import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
+import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
+import com.roundG0929.hibike.api.server.ApiInterface;
+import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.PostRiding;
+import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
+import com.roundG0929.hibike.api.server.dto.RidingImage;
+import com.roundG0929.hibike.api.server.dto.RidingRegion;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.UUID;
+
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RidingActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     //일반변수 선언
     NaverMap naverMapObj;
     MapFragment mapFragment;
+    ApiInterface api;
+    NaverApiInterface nApi;
     private FusedLocationSource fusedLocationSource;
     private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
     MapSetting mapSetting = new MapSetting();
     LatLng beforeLatLng = new LatLng(0,0);   //속도측정
     LatLng nowLatLng = new LatLng(0,0);   //속도측정
+    LatLng startingPoint = new LatLng(0,0);;
+    LatLng endPoint = new LatLng(0,0);;
+
     double speed;
-    boolean ridingStartFlag = true;
+    boolean ridingStartFlag = false;
     ArrayList<LatLng> ridingPointRecord = new ArrayList<>(); //주행시 경위도 저장 list
     double totalDistance = 0; //주행총거리
     double pointDistance = 0; //속도측정, 총거리측정용 순간 거리
     long starTime;
     long endTime;
-    int totalTime_second;
-
+    int totalTime_second, result_second, result_minute;;
+    String userId, uniqueId;
+    PostRiding data;
+    double averageSpeed;
 
     //ui 객체 선언
     TextView speedText;
     TextView totalDistanceText;
     TextView totalTimeText;
     TextView averageSpeedText;
-    Button ridingStopButton;
+    Button ridingGoAndStopButton;
     PolylineOverlay ridingPointRecordLine = new PolylineOverlay(); //경로선
     LinearLayout resultLayout;
     FrameLayout speedLayout;
     LocationOverlay locationOverlay; // 현재위치 표시 오버레이
+    boolean sw = true;
+    //test ui
+    TextView distText;//timeText,
 
 
     @Override
@@ -79,25 +117,38 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_riding);
 
+        //userId
+        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+
+        userId = pref.getString("id", "");
+
         //ui 객체 할당
         speedText = findViewById(R.id.speedText);
-        ridingStopButton = findViewById(R.id.ridingStopButton);
+        ridingGoAndStopButton = findViewById(R.id.ridingGoAndStopButton);
         totalDistanceText = findViewById(R.id.totalDistanceText);
         totalTimeText = findViewById(R.id.totalTimeText);
         averageSpeedText = findViewById(R.id.averageSpeedText);
         resultLayout = findViewById(R.id.resultLayout);
         speedLayout = findViewById(R.id.speedLayout);
+        data = new PostRiding();
+        //test ui
+//        timeText = findViewById(R.id.timeText);
+        distText = findViewById(R.id.distText);
+
+        //server connect
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
+
+        //naver connect
+        nApi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
 
         //경로선 속성지정
-        ridingPointRecordLine.setColor(Color.GREEN); //색상
-
-
+        ridingPointRecordLine.setColor(Color.BLUE); //색상
 
         //위치권환 확인
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-
 
         //초기맵설정
         //맵 뷰 객체 할당
@@ -109,19 +160,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         }
         //위치소스
         fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
+
         //맵객체 설정
         mapFragment.getMapAsync(this::onMapReady);
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
-
-
-        ridingStopButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                showMessage();
-            }
-        });
-
 
         //실시간 속도 표출 thread
         Handler ridingHandler = new Handler();
@@ -148,13 +191,19 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 beforeLatLng = new LatLng(fusedLocationSource.getLastLocation());
                 nowLatLng = new LatLng(fusedLocationSource.getLastLocation());
+
+                //시작 지점
+                startingPoint = nowLatLng;
+
                 ridingPointRecord.add(nowLatLng);
+
                 while (ridingStartFlag){
                     try {
                         Thread.sleep(995);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
+
                     beforeLatLng = nowLatLng;
                     nowLatLng = new LatLng(fusedLocationSource.getLastLocation());
                     ridingPointRecord.add(nowLatLng);
@@ -171,27 +220,34 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     //속도 km/h
                     speed = Double.parseDouble(String.format("%.1f", pointDistance * 3.6));
 
-
                     //ui 반영
                     ridingHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             speedText.setText(speed+"");
+                            distText.setText(String.format("%.1f", pointDistance)+"");
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
                         }
                     });
                     Log.d("ridingThread", "run: ");
                 }
+            }
+        });
 
-
-
+        ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (!ridingStartFlag) {
+                    ridingStartFlag = true;
+                    ridingGoAndStopButton.setText("주행 종료");
+                    ridingThread.start();
+                } else if(ridingStartFlag){
+                    showMessage();
+                }
 
             }
         });
-        ridingThread.start();
-
-
 
         //----------test code--------------
         //point1 : 37.37611121808619, 126.63768694859772
@@ -204,6 +260,15 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 //        speedText.setText(Double.toString(speed));
     }//onCreate
 
+    // 주행 중, 뒤로가기 버튼 누를 시
+    @Override
+    public void onBackPressed() {
+        if(ridingStartFlag) {
+            showMessage();
+        }else{
+            finish();
+        }
+    }
 
 
     @Override
@@ -211,9 +276,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         naverMapObj = naverMap;
         locationOverlay = naverMap.getLocationOverlay();
         mapSetting.routeActivityMapSet(naverMapObj,getApplicationContext(),fusedLocationSource);
-        //naverMap.getUiSettings().setLocationButtonEnabled(false);
+        CameraUpdate cameraUpdate = CameraUpdate.zoomTo(17.0)
+                .animate(CameraAnimation.Easing);
+        naverMap.moveCamera(cameraUpdate);
     }
-
 
     //주행종료 다이얼로그
     private void showMessage(){
@@ -226,11 +292,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 ridingStartFlag = false;
 
                 totalTime_second = (int) ((endTime - starTime)/1000);
-                int result_second = totalTime_second % 60;
-                int result_minute = totalTime_second / 60;
+                result_second = totalTime_second % 60;
+                result_minute = totalTime_second / 60;
                 speedLayout.setVisibility(View.GONE);
                 resultLayout.setVisibility(View.VISIBLE);
-                double averageSpeed = (totalDistance/totalTime_second)*3.6;
+                averageSpeed = (totalDistance/totalTime_second)*3.6;
 
                 totalDistance = Double.parseDouble(String.format("%.1f", totalDistance));
 
@@ -250,13 +316,55 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         convertDpToPx(getApplicationContext(),100));
                 cameraUpdate.animate(CameraAnimation.Easing);
                 naverMapObj.moveCamera(cameraUpdate);
+
+                startingPoint = ridingPointRecord.get(0);
+                endPoint = ridingPointRecord.get(ridingPointRecord.size() - 1);
+                uniqueId = getUniqueId();
+                // 좌표 -> 주소
+
+                ReverseGeocodingGenerator sprg = new ReverseGeocodingGenerator(startingPoint.longitude, startingPoint.latitude);
+                ReverseGeocodingGenerator eprg = new ReverseGeocodingGenerator(endPoint.longitude, endPoint.latitude);
+
+                Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
+                new SRGCall().execute(callSp);
+
+                Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
+                new ERGCall().execute(callEp);
+
+                data.setUserId(userId);
+                data.setUniqueId(uniqueId);
+                data.setRidingTime(result_minute +" : "+result_second);
+                data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
+                data.setDistance(totalDistance+"");
+
+                api.postRiding(data).enqueue(new Callback<PostRiding>() {
+                    @Override
+                    public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
+                        if(!response.isSuccessful()){
+                            Toast toast = Toast.makeText(getApplicationContext(), "error. (" + response.message() + ")", Toast.LENGTH_LONG);
+                            toast.setGravity(Gravity.TOP, 0, 0);
+                            toast.show();
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<PostRiding> call, Throwable t) {}
+                });
+
+                //TODO: 주행 경로 캡쳐 후 이미지 저장
+                postRidingImage();
+
+                ridingGoAndStopButton.setText("나가기");
+                ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        finish();
+                    }
+                });
             }
         });
         builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-
-            }
+            public void onClick(DialogInterface dialogInterface, int i) {}
         });
         AlertDialog dialog = builder.create();
         dialog.show();
@@ -317,5 +425,147 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     public int convertDpToPx(Context context,int dp){
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
+    }
+
+    public String getUniqueId() {
+        String uniqueId = UUID.randomUUID().toString().substring(0,8);
+        return uniqueId;
+    }
+
+    public void postRidingImage(){
+        View rootView = getWindow().getDecorView();
+        File file = ScreenShot(rootView);
+        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+        RequestBody idToUpload = RequestBody.create(MediaType.parse("text/plain"), uniqueId);
+        api.setRidingImage(fileToUpload,idToUpload).enqueue(new Callback<RidingImage>() {
+            @Override
+            public void onResponse(retrofit2.Call<RidingImage> call, Response<RidingImage> response) {
+                if (response.isSuccessful()) {
+                    Log.v("image", "success");
+                } else {
+                    Log.v("image", response.message());
+                }
+            }
+            @Override
+            public void onFailure(retrofit2.Call<RidingImage> call, Throwable t) {}
+        });
+    }
+    public File ScreenShot(View view){
+        view.setDrawingCacheEnabled(true);  //화면에 뿌릴때 캐시를 사용하게 한다
+        Bitmap screenBitmap = view.getDrawingCache();   //캐시를 비트맵으로 변환
+        String filename = "screenshot.png";
+        File file = new File(Environment.getExternalStorageDirectory()+"/Pictures", filename);  //Pictures폴더 screenshot.png 파일
+        FileOutputStream os = null;
+        try{
+            os = new FileOutputStream(file);
+            screenBitmap.compress(Bitmap.CompressFormat.PNG, 90, os);   //비트맵을 PNG파일로 변환
+            os.close();
+        }catch (IOException e){
+            e.printStackTrace();
+            return null;
+        }
+
+        view.setDrawingCacheEnabled(false);
+        return file;
+    }
+
+    private class SRGCall extends AsyncTask<Call, Void, String> {
+        @Override
+        public String doInBackground(Call[] params) {
+            try {
+                Call<ReverseGeocodingDto> call = params[0];
+                Response<ReverseGeocodingDto> response = call.execute();
+                Object result = response.body().getResult();
+                return HibikeUtils.objectToJson(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            String json = result;
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
+                JSONObject regionObject = jsonObject.getJSONObject("region");
+                String area1 = regionObject.getJSONObject("area1").getString("name");
+                String area2 = regionObject.getJSONObject("area2").getString("name");
+                String area3 = regionObject.getJSONObject("area3").getString("name");
+
+                RidingRegion ridingRegion = new RidingRegion();
+
+                ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                ridingRegion.setUniqueId(uniqueId);
+                api.setRidingSRegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                    @Override
+                    public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                        if (response.isSuccessful()) {
+                            Log.v("secess", response.message());
+                        }else{
+                            Log.e("ridingRigion", response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RidingRegion> call, Throwable t) {
+                        Log.e("ridingRigion", t.toString());
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    private class ERGCall extends AsyncTask<Call, Void, String> {
+        @Override
+        public String doInBackground(Call[] params) {
+            try {
+                Call<ReverseGeocodingDto> call = params[0];
+                Response<ReverseGeocodingDto> response = call.execute();
+                Object result = response.body().getResult();
+                return HibikeUtils.objectToJson(result);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        public void onPostExecute(String result) {
+            String json = result;
+            try {
+                JSONArray jsonArray = new JSONArray(json);
+                JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
+                JSONObject regionObject = jsonObject.getJSONObject("region");
+                String area1 = regionObject.getJSONObject("area1").getString("name");
+                String area2 = regionObject.getJSONObject("area2").getString("name");
+                String area3 = regionObject.getJSONObject("area3").getString("name");
+
+                RidingRegion ridingRegion = new RidingRegion();
+
+                ridingRegion.setRegion(area1 + " " + area2 + " " + area3);
+                ridingRegion.setUniqueId(uniqueId);
+                api.setRidingERegion(ridingRegion).enqueue(new Callback<RidingRegion>() {
+                    @Override
+                    public void onResponse(Call<RidingRegion> call, Response<RidingRegion> response) {
+                            if (response.isSuccessful()) {
+                                Log.v("secess", response.message());
+                            }else{
+                            Log.e("ridingRigion", response.message());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<RidingRegion> call, Throwable t) {
+                        Log.e("ridingRigion", t.toString());
+                    }
+                });
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

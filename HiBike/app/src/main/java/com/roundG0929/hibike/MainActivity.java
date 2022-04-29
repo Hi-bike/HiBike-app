@@ -23,20 +23,18 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.gun0912.tedpermission.PermissionListener;
+import com.gun0912.tedpermission.normal.TedPermission;
 import com.airbnb.lottie.LottieAnimationView;
 import com.airbnb.lottie.LottieDrawable;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.gun0912.tedpermission.PermissionListener;
-import com.gun0912.tedpermission.normal.TedPermission;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.activities.map_route.RidingActivity;
+import com.roundG0929.hibike.activities.riding_record.RidingRecordListActivity;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
@@ -45,7 +43,6 @@ import com.roundG0929.hibike.activities.board.ListViewActivity;
 import com.roundG0929.hibike.api.weather.WeatherApi;
 import com.roundG0929.hibike.api.weather.wheatherDto.Item;
 import com.roundG0929.hibike.api.weather.wheatherDto.RealTimeWeather;
-import com.roundG0929.hibike.api.weather.wheatherDto.RealTimeWeather_Body;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -62,7 +59,9 @@ public class MainActivity extends AppCompatActivity {
     //Navigation drawer 여는 버튼
     CardView btn_open;
     //Navigation 안에 있는 버튼들
-    TextView btnSigninOrNickname, btnDrivingRecord; // 주행기록, 로그인, 프로필변경
+
+    TextView  btnRidingRecord;//로그인 버튼
+    TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
     CardView btnPosts;//게시판
     ImageView ivProfileImage;
     String id;
@@ -153,8 +152,15 @@ public class MainActivity extends AppCompatActivity {
             imageApi = new ImageApi();
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
-            btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
-            btnDrivingRecord.setText("주행 기록");
+            btnRidingRecord = (TextView) findViewById(R.id.btn_riding_record);
+            btnRidingRecord.setText("주행 기록");
+            btnRidingRecord.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
+                    startActivity(intent);
+                }
+            });
 
             btnPosts = findViewById(R.id.btn_posts);
             //btnPosts.setText("자유게시판");

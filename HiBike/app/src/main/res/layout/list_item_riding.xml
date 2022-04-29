@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:weightSum="100"
+    android:padding="5dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/tv_riding_id"
+            android:layout_width="70dp"
+            android:background="#ffffff"
+            android:text="아이디"
+            android:layout_height="match_parent"
+            android:gravity="center" />
+
+        <LinearLayout
+            android:layout_width="220dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:weightSum="100">
+
+            <TextView
+                android:id="@+id/tv_route"
+                android:layout_width="match_parent"
+                android:layout_height="70dp"
+                android:layout_weight="100"
+                android:background="#ffffff"
+                android:gravity="center_vertical"
+                android:textStyle="bold"
+                android:textSize="17dp"
+                android:paddingLeft="10dp"
+                android:text="출발지 > 목적지 or 일반 주행" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/tv_riding_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="20dp"
+                    android:layout_weight="100"
+                    android:background="#FFFFFF"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:textSize="8dp"
+                    android:text="언제 총 거리 평균 속도 총 시간 " />
+
+                <TextView
+                    android:id="@+id/tv_unique_id"
+                    android:layout_width="0dp"
+                    android:textColor="#ffffff"
+                    android:layout_height="wrap_content" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_starting_point"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:background="#FFFFFF"
+            android:textColor="#4857AC"
+            android:gravity="center"
+            android:text="출발지" />
+
+    </LinearLayout>
+
+</LinearLayout>

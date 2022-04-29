@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".activities.riding_record.RidingRecordListActivity">
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="#ffffff"
+        android:text="주행 기록"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/tv_riding_total"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="#EDEDED"
+        android:text="총 거리: 0m | 총 시간: 0"
+        android:gravity="center"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@+id/tv_title"
+        />
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:background="#4EA0E4"
+        app:layout_constraintTop_toBottomOf="@+id/tv_riding_total"
+        tools:ignore="MissingConstraints" />
+
+    <ListView
+        android:id="@+id/listview_riding"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginStart="50dp"
+        android:layout_marginTop="111dp"
+        android:layout_marginEnd="50dp"
+        android:background="#ffffff"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/line" />
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintStart_toEndOf="@id/listview_riding"
+        app:layout_constraintTop_toTopOf="@id/listview_riding"
+        app:layout_constraintBottom_toBottomOf="@id/listview_riding"
+        app:layout_constraintEnd_toStartOf="@id/listview_riding"
+        android:layout_marginBottom="190dp"
+        tools:ignore="MissingConstraints" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

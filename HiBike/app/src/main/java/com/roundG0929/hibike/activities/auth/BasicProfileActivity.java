@@ -11,6 +11,7 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -20,6 +21,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
@@ -140,17 +142,23 @@ public class BasicProfileActivity extends Activity {
         //닉네임 변경 여부
         if(!(oriNickname.equals(newNickname) || newNickname.equals(""))){
             //닉네임 변경 api
+            Log.v("profile_nickname","success");
             BasicProfile nicknameProfile = new BasicProfile();
             nicknameProfile.setId(id);
             nicknameProfile.setNickname(newNickname);
             api.setNickname(nicknameProfile).enqueue(new Callback<BasicProfile>() {
                 @Override
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
-                    Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
+                    if (response.isSuccessful()) {
+                        if (!isImageChanged){
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            startActivity(intent);
+                        }
+                    } else {
+                        Toast.makeText(getApplicationContext(), response.code()+"", Toast.LENGTH_SHORT);
+                    }
                 }
-
                 @Override
                 public void onFailure(Call<BasicProfile> call, Throwable t) {
                     Toast.makeText(getApplicationContext(), "통신 실패", Toast.LENGTH_SHORT);
@@ -167,8 +175,12 @@ public class BasicProfileActivity extends Activity {
                     @Override
                     public void onResponse(Call<ProfileImage> call, Response<ProfileImage> response) {
                         if (response.isSuccessful()) {
+                            Log.v("profile_image","success");
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             startActivity(intent);
+                        } else {
+                            Log.v("profile_image",response.code()+"");
                         }
                     }
                     @Override
@@ -214,7 +226,8 @@ public class BasicProfileActivity extends Activity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                ivProfileImage.setImageBitmap(bitmap);
+                Glide.with(this).load(selectedImage).into(ivProfileImage);
+//                ivProfileImage.setImageBitmap(bitmap);
 
                 Cursor cursor = getContentResolver().query(Uri.parse(selectedImage.toString()), null, null, null, null);
                 assert cursor != null;
