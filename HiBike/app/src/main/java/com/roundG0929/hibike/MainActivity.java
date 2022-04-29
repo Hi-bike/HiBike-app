@@ -244,12 +244,15 @@ public class MainActivity extends AppCompatActivity {
                             @Override
                             public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
                                 ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
+                                //카테고리별 데이터구분
+                                    //기온
                                 for (int i = 0; realTimeWeather.size() > i; i++) {
                                     if (realTimeWeather.get(i).category.equals("T1H")) {
                                         temperature.setText(realTimeWeather.get(i).fcstValue+" ℃");
                                         break;
                                     }
                                 }
+                                    //흐림정도
                                 for (int i = 0; realTimeWeather.size() > i; i++) {
                                     if (realTimeWeather.get(i).category.equals("SKY")) {
                                         int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
@@ -267,6 +270,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
 
                                 }
+                                    //습도
                                 for (int i = 0; realTimeWeather.size() > i; i++) {
                                     if (realTimeWeather.get(i).category.equals("REH")) {
                                         moisture.setText(realTimeWeather.get(i).fcstValue+" %");
