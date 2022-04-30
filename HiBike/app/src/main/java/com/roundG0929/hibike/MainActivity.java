@@ -76,7 +76,9 @@ public class MainActivity extends AppCompatActivity {
     TextView tvMainId;
     TextView tvMainRidingTotal;
     ProgressBar mainProgressBar;
-
+    TextView mainRidingGoal;
+    TextView mainRidingAchievement;
+    LinearLayout llProfile;
 
     //다른 activity에서 main component 접근에 이용용
     public static Context context_main;
@@ -121,11 +123,6 @@ public class MainActivity extends AppCompatActivity {
         id = pref.getString("id", "");
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
-
-        //main 주행 게이지
-        mainProgressBar = findViewById(R.id.mainProgressBar);
-        mainProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#54A2FF"), PorterDuff.Mode.SRC_IN);
-
 
 //        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        drawerView = (View) findViewById(R.id.drawer);
@@ -190,8 +187,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
-            ivProfileImage.setOnClickListener(new View.OnClickListener() {
+            ll = findViewById(R.id.layout_profile);
+            ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), BasicProfileActivity.class);
@@ -244,6 +241,25 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(ridingIntent);
             }
         });
+
+        //main 주행 게이지
+        mainProgressBar = findViewById(R.id.mainProgressBar);
+        mainProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#54A2FF"), PorterDuff.Mode.SRC_IN);
+        mainRidingGoal = findViewById(R.id.mainRidingGoal);
+        mainRidingAchievement = findViewById(R.id.mainRidingAchievement);
+
+        int ridingGoal = pref.getInt("ridingGoal", 0);
+        mainRidingGoal.setText((ridingGoal/1000)+"km");
+
+        if (ridingGoal != 0) {
+            int nowRidingAchievement = pref.getInt("ridingAchievement", 0);
+            mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
+
+            int percentRiding = (int) ((double)nowRidingAchievement/(double) ridingGoal * 100);
+            mainProgressBar.setProgress(percentRiding);
+        }
+
+
 
 //        현재위치 날씨불러오기
 //            현재위치 불러오기
@@ -390,7 +406,6 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         time = totalTime[0] + "분 " + totalTime[1] + "초";
                         tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: " + distance +"m  "+"\n\uD83D\uDD51 총 시간: " + time);
-                        mainProgressBar.setProgress(distance);
                     } catch (Exception e) {
                         tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: 0m"+"  "+"\n\uD83D\uDD51 총 시간: 0 : 0");
                     }

@@ -175,12 +175,13 @@
                         android:layout_marginTop="6dp"/>
 
                     <TextView
+                        android:id="@+id/mainRidingAchievement"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textSize="18dp"
-                        android:textColor="#000000"
+                        android:textColor="#0088FF"
                         android:layout_marginLeft="5dp"
-                        android:text="18m"/>
+                        android:text="0.0km"/>
 
                     <TextView
                         android:layout_width="wrap_content"
@@ -189,10 +190,11 @@
                         android:text="/"/>
 
                     <TextView
+                        android:id="@+id/mainRidingGoal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="1dp"
-                        android:text="1km"/>
+                        android:text="0km"/>
 
 
                 </LinearLayout>
@@ -271,8 +273,8 @@
             </LinearLayout>
 
             <androidx.cardview.widget.CardView
-                android:layout_width="55dp"
-                android:layout_height="55dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 app:cardCornerRadius="75dp"
                 android:layout_gravity="right"
                 android:layout_marginTop="20dp"

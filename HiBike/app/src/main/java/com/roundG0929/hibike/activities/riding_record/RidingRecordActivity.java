@@ -77,7 +77,8 @@ public class RidingRecordActivity extends AppCompatActivity {
                         tvCreateTime.setText(createTime);
                         tvTime.setText(tvTime.getText() +"    "+ ridingTime);
                         tvSpeed.setText(tvSpeed.getText() +"    "+ aveSpeed+" km/h");
-                        tvDistance.setText(tvDistance.getText() +"    "+ distance);
+                        tvDistance.setText(tvDistance.getText() +"    "+ distance+" m");
+
 
                     } catch (JSONException e) {
                         Log.e("eeee", e.toString());

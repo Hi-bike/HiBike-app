@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -142,17 +143,27 @@ public class BasicProfileActivity extends Activity {
         });
     }
     private void setProfile(){
-        TextView btnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
-        ImageView profileImage = ((MainActivity) MainActivity.context_main).findViewById(R.id.iv_profile_image);
-        oriNickname = btnSigninOrNickname.getText().toString();
+        TextView mainBtnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
+        TextView mainRidingGoal = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingGoal);
+        TextView mainRidingAchievement = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingAchievement);
+        ImageView mainProfileImage = ((MainActivity) MainActivity.context_main).findViewById(R.id.iv_profile_image);
+
+        oriNickname = mainBtnSigninOrNickname.getText().toString();
         String newNickname = editNickname.getText().toString();
+
         String ridingGoal = editRidingGoal.getText().toString();
 
-        if (ridingGoal.equals("")) {
-
-        } else {
-
+        if (!ridingGoal.equals("")) {
+            int ridingGoalInt = Integer.parseInt(ridingGoal);
+            mainRidingGoal.setText(ridingGoal+"km");
+            mainRidingAchievement.setText("0km");
+            ProgressBar mainProgressBar = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainProgressBar);
+            mainProgressBar.setProgress(0);
+            editor.putInt("ridingGoal", ridingGoalInt*1000);
+            editor.putInt("ridingAchievement", 0);
+            editor.apply();
         }
+
         //닉네임 변경 여부
         if(!(oriNickname.equals(newNickname) || newNickname.equals(""))){
             //닉네임 변경 api
@@ -166,7 +177,7 @@ public class BasicProfileActivity extends Activity {
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
                     if (response.isSuccessful()) {
                         if (!isImageChanged){
-                            btnSigninOrNickname.setText(newNickname);
+                            mainBtnSigninOrNickname.setText(newNickname);
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), response.code()+"", Toast.LENGTH_SHORT);
@@ -189,7 +200,7 @@ public class BasicProfileActivity extends Activity {
                     public void onResponse(Call<ProfileImage> call, Response<ProfileImage> response) {
                         if (response.isSuccessful()) {
                             imageApi = new ImageApi();
-                            imageApi.getImage(profileImage, imageApi.getProfileImageUrl(id));
+                            imageApi.getImage(mainProfileImage, imageApi.getProfileImageUrl(id));
                         } else {
                             Log.v("profile_image",response.code()+"");
                         }
