@@ -137,7 +137,7 @@
                     android:inputType="numberSigned"
                     android:background="@drawable/edittext_rounded_corner"
                     android:gravity="center_vertical"
-                    android:hint="주행 목표치 설정 km"
+                    android:hint="주행 목표치 설정 (km)"
                     android:paddingLeft="7dp"
                     android:text=""
                     android:textColor="#000000"
