@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
     LinearLayout ll;
     TextView tvMainId;
     TextView tvMainRidingTotal;
+    ProgressBar mainProgressBar;
 
 
     //다른 activity에서 main component 접근에 이용용
@@ -118,6 +121,11 @@ public class MainActivity extends AppCompatActivity {
         id = pref.getString("id", "");
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
+
+        //main 주행 게이지
+        mainProgressBar = findViewById(R.id.mainProgressBar);
+        mainProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#54A2FF"), PorterDuff.Mode.SRC_IN);
+
 
 //        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 //        drawerView = (View) findViewById(R.id.drawer);
@@ -239,78 +247,78 @@ public class MainActivity extends AppCompatActivity {
 
 //        현재위치 날씨불러오기
 //            현재위치 불러오기
-        TextView temperature = findViewById(R.id.temperatureText);
-        TextView moisture = findViewById(R.id.moistureText);
-        FusedLocationProviderClient fusedLocationClient;
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
-                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        fusedLocationClient.getLastLocation()
-                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
-                    @Override
-                    public void onSuccess(Location location) {
-                        long now = System.currentTimeMillis();
-                        Date date = new Date(now);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                        SimpleDateFormat timeFormat = new SimpleDateFormat("hhmm");
-                        String nowDate = dateFormat.format(date);
-                        date = new Date(now-3600000);
-                        String nowTime = timeFormat.format(date);
-
-                        int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
-                        int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
-
-                        //위치불러오기 성공시 날씨 불러오기
-                        new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
-                            @Override
-                            public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
-                                if (response.isSuccessful()) {
-
-                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("T1H")) {
-                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
-                                            break;
-                                        }
-                                    }
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("SKY")) {
-                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
-                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
-                                            if (cloud_amount <= 5) {
-                                                weatherImage.setAnimation(R.raw.animation_sunny);
-                                            } else if (cloud_amount <= 8) {
-                                                weatherImage.setAnimation(R.raw.animation_cloudy);
-                                            } else {
-                                                weatherImage.setAnimation(R.raw.animation_overcast);
-                                            }
-                                            weatherImage.playAnimation();
-                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
-                                            break;
-                                        }
-
-                                    }
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("REH")) {
-                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
-                                            break;
-                                        }
-                                    }
-                                } else {
-                                    Log.e("api error", response.message());
-                                }
-
-                            }
-
-                            @Override
-                            public void onFailure(Call<RealTimeWeather> call, Throwable t) {
-
-                            }
-                        });
-                    }
-                });
+//        TextView temperature = findViewById(R.id.temperatureText);
+//        TextView moisture = findViewById(R.id.moistureText);
+//        FusedLocationProviderClient fusedLocationClient;
+//        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+//                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//            return;
+//        }
+//        fusedLocationClient.getLastLocation()
+//                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+//                    @Override
+//                    public void onSuccess(Location location) {
+//                        long now = System.currentTimeMillis();
+//                        Date date = new Date(now);
+//                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+//                        SimpleDateFormat timeFormat = new SimpleDateFormat("hhmm");
+//                        String nowDate = dateFormat.format(date);
+//                        date = new Date(now-3600000);
+//                        String nowTime = timeFormat.format(date);
+//
+//                        int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
+//                        int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
+//
+//                        //위치불러오기 성공시 날씨 불러오기
+//                        new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
+//                            @Override
+//                            public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
+//                                if (response.isSuccessful()) {
+//
+//                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
+//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+//                                        if (realTimeWeather.get(i).category.equals("T1H")) {
+//                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
+//                                            break;
+//                                        }
+//                                    }
+//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+//                                        if (realTimeWeather.get(i).category.equals("SKY")) {
+//                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
+//                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
+//                                            if (cloud_amount <= 5) {
+//                                                weatherImage.setAnimation(R.raw.animation_sunny);
+//                                            } else if (cloud_amount <= 8) {
+//                                                weatherImage.setAnimation(R.raw.animation_cloudy);
+//                                            } else {
+//                                                weatherImage.setAnimation(R.raw.animation_overcast);
+//                                            }
+//                                            weatherImage.playAnimation();
+//                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
+//                                            break;
+//                                        }
+//
+//                                    }
+//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+//                                        if (realTimeWeather.get(i).category.equals("REH")) {
+//                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
+//                                            break;
+//                                        }
+//                                    }
+//                                } else {
+//                                    Log.e("api error", response.message());
+//                                }
+//
+//                            }
+//
+//                            @Override
+//                            public void onFailure(Call<RealTimeWeather> call, Throwable t) {
+//
+//                            }
+//                        });
+//                    }
+//                });
 
 
     }//onCreate()
@@ -382,6 +390,7 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         time = totalTime[0] + "분 " + totalTime[1] + "초";
                         tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: " + distance +"m  "+"\n\uD83D\uDD51 총 시간: " + time);
+                        mainProgressBar.setProgress(distance);
                     } catch (Exception e) {
                         tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: 0m"+"  "+"\n\uD83D\uDD51 총 시간: 0 : 0");
                     }

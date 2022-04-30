@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
@@ -48,6 +49,7 @@ public class BasicProfileActivity extends Activity {
     ApiInterface api;
     TextView textId, btnSignout;
     EditText editNickname;
+    EditText editRidingGoal;
     ImageButton btnClose;
     Button btnOk;
     ImageView ivProfileImage;
@@ -70,6 +72,7 @@ public class BasicProfileActivity extends Activity {
 
         textId = (TextView) findViewById(R.id.text_profile_id);
         editNickname = (EditText) findViewById(R.id.edit_profile_nickname);
+        editRidingGoal = findViewById(R.id.edit_riding_goal);
         ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
 
         //hibike server api
@@ -140,8 +143,16 @@ public class BasicProfileActivity extends Activity {
     }
     private void setProfile(){
         TextView btnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
+        ImageView profileImage = ((MainActivity) MainActivity.context_main).findViewById(R.id.iv_profile_image);
         oriNickname = btnSigninOrNickname.getText().toString();
         String newNickname = editNickname.getText().toString();
+        String ridingGoal = editRidingGoal.getText().toString();
+
+        if (ridingGoal.equals("")) {
+
+        } else {
+
+        }
         //닉네임 변경 여부
         if(!(oriNickname.equals(newNickname) || newNickname.equals(""))){
             //닉네임 변경 api
@@ -149,14 +160,13 @@ public class BasicProfileActivity extends Activity {
             BasicProfile nicknameProfile = new BasicProfile();
             nicknameProfile.setId(id);
             nicknameProfile.setNickname(newNickname);
+            //TODO: 변경시 메인 activity, 현재 activity text, image 변경
             api.setNickname(nicknameProfile).enqueue(new Callback<BasicProfile>() {
                 @Override
                 public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
                     if (response.isSuccessful()) {
                         if (!isImageChanged){
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+                            btnSigninOrNickname.setText(newNickname);
                         }
                     } else {
                         Toast.makeText(getApplicationContext(), response.code()+"", Toast.LENGTH_SHORT);
@@ -178,10 +188,8 @@ public class BasicProfileActivity extends Activity {
                     @Override
                     public void onResponse(Call<ProfileImage> call, Response<ProfileImage> response) {
                         if (response.isSuccessful()) {
-                            Log.v("profile_image","success");
-                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                            startActivity(intent);
+                            imageApi = new ImageApi();
+                            imageApi.getImage(profileImage, imageApi.getProfileImageUrl(id));
                         } else {
                             Log.v("profile_image",response.code()+"");
                         }
