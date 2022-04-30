@@ -9,6 +9,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -53,6 +54,7 @@ public class BasicProfileActivity extends Activity {
     EditText editRidingGoal;
     ImageButton btnClose;
     Button btnOk;
+    ImageView ivMainProfileImage;
     ImageView ivProfileImage;
     String oriNickname, mediaPath, id;
     boolean isImageChanged=false;
@@ -74,17 +76,19 @@ public class BasicProfileActivity extends Activity {
         textId = (TextView) findViewById(R.id.text_profile_id);
         editNickname = (EditText) findViewById(R.id.edit_profile_nickname);
         editRidingGoal = findViewById(R.id.edit_riding_goal);
-        ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
-
+//        ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
+        ivMainProfileImage = ((MainActivity)MainActivity.context_main).findViewById(R.id.iv_profile_image);
+        ivProfileImage = findViewById(R.id.iv_basic_profile_image);
         //hibike server api
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         //모달에 띄어줄 닉네임, 아이디 받아오기
         getProfile();
 
-        //프로필 이미지 받아서 이미지뷰에 보여주기
-        imageApi = new ImageApi();
-        imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
+        BitmapDrawable drawable = (BitmapDrawable) ivMainProfileImage.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+
+        ivProfileImage.setImageBitmap(bitmap);
 
         //프로필 이미지
         ivProfileImage.setOnClickListener(new View.OnClickListener() {
