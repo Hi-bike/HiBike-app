@@ -271,7 +271,7 @@ public class MainActivity extends AppCompatActivity {
                                     ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
                                     for (int i = 0; realTimeWeather.size() > i; i++) {
                                         if (realTimeWeather.get(i).category.equals("T1H")) {
-                                            temperature.setText(realTimeWeather.get(i).fcstValue + " ℃");
+                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
                                             break;
                                         }
                                     }
@@ -294,7 +294,7 @@ public class MainActivity extends AppCompatActivity {
                                     }
                                     for (int i = 0; realTimeWeather.size() > i; i++) {
                                         if (realTimeWeather.get(i).category.equals("REH")) {
-                                            moisture.setText(realTimeWeather.get(i).fcstValue + " %");
+                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
                                             break;
                                         }
                                     }
