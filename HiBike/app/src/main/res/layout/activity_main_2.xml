@@ -117,7 +117,7 @@
         <androidx.cardview.widget.CardView
             android:id="@+id/btn_profile"
             android:layout_width="match_parent"
-            android:layout_height="190dp"
+            android:layout_height="220dp"
             android:layout_marginHorizontal="20dp"
             android:layout_marginVertical="10dp"
             android:background="#FFFFFF"
@@ -169,9 +169,9 @@
                     <ProgressBar
                         android:id="@+id/mainProgressBar"
                         style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="260dp"
+                        android:layout_width="245dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginLeft="16dp"
+                        android:layout_marginLeft="20dp"
                         android:layout_marginTop="6dp"/>
 
                     <TextView
@@ -225,7 +225,7 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="50dp"
+                    android:layout_height="60dp"
                     android:layout_gravity="bottom"
                     android:orientation="vertical">
                     <View
@@ -299,6 +299,14 @@
                 android:text="riding total"
                 android:layout_marginLeft="20dp"
                 android:layout_marginTop="62dp"
+                android:textSize="15dp"
+                android:layout_gravity="start"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="👍나의 목표"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="120dp"
                 android:textSize="15dp"
                 android:layout_gravity="start"/>
         </androidx.cardview.widget.CardView>
