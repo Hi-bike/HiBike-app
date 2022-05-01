@@ -83,7 +83,11 @@ public class BasicProfileActivity extends Activity {
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         //모달에 띄어줄 닉네임, 아이디 받아오기
-        getProfile();
+        TextView mainNickname = ((MainActivity) MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
+        editNickname.setText(mainNickname.getText());
+        textId.setText(id);
+
+
 
         BitmapDrawable drawable = (BitmapDrawable) ivMainProfileImage.getDrawable();
         Bitmap bitmap = drawable.getBitmap();
@@ -127,25 +131,6 @@ public class BasicProfileActivity extends Activity {
         });
     }
 
-
-    private void getProfile(){
-        api.getProfile(id).enqueue(new Callback<BasicProfile>() {
-            @Override
-            public void onResponse(Call<BasicProfile> call, Response<BasicProfile> response) {
-                if(response.isSuccessful()){
-                    String user_id = response.body().getId();
-                    textId.setText(user_id);
-                    editNickname.setText(response.body().getNickname());
-                }else{
-                    Toast.makeText(getApplicationContext(), "서버 오류", Toast.LENGTH_SHORT);
-                }
-            }
-            @Override
-            public void onFailure(Call<BasicProfile> call, Throwable t) {
-                Toast.makeText(getApplicationContext(), "통신 실패", Toast.LENGTH_SHORT);
-            }
-        });
-    }
     private void setProfile(){
         TextView mainBtnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
         TextView mainRidingGoal = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingGoal);
