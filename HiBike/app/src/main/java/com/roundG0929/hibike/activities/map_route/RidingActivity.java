@@ -166,6 +166,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
 
+        //=============TEST==================
+        TextView testText = findViewById(R.id.testText);
+
+
+
         //실시간 속도 표출 thread
         Handler ridingHandler = new Handler();
         Thread ridingThread = new Thread(new Runnable() {
@@ -199,7 +204,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                 while (ridingStartFlag){
                     try {
-                        Thread.sleep(995);
+                        Thread.sleep(100);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -211,6 +216,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
                     //네이버 자체 메소드 사용
                     //speed = Double.parseDouble(String.format("%.1f", nowLatLng.distanceTo(beforeLatLng)*3.6));
+
+                    //==========TEST
+
 
                     //외부함수 사용
                     pointDistance = distance(beforeLatLng.latitude,beforeLatLng.longitude, nowLatLng.latitude,nowLatLng.longitude,"meter");
@@ -228,6 +236,13 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             distText.setText(String.format("%.1f", pointDistance)+"");
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
+
+                            testText.append(pointDistance+"\n");
+                            Log.d("RIDING THREAD",
+                                    "\ndistance:" + totalDistance +
+                                    "\npoint:"+pointDistance+
+                                    "\nbefore:"+beforeLatLng.latitude+beforeLatLng.longitude+
+                                    "\nnow:"+nowLatLng.latitude+nowLatLng.longitude);
                         }
                     });
                     Log.d("ridingThread", "run: ");
@@ -420,6 +435,8 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     private static double rad2deg(double rad) {
         return (rad * 180 / Math.PI);
     }
+
+
 
     //dp단위 px로 변환
     public int convertDpToPx(Context context,int dp){
