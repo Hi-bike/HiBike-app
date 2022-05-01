@@ -3,13 +3,13 @@ package com.roundG0929.hibike.api.server.dto;
 import com.google.gson.annotations.SerializedName;
 
 public class GetRidingOne {
-    @SerializedName("id") int id;
+    @SerializedName("result") Object result;
 
-    public int getId() {
-        return id;
+    public Object getResult() {
+        return result;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setResult(Object result) {
+        this.result = result;
     }
 }

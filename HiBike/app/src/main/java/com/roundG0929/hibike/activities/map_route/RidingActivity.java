@@ -18,6 +18,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -41,6 +42,7 @@ import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.roundG0929.hibike.HibikeUtils;
+import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
@@ -108,6 +110,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     FrameLayout speedLayout;
     LocationOverlay locationOverlay; // 현재위치 표시 오버레이
     boolean sw = true;
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+
     //test ui
     TextView distText;//timeText,
 
@@ -118,8 +123,8 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         setContentView(R.layout.activity_riding);
 
         //userId
-        SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
-        SharedPreferences.Editor editor = pref.edit();
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
 
         userId = pref.getString("id", "");
 
@@ -352,6 +357,24 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
                 data.setDistance(totalDistance+"");
 
+                //ridingGoal ridingAchievement
+                int ridingGoal = pref.getInt("ridingGoal", 0);
+                if (ridingGoal != 0) {
+                    int distanceInt = (int)totalDistance;
+                    int nowRidingAchievement = pref.getInt("ridingAchievement",0);
+                    nowRidingAchievement += distanceInt;
+
+                    editor.putInt("ridingAchievement",nowRidingAchievement);
+                    editor.apply();
+
+                    double percentRiding = (double) nowRidingAchievement / (double) ridingGoal * 100;
+                    ProgressBar mainProgressBar = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainProgressBar);
+
+                    mainProgressBar.setProgress((int)percentRiding);
+                    TextView mainRidingAchievement = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingAchievement);
+                    mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
+                }
+
                 api.postRiding(data).enqueue(new Callback<PostRiding>() {
                     @Override
                     public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
@@ -365,13 +388,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     public void onFailure(Call<PostRiding> call, Throwable t) {}
                 });
 
-                //TODO: 주행 경로 캡쳐 후 이미지 저장
-                postRidingImage();
-
                 ridingGoAndStopButton.setText("나가기");
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+//                        postRidingImage();
                         finish();
                     }
                 });

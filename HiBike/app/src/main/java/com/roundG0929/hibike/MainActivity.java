@@ -13,13 +13,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -38,6 +42,7 @@ import com.roundG0929.hibike.activities.riding_record.RidingRecordListActivity;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
+import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 import com.roundG0929.hibike.activities.board.ListViewActivity;
 import com.roundG0929.hibike.api.weather.WeatherApi;
@@ -60,21 +65,28 @@ public class MainActivity extends AppCompatActivity {
     CardView btn_open;
     //Navigation 안에 있는 버튼들
 
-    TextView  btnRidingRecord;//로그인 버튼
+    TextView btnRidingRecord;//로그인 버튼
     TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
+    TextView tvMyRecord;
     CardView btnPosts;//게시판
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
-
+    LinearLayout ll;
+    TextView tvMainId;
+    TextView tvMainRidingTotal;
+    ProgressBar mainProgressBar;
+    TextView mainRidingGoal;
+    TextView mainRidingAchievement;
+    LinearLayout llProfile;
 
     //다른 activity에서 main component 접근에 이용용
     public static Context context_main;
 
 
     //Navigation drawer
-    private DrawerLayout drawerLayout;
-    private View drawerView;
+//    private DrawerLayout drawerLayout;
+//    private View drawerView;
 
     //뒤로가기 두번 누를시, 앱 종료
     private long backKeyPressedTime = 0;
@@ -102,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_2);
         context_main = this;
 
-        getWindow().setNavigationBarColor(Color.WHITE);//네이게이션바 투명
+//        getWindow().setNavigationBarColor(Color.WHITE);//네이게이션바 투명
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -112,59 +124,62 @@ public class MainActivity extends AppCompatActivity {
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerView = (View) findViewById(R.id.drawer);
-
-        //Navigation drawer 여는 버튼
-        btn_open = findViewById(R.id.btn_open);
-        btn_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(drawerView);
-                isDrawerOpened = true;
-            }
-        });
-
-        // drawer 리스너
-        drawerLayout.setDrawerListener(listener);
-        drawerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawerView = (View) findViewById(R.id.drawer);
+//
+//        //Navigation drawer 여는 버튼
+//        btn_open = findViewById(R.id.btn_profile);
+//        btn_open.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                drawerLayout.openDrawer(drawerView);
+//                isDrawerOpened = true;
+//            }
+//        });
+//
+//        // drawer 리스너
+//        drawerLayout.setDrawerListener(listener);
+//        drawerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return true;
+//            }
+//        });
 
         btnSigninOrNickname = (TextView) findViewById(R.id.btn_signin_or_nickname);
 
         if (id == "") {
-            btnSigninOrNickname.setText("로그인");
-            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+            btnSigninOrNickname.setText("로그인 후 이용해주세요!");
+            ll = findViewById(R.id.layout_profile);
+            ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
                     startActivity(intent);
                 }
             });
+//            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+//            });
         } else {
             getProfile();
             //프로필 이미지 설정
-            ivProfileImage = (ImageView) findViewById(R.id.iv_drawer_profile_image);
+
+            tvMainId = findViewById(R.id.tv_main_id);
+            tvMainId.setText(id+" \uD83D\uDC4B");
+
+            tvMainRidingTotal = findViewById(R.id.tv_main_riding_total);
+            getTotalInfo();
+
+            ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
             imageApi = new ImageApi();
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
-            btnRidingRecord = (TextView) findViewById(R.id.btn_riding_record);
-            btnRidingRecord.setText("주행 기록");
-            btnRidingRecord.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
-                    startActivity(intent);
-                }
-            });
 
             btnPosts = findViewById(R.id.btn_posts);
-            //btnPosts.setText("자유게시판");
-
             btnPosts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -172,8 +187,8 @@ public class MainActivity extends AppCompatActivity {
                     startActivity(intent);
                 }
             });
-
-            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+            ll = findViewById(R.id.layout_profile);
+            ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), BasicProfileActivity.class);
@@ -182,6 +197,15 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
+        //내 주행 기록
+        tvMyRecord = findViewById(R.id.tv_my_record);
+        tvMyRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
+                startActivity(intent);
+            }
+        });
         //권한요청, 확인
         TedPermission.create()
                 .setPermissionListener(permissionlistener)
@@ -218,8 +242,27 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        //현재위치 날씨불러오기
-            //현재위치 불러오기
+        //main 주행 게이지
+        mainProgressBar = findViewById(R.id.mainProgressBar);
+        mainProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#54A2FF"), PorterDuff.Mode.SRC_IN);
+        mainRidingGoal = findViewById(R.id.mainRidingGoal);
+        mainRidingAchievement = findViewById(R.id.mainRidingAchievement);
+
+        int ridingGoal = pref.getInt("ridingGoal", 0);
+        mainRidingGoal.setText((ridingGoal/1000)+"km");
+
+        if (ridingGoal != 0) {
+            int nowRidingAchievement = pref.getInt("ridingAchievement", 0);
+            mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
+
+            int percentRiding = (int) ((double)nowRidingAchievement/(double) ridingGoal * 100);
+            mainProgressBar.setProgress(percentRiding);
+        }
+
+
+
+//        현재위치 날씨불러오기
+//        현재위치 불러오기
         TextView temperature = findViewById(R.id.temperatureText);
         TextView moisture = findViewById(R.id.moistureText);
         FusedLocationProviderClient fusedLocationClient;
@@ -240,8 +283,6 @@ public class MainActivity extends AppCompatActivity {
                         date = new Date(now-3600000);
                         String nowTime = timeFormat.format(date);
 
-
-
                         int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
                         int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
 
@@ -249,40 +290,42 @@ public class MainActivity extends AppCompatActivity {
                         new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
                             @Override
                             public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
-                                ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
-                                //카테고리별 데이터구분
-                                    //기온
-                                for (int i = 0; realTimeWeather.size() > i; i++) {
-                                    if (realTimeWeather.get(i).category.equals("T1H")) {
-                                        temperature.setText(realTimeWeather.get(i).fcstValue+" ℃");
-                                        break;
-                                    }
-                                }
-                                    //흐림정도
-                                for (int i = 0; realTimeWeather.size() > i; i++) {
-                                    if (realTimeWeather.get(i).category.equals("SKY")) {
-                                        int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
-                                        LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
-                                        if(cloud_amount<=5){
-                                            weatherImage.setAnimation(R.raw.animation_sunny);
-                                        }else if(cloud_amount<=8){
-                                            weatherImage.setAnimation(R.raw.animation_cloudy);
-                                        }else {
-                                            weatherImage.setAnimation(R.raw.animation_overcast);
-                                        }
-                                        weatherImage.playAnimation();
-                                        weatherImage.setRepeatCount(LottieDrawable.INFINITE);
-                                        break;
-                                    }
+                                if (response.isSuccessful()) {
 
-                                }
-                                    //습도
-                                for (int i = 0; realTimeWeather.size() > i; i++) {
-                                    if (realTimeWeather.get(i).category.equals("REH")) {
-                                        moisture.setText(realTimeWeather.get(i).fcstValue+" %");
-                                        break;
+                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("T1H")) {
+                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
+                                            break;
+                                        }
                                     }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("SKY")) {
+                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
+                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
+                                            if (cloud_amount <= 5) {
+                                                weatherImage.setAnimation(R.raw.animation_sunny);
+                                            } else if (cloud_amount <= 8) {
+                                                weatherImage.setAnimation(R.raw.animation_cloudy);
+                                            } else {
+                                                weatherImage.setAnimation(R.raw.animation_overcast);
+                                            }
+                                            weatherImage.playAnimation();
+                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
+                                            break;
+                                        }
+
+                                    }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("REH")) {
+                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    Log.e("api error", response.message());
                                 }
+
                             }
 
                             @Override
@@ -303,36 +346,36 @@ public class MainActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
-
-    //Drawer 리스너
-    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
-        @Override
-        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
-        @Override
-        public void onDrawerOpened(@NonNull View drawerView) {}
-        @Override
-        public void onDrawerClosed(@NonNull View drawerView) {}
-        @Override
-        public void onDrawerStateChanged(int newState) {}
-    };
-
-    @Override
-    public void onBackPressed() {
-        if(isDrawerOpened){
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            isDrawerOpened = false;
-        }
-        else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-            backKeyPressedTime = System.currentTimeMillis();
-            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-        else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-            finish();
-            toast.cancel();
-        }
-    }
+//
+//    //Drawer 리스너
+//    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
+//        @Override
+//        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
+//        @Override
+//        public void onDrawerOpened(@NonNull View drawerView) {}
+//        @Override
+//        public void onDrawerClosed(@NonNull View drawerView) {}
+//        @Override
+//        public void onDrawerStateChanged(int newState) {}
+//    };
+//
+//    @Override
+//    public void onBackPressed() {
+//        if(isDrawerOpened){
+//            drawerLayout.closeDrawer(Gravity.LEFT);
+//            isDrawerOpened = false;
+//        }
+//        else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+//            backKeyPressedTime = System.currentTimeMillis();
+//            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+//            toast.show();
+//            return;
+//        }
+//        else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+//            finish();
+//            toast.cancel();
+//        }
+//    }
 
     private void getProfile(){
         api.getProfile(id).enqueue(new Callback<BasicProfile>() {
@@ -351,7 +394,30 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public void getTotalInfo(){
+        api.getRidingTotal(id).enqueue(new Callback<GetRidingTotal>() {
+            @Override
+            public void onResponse(Call<GetRidingTotal> call, Response<GetRidingTotal> response) {
+                if (response.isSuccessful()) {
+                    String totalDistance = response.body().getTotalDistance();
+                    int distance = (int) Math.round(Double.parseDouble(totalDistance));
+                    String[] totalTime = response.body().getTotalTime().split(" : ");
+                    String time="";
+                    try {
+                        time = totalTime[0] + "분 " + totalTime[1] + "초";
+                        tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: " + distance +"m  "+"\n\uD83D\uDD51 총 시간: " + time);
+                    } catch (Exception e) {
+                        tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: 0m"+"  "+"\n\uD83D\uDD51 총 시간: 0 : 0");
+                    }
 
+                } else {
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<GetRidingTotal> call, Throwable t) {}
+        });
+    }
 
 
     //기상청 날씨 활용 위한 제공 메쏘드 (위경도 -> 기상청 고유 좌표계)
