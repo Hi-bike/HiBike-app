@@ -2,9 +2,9 @@ package com.roundG0929.hibike;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.FragmentManager;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.Activity;
@@ -13,7 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.graphics.PointF;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
@@ -21,78 +21,72 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
-import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.common.internal.Objects;
 import com.gun0912.tedpermission.PermissionListener;
 import com.gun0912.tedpermission.normal.TedPermission;
-import com.naver.maps.geometry.LatLng;
-import com.naver.maps.map.CameraUpdate;
-import com.naver.maps.map.LocationTrackingMode;
-import com.naver.maps.map.MapFragment;
-import com.naver.maps.map.NaverMap;
-import com.naver.maps.map.OnMapReadyCallback;
-import com.naver.maps.map.UiSettings;
-import com.naver.maps.map.overlay.LocationOverlay;
-import com.naver.maps.map.overlay.Marker;
-import com.naver.maps.map.overlay.PathOverlay;
-import com.naver.maps.map.util.FusedLocationSource;
-import com.naver.maps.map.util.MarkerIcons;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.activities.map_route.RidingActivity;
-import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
-import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
-import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
-import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
-import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.activities.riding_record.RidingRecordListActivity;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
+import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 import com.roundG0929.hibike.activities.board.ListViewActivity;
+import com.roundG0929.hibike.api.weather.WeatherApi;
+import com.roundG0929.hibike.api.weather.wheatherDto.Item;
+import com.roundG0929.hibike.api.weather.wheatherDto.RealTimeWeather;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback{
-    //길찾기,맵 관련 객체
-    GraphhopperResponse graphhopperResponse;
-    List<LatLng> coordsForDrawLine = new ArrayList<>();
-    MapFragment mapFragment;
-    public TextView textView;
-    NaverMap naverMapObj;
-    private static final int NAVER_LOCATION_PERMISSION_CODE = 1000;
-    private FusedLocationSource fusedLocationSource;
-
+public class MainActivity extends AppCompatActivity {
     //hibike server api
     ApiInterface api;
     //Navigation drawer 여는 버튼
-    ImageButton btn_open;
+    CardView btn_open;
     //Navigation 안에 있는 버튼들
-    TextView btnSigninOrNickname, btnDrivingRecord, btnPosts;//로그인 버튼
+
+    TextView btnRidingRecord;//로그인 버튼
+    TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
+    TextView tvMyRecord;
+    CardView btnPosts;//게시판
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
+    LinearLayout ll;
+    TextView tvMainId;
+    TextView tvMainRidingTotal;
+    ProgressBar mainProgressBar;
+    TextView mainRidingGoal;
+    TextView mainRidingAchievement;
+    LinearLayout llProfile;
 
     //다른 activity에서 main component 접근에 이용용
     public static Context context_main;
 
 
     //Navigation drawer
-    private DrawerLayout drawerLayout;
-    private View drawerView;
+//    private DrawerLayout drawerLayout;
+//    private View drawerView;
 
     //뒤로가기 두번 누를시, 앱 종료
     private long backKeyPressedTime = 0;
@@ -113,11 +107,14 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         }
     };
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_main_2);
         context_main = this;
+
+//        getWindow().setNavigationBarColor(Color.WHITE);//네이게이션바 투명
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
         SharedPreferences pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -127,52 +124,62 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawerView = (View) findViewById(R.id.drawer);
-
-        //Navigation drawer 여는 버튼
-        btn_open = (ImageButton) findViewById(R.id.btn_open);
-        btn_open.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                drawerLayout.openDrawer(drawerView);
-                isDrawerOpened = true;
-            }
-        });
-
-        // drawer 리스너
-        drawerLayout.setDrawerListener(listener);
-        drawerView.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                return true;
-            }
-        });
+//        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+//        drawerView = (View) findViewById(R.id.drawer);
+//
+//        //Navigation drawer 여는 버튼
+//        btn_open = findViewById(R.id.btn_profile);
+//        btn_open.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                drawerLayout.openDrawer(drawerView);
+//                isDrawerOpened = true;
+//            }
+//        });
+//
+//        // drawer 리스너
+//        drawerLayout.setDrawerListener(listener);
+//        drawerView.setOnTouchListener(new View.OnTouchListener() {
+//            @Override
+//            public boolean onTouch(View view, MotionEvent motionEvent) {
+//                return true;
+//            }
+//        });
 
         btnSigninOrNickname = (TextView) findViewById(R.id.btn_signin_or_nickname);
 
-        if(id == ""){
-            btnSigninOrNickname.setText("로그인");
-            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+        if (id == "") {
+            btnSigninOrNickname.setText("로그인 후 이용해주세요!");
+            ll = findViewById(R.id.layout_profile);
+            ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
                     startActivity(intent);
                 }
             });
-        }else{
+//            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//
+//                }
+//            });
+        } else {
             getProfile();
             //프로필 이미지 설정
-            ivProfileImage = (ImageView)findViewById(R.id.iv_drawer_profile_image);
+
+            tvMainId = findViewById(R.id.tv_main_id);
+            tvMainId.setText(id+" \uD83D\uDC4B");
+
+            tvMainRidingTotal = findViewById(R.id.tv_main_riding_total);
+            getTotalInfo();
+
+            ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
             imageApi = new ImageApi();
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
-            btnDrivingRecord = (TextView) findViewById(R.id.btn_driving_record);
-            btnDrivingRecord.setText("주행 기록");
 
-            btnPosts = (TextView) findViewById(R.id.btn_posts);
-            btnPosts.setText("자유게시판");
-
+            btnPosts = findViewById(R.id.btn_posts);
             btnPosts.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
@@ -180,8 +187,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                     startActivity(intent);
                 }
             });
-
-            btnSigninOrNickname.setOnClickListener(new View.OnClickListener() {
+            ll = findViewById(R.id.layout_profile);
+            ll.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), BasicProfileActivity.class);
@@ -190,6 +197,15 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             });
         }
 
+        //내 주행 기록
+        tvMyRecord = findViewById(R.id.tv_my_record);
+        tvMyRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
+                startActivity(intent);
+            }
+        });
         //권한요청, 확인
         TedPermission.create()
                 .setPermissionListener(permissionlistener)
@@ -202,23 +218,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 .check();
 
 
-        //초기맵설정
-        //맵 뷰 객체 할당
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
-        if (mapFragment == null) {
-            mapFragment = MapFragment.newInstance();
-            fragmentManager.beginTransaction().add(R.id.map, mapFragment).commit();
-        }
-        //위치추적기능 설정 객체
-        fusedLocationSource = new FusedLocationSource(this, NAVER_LOCATION_PERMISSION_CODE);
-        //firstMapSet 객체
-        FirstNaverMapSet firstNaverMapSet = new FirstNaverMapSet(getApplicationContext(),fusedLocationSource, MainActivity.this);
-        //맵객체 설정
-        mapFragment.getMapAsync(this::onMapReady);
-
-        //Dynamic route Test
-        Button routebutton = findViewById(R.id.routeButton);
+        //길찾기버튼
+        CardView routebutton = findViewById(R.id.routeButton);
         routebutton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -230,7 +231,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        Button ridingButton = findViewById(R.id.ridingButton);
+        //주행버튼
+        CardView ridingButton = findViewById(R.id.ridingButton);
         ridingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -240,98 +242,141 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        //main 주행 게이지
+        mainProgressBar = findViewById(R.id.mainProgressBar);
+        mainProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#54A2FF"), PorterDuff.Mode.SRC_IN);
+        mainRidingGoal = findViewById(R.id.mainRidingGoal);
+        mainRidingAchievement = findViewById(R.id.mainRidingAchievement);
+
+        int ridingGoal = pref.getInt("ridingGoal", 0);
+        mainRidingGoal.setText((ridingGoal/1000)+"km");
+
+        if (ridingGoal != 0) {
+            int nowRidingAchievement = pref.getInt("ridingAchievement", 0);
+            mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
+
+            int percentRiding = (int) ((double)nowRidingAchievement/(double) ridingGoal * 100);
+            mainProgressBar.setProgress(percentRiding);
+        }
+
+
+
+//        현재위치 날씨불러오기
+//        현재위치 불러오기
+        TextView temperature = findViewById(R.id.temperatureText);
+        TextView moisture = findViewById(R.id.moistureText);
+        FusedLocationProviderClient fusedLocationClient;
+        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        fusedLocationClient.getLastLocation()
+                .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                    @Override
+                    public void onSuccess(Location location) {
+                        long now = System.currentTimeMillis();
+                        Date date = new Date(now);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
+                        SimpleDateFormat timeFormat = new SimpleDateFormat("hhmm");
+                        String nowDate = dateFormat.format(date);
+                        date = new Date(now-3600000);
+                        String nowTime = timeFormat.format(date);
+
+                        int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
+                        int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
+
+                        //위치불러오기 성공시 날씨 불러오기
+                        new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
+                            @Override
+                            public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
+                                if (response.isSuccessful()) {
+
+                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("T1H")) {
+                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
+                                            break;
+                                        }
+                                    }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("SKY")) {
+                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
+                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
+                                            if (cloud_amount <= 5) {
+                                                weatherImage.setAnimation(R.raw.animation_sunny);
+                                            } else if (cloud_amount <= 8) {
+                                                weatherImage.setAnimation(R.raw.animation_cloudy);
+                                            } else {
+                                                weatherImage.setAnimation(R.raw.animation_overcast);
+                                            }
+                                            weatherImage.playAnimation();
+                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
+                                            break;
+                                        }
+
+                                    }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("REH")) {
+                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    Log.e("api error", response.message());
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<RealTimeWeather> call, Throwable t) {
+
+                            }
+                        });
+                    }
+                });
+
+
     }//onCreate()
+
 
     //권한요청결과 리스너(안드로이드 내장) tedpermission과 무관
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-
-        //위치추적기능 설정 객체 권한설정 대응
-        if(fusedLocationSource.onRequestPermissionsResult(requestCode,permissions,grantResults)){
-            if(!fusedLocationSource.isActivated()){
-                //firstMap.setLocationTrackingMode(LocationTrackingMode.None);
-            }
-            return;
-        }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
+//
+//    //Drawer 리스너
+//    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
+//        @Override
+//        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
+//        @Override
+//        public void onDrawerOpened(@NonNull View drawerView) {}
+//        @Override
+//        public void onDrawerClosed(@NonNull View drawerView) {}
+//        @Override
+//        public void onDrawerStateChanged(int newState) {}
+//    };
+//
+//    @Override
+//    public void onBackPressed() {
+//        if(isDrawerOpened){
+//            drawerLayout.closeDrawer(Gravity.LEFT);
+//            isDrawerOpened = false;
+//        }
+//        else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
+//            backKeyPressedTime = System.currentTimeMillis();
+//            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
+//            toast.show();
+//            return;
+//        }
+//        else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
+//            finish();
+//            toast.cancel();
+//        }
+//    }
 
-    //Drawer 리스너
-    DrawerLayout.DrawerListener listener = new DrawerLayout.DrawerListener() {
-        @Override
-        public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {}
-        @Override
-        public void onDrawerOpened(@NonNull View drawerView) {}
-        @Override
-        public void onDrawerClosed(@NonNull View drawerView) {}
-        @Override
-        public void onDrawerStateChanged(int newState) {}
-    };
-
-    @Override
-    public void onBackPressed() {
-        if(isDrawerOpened){
-            drawerLayout.closeDrawer(Gravity.LEFT);
-            isDrawerOpened = false;
-        }
-        else if (System.currentTimeMillis() > backKeyPressedTime + 2000) {
-            backKeyPressedTime = System.currentTimeMillis();
-            toast = Toast.makeText(this, "\'뒤로\' 버튼을 한번 더 누르시면 종료됩니다.", Toast.LENGTH_SHORT);
-            toast.show();
-            return;
-        }
-        else if (System.currentTimeMillis() <= backKeyPressedTime + 2000) {
-            finish();
-            toast.cancel();
-        }
-    }
-
-    //네이버맵 설정메소드
-    @Override
-    public void onMapReady(@NonNull NaverMap naverMap) {
-        naverMapObj = naverMap;
-        MapSetting mapSetting = new MapSetting();
-        mapSetting.firstMapSet(naverMap,getApplicationContext(),fusedLocationSource,MainActivity.this);
-    }
-
-    //현재위치 가져오기   --- TEST ---
-    public double[] startLocation() {
-        double[] latlng = new double[2];
-        latlng[0] = 0;latlng[1]=0;
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        Location location;
-
-        //위치권한 확인
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            Toast.makeText(getApplicationContext(),"권한 허용이 필요합니다.",Toast.LENGTH_SHORT).show();
-            return latlng;
-        }
-
-        //위치가져오기 GPS 수신 없으면 NETWORK 위치 사용 후 알림
-        try {
-            if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-                Toast.makeText(getApplicationContext(), "위치정보가 정확하지 않습니다 야외에서 사용해주세요", Toast.LENGTH_SHORT).show();
-                location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
-            }else{
-                location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-                //Toast.makeText(getApplicationContext(), "use gps", Toast.LENGTH_SHORT).show();
-            }
-
-            if(location != null){
-                double longitude = location.getLongitude();
-                double latitude = location.getLatitude();
-                latlng[0] = latitude;
-                latlng[1] = longitude;
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-
-        return latlng;
-    }
     private void getProfile(){
         api.getProfile(id).enqueue(new Callback<BasicProfile>() {
             @Override
@@ -348,5 +393,120 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 btnSigninOrNickname.setText(id);
             }
         });
+    }
+    public void getTotalInfo(){
+        api.getRidingTotal(id).enqueue(new Callback<GetRidingTotal>() {
+            @Override
+            public void onResponse(Call<GetRidingTotal> call, Response<GetRidingTotal> response) {
+                if (response.isSuccessful()) {
+                    String totalDistance = response.body().getTotalDistance();
+                    int distance = (int) Math.round(Double.parseDouble(totalDistance));
+                    String[] totalTime = response.body().getTotalTime().split(" : ");
+                    String time="";
+                    try {
+                        time = totalTime[0] + "분 " + totalTime[1] + "초";
+                        tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: " + distance +"m  "+"\n\uD83D\uDD51 총 시간: " + time);
+                    } catch (Exception e) {
+                        tvMainRidingTotal.setText("\uD83D\uDEB5 총 거리: 0m"+"  "+"\n\uD83D\uDD51 총 시간: 0 : 0");
+                    }
+
+                } else {
+                    Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onFailure(Call<GetRidingTotal> call, Throwable t) {}
+        });
+    }
+
+
+    //기상청 날씨 활용 위한 제공 메쏘드 (위경도 -> 기상청 고유 좌표계)
+    private LatXLngY convertGRID_GPS(int mode, double lat_X, double lng_Y )
+    {
+        double RE = 6371.00877; // 지구 반경(km)
+        double GRID = 5.0; // 격자 간격(km)
+        double SLAT1 = 30.0; // 투영 위도1(degree)
+        double SLAT2 = 60.0; // 투영 위도2(degree)
+        double OLON = 126.0; // 기준점 경도(degree)
+        double OLAT = 38.0; // 기준점 위도(degree)
+        double XO = 43; // 기준점 X좌표(GRID)
+        double YO = 136; // 기1준점 Y좌표(GRID)
+
+        //
+        // LCC DFS 좌표변환 ( code : "TO_GRID"(위경도->좌표, lat_X:위도,  lng_Y:경도), "TO_GPS"(좌표->위경도,  lat_X:x, lng_Y:y) )
+        //
+
+
+        double DEGRAD = Math.PI / 180.0;
+        double RADDEG = 180.0 / Math.PI;
+
+        double re = RE / GRID;
+        double slat1 = SLAT1 * DEGRAD;
+        double slat2 = SLAT2 * DEGRAD;
+        double olon = OLON * DEGRAD;
+        double olat = OLAT * DEGRAD;
+
+        double sn = Math.tan(Math.PI * 0.25 + slat2 * 0.5) / Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+        sn = Math.log(Math.cos(slat1) / Math.cos(slat2)) / Math.log(sn);
+        double sf = Math.tan(Math.PI * 0.25 + slat1 * 0.5);
+        sf = Math.pow(sf, sn) * Math.cos(slat1) / sn;
+        double ro = Math.tan(Math.PI * 0.25 + olat * 0.5);
+        ro = re * sf / Math.pow(ro, sn);
+        LatXLngY rs = new LatXLngY();
+
+        if (mode == 0) {
+            rs.lat = lat_X;
+            rs.lng = lng_Y;
+            double ra = Math.tan(Math.PI * 0.25 + (lat_X) * DEGRAD * 0.5);
+            ra = re * sf / Math.pow(ra, sn);
+            double theta = lng_Y * DEGRAD - olon;
+            if (theta > Math.PI) theta -= 2.0 * Math.PI;
+            if (theta < -Math.PI) theta += 2.0 * Math.PI;
+            theta *= sn;
+            rs.x = Math.floor(ra * Math.sin(theta) + XO + 0.5);
+            rs.y = Math.floor(ro - ra * Math.cos(theta) + YO + 0.5);
+        }
+        else {
+            rs.x = lat_X;
+            rs.y = lng_Y;
+            double xn = lat_X - XO;
+            double yn = ro - lng_Y + YO;
+            double ra = Math.sqrt(xn * xn + yn * yn);
+            if (sn < 0.0) {
+                ra = -ra;
+            }
+            double alat = Math.pow((re * sf / ra), (1.0 / sn));
+            alat = 2.0 * Math.atan(alat) - Math.PI * 0.5;
+
+            double theta = 0.0;
+            if (Math.abs(xn) <= 0.0) {
+                theta = 0.0;
+            }
+            else {
+                if (Math.abs(yn) <= 0.0) {
+                    theta = Math.PI * 0.5;
+                    if (xn < 0.0) {
+                        theta = -theta;
+                    }
+                }
+                else theta = Math.atan2(xn, yn);
+            }
+            double alon = theta / sn + olon;
+            rs.lat = alat * RADDEG;
+            rs.lng = alon * RADDEG;
+        }
+        return rs;
+    }
+
+
+
+    class LatXLngY
+    {
+        public double lat;
+        public double lng;
+
+        public double x;
+        public double y;
+
     }
 }

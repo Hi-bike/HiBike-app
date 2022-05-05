@@ -19,10 +19,14 @@ public class ImageApi extends Activity{
      */
     Bitmap bitmap;
     String profileImageUrl = "http://132.226.232.31/api/auth/image/";
+    String ridingImageUrl = "http://132.226.232.31/api/auth/rimage/";
 //    String profileImageUrl = "http://10.0.2.2:5000/api/auth/image/"; //로컬
 
     public String getProfileImageUrl(String id) {
         return this.profileImageUrl+id;
+    }
+    public String getRidingImageUrl(String unqueId) {
+        return this.ridingImageUrl+unqueId;
     }
 
     public void getImage(ImageView imageView, String imageUrl){

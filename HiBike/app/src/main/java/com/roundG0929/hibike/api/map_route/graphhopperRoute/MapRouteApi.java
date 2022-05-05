@@ -34,6 +34,7 @@ public class MapRouteApi {
     MapRouteApiInterface mapRouteApiInterface;
 
 
+
     public MapRouteApi() {
         retrofit = new Retrofit.Builder()
                 .baseUrl("https://graphhopper.com/api/1/")
@@ -63,7 +64,9 @@ public class MapRouteApi {
         @GET
         Call<GraphhopperResponse> getResponseObject(@Url String url);
 
-
+        //3point test api
+        @GET("route?point=37.37921020923355, 126.63248066405454&point=37.38557988521586, 126.63044381523052&point=37.38547474419894, 126.63936686377967&profile=bike&locale=kr&calc_points=true&points_encoded=false&key=8543250c-bd7b-4aa7-a013-ad631125b667")
+        Call<GraphhopperResponse> getdata_3pointTest();
     }
 
     //길찾기url(String)생성
@@ -87,6 +90,12 @@ public class MapRouteApi {
     public Call<GraphhopperResponse> getApi(LatLng startPoint,LatLng endPoint){
         Call<GraphhopperResponse> responseCall = mapRouteApiInterface.getResponseObject(makeUrl(startPoint,endPoint));
         return responseCall;
+    }
+
+    //3point test method
+    public Call<GraphhopperResponse> getApi_Test(){
+        Call<GraphhopperResponse> responseCall = mapRouteApiInterface.getdata_3pointTest();
+        return  responseCall;
     }
 
 //

@@ -9,43 +9,46 @@
     tools:context=".MainActivity" >
 
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+<!--    <FrameLayout-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="match_parent">-->
 
-    <fragment
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/map"
-        android:name="com.naver.maps.map.MapFragment">
-    </fragment>
+<!--        <fragment-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="match_parent"-->
+<!--            android:id="@+id/map"-->
+<!--            android:name="com.naver.maps.map.MapFragment">-->
+<!--        </fragment>-->
 
-        <ImageButton
-            android:id="@+id/btn_open"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@drawable/icons_list"
-            android:layout_margin="15dp" />
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_gravity="right">
-            <Button
-                android:id="@+id/routeButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="길찾기"/>
-            <Button
-                android:id="@+id/ridingButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="주행"/>
-        </LinearLayout>
+<!--        <ImageButton-->
+<!--            android:id="@+id/btn_open"-->
+<!--            android:layout_width="25dp"-->
+<!--            android:layout_height="25dp"-->
+<!--            android:background="@drawable/icons_list"-->
+<!--            android:layout_margin="15dp" />-->
+<!--        <FrameLayout-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:orientation="horizontal"-->
+<!--            android:layout_gravity="bottom">-->
+<!--            <Button-->
+<!--                android:id="@+id/ridingButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="center"-->
+<!--                android:layout_marginBottom="5dp"-->
+<!--                android:text="주행"/>-->
+<!--            <Button-->
+<!--                android:id="@+id/routeButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:layout_gravity="end"-->
+<!--                android:text="길찾기"/>-->
 
-    </FrameLayout>
-    <include layout="@layout/activity_drawer" />
+<!--        </FrameLayout>-->
+
+<!--    </FrameLayout>-->
+<!--    <include layout="@layout/activity_drawer" />-->
 </androidx.drawerlayout.widget.DrawerLayout>
 
 

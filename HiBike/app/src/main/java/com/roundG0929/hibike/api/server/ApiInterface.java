@@ -3,7 +3,14 @@ package com.roundG0929.hibike.api.server;
 
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.GetPost;
+import com.roundG0929.hibike.api.server.dto.GetRidingAll;
+import com.roundG0929.hibike.api.server.dto.GetRidingOne;
+import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
+import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.ProfileImage;
+import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
+import com.roundG0929.hibike.api.server.dto.RidingImage;
+import com.roundG0929.hibike.api.server.dto.RidingRegion;
 import com.roundG0929.hibike.api.server.dto.SendReply;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.dto.Signout;
@@ -12,7 +19,8 @@ import com.roundG0929.hibike.api.server.dto.SendPost;
 import com.roundG0929.hibike.api.server.dto.GetReply;
 import com.roundG0929.hibike.api.server.dto.GetReplyContent;
 import com.roundG0929.hibike.api.server.dto.GetPostContent;
-import java.util.List;
+
+import java.util.Map;
 
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
@@ -20,11 +28,14 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
+import retrofit2.http.HeaderMap;
+import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.QueryMap;
 
 public interface ApiInterface {
     @POST("api/auth/signin")
@@ -67,4 +78,26 @@ public interface ApiInterface {
 
     @POST("api/board/reply")
     Call<SendReply> sendReply(@Body SendReply data);
+
+    @GET("api/auth/rone/{unique_id}")
+    Call<GetRidingOne> getRidingInfoOne(@Path("unique_id") String uniqueId);
+
+    @POST("api/auth/rone")
+    Call<PostRiding> postRiding(@Body PostRiding data);
+
+    @GET("api/auth/rtotal/{userId}")
+    Call<GetRidingTotal> getRidingTotal(@Path("userId") String userId);
+
+    @GET("api/auth/rall/{userId}/{page}")
+    Call<GetRidingAll> getRidingAll(@Path("userId") String userId, @Path("page") int page);
+
+    @Multipart
+    @POST("api/auth/rimage") //프로필 사진 업데이트
+    Call<RidingImage> setRidingImage (@Part MultipartBody.Part file, @Part("unique_id") RequestBody param);
+
+    @POST("api/auth/sregion")
+    Call<RidingRegion> setRidingSRegion(@Body RidingRegion ridingRegion);
+
+    @POST("api/auth/eregion")
+    Call<RidingRegion> setRidingERegion(@Body RidingRegion ridingRegion);
 }

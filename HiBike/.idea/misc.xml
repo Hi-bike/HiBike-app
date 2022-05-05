@@ -53,6 +53,7 @@
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/bottom_menu.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/botton_menu.xml" value="0.2682291666666667" />
 <<<<<<< HEAD
+<<<<<<< HEAD
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/main_navigationmenu.xml" value="0.21875" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/navigation_drawer.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.378125" />
@@ -60,6 +61,31 @@
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5494791666666666" />
 =======
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.13072916666666667" />
+=======
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable-v24/bar_rounded2.xml" value="0.378125" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/bar_rounded.xml" value="0.378125" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.378125" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/ic_launcher_background.xml" value="0.13854166666666667" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/image_rounded_corner.xml" value="0.378125" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/imagebtn_states.xml" value="0.13854166666666667" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/round_button.xml" value="0.13854166666666667" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/view_cornor_top.xml" value="0.265625" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/view_rounded.xml" value="0.265625" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_basic_profile.xml" value="0.5" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.1" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main_2.xml" value="0.5" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_reply_list_view.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record.xml" value="0.264" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record_list.xml" value="0.25" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_searchplace.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signup.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.1" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.4" />
+>>>>>>> f231cf709e66c965b9ec84d699e8785585e2f8a7
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.19895833333333332" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.24739583333333334" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.19895833333333332" />
@@ -90,6 +116,7 @@
       </map>
     </option>
   </component>
+  <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
