@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
 
     // ui
     TextView tv_riding_id, tv_route, tv_riding_info, tv_starting_point, tv_unique_id, tv_riding_total;
+    ImageView ivRidingBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,14 @@ public class RidingRecordListActivity extends AppCompatActivity {
         getTotalInfo();
 
         tv_riding_total = findViewById(R.id.tv_riding_total);
+
+        ivRidingBack = findViewById(R.id.iv_riding_back);
+        ivRidingBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         listView = (ListView) findViewById(R.id.listview_riding);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);

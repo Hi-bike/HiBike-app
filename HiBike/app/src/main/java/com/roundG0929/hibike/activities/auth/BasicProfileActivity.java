@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -135,7 +136,6 @@ public class BasicProfileActivity extends Activity {
         TextView mainBtnSigninOrNickname = ((MainActivity)MainActivity.context_main).findViewById(R.id.btn_signin_or_nickname);
         TextView mainRidingGoal = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingGoal);
         TextView mainRidingAchievement = ((MainActivity) MainActivity.context_main).findViewById(R.id.mainRidingAchievement);
-        ImageView mainProfileImage = ((MainActivity) MainActivity.context_main).findViewById(R.id.iv_profile_image);
 
         oriNickname = mainBtnSigninOrNickname.getText().toString();
         String newNickname = editNickname.getText().toString();
@@ -188,8 +188,10 @@ public class BasicProfileActivity extends Activity {
                     @Override
                     public void onResponse(Call<ProfileImage> call, Response<ProfileImage> response) {
                         if (response.isSuccessful()) {
-                            imageApi = new ImageApi();
-                            imageApi.getImage(mainProfileImage, imageApi.getProfileImageUrl(id));
+                            Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
+                            ivMainProfileImage.setImageBitmap(myBitmap);
+//                            imageApi = new ImageApi();
+//                            imageApi.getImage(ivMainProfileImage, imageApi.getProfileImageUrl(id));
                         } else {
                             Log.v("profile_image",response.code()+"");
                         }

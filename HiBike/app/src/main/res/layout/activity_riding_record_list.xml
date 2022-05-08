@@ -14,8 +14,17 @@
         android:layout_height="55dp"
         app:layout_constraintStart_toStartOf="parent"
         android:orientation="horizontal"
+        android:background="#ffffff"
         tools:ignore="MissingConstraints">
 
+        <ImageView
+            android:id="@+id/iv_riding_back"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="10dp"
+            android:background="#ffffff"
+            android:src="@drawable/icons_back3" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -27,7 +36,7 @@
             android:textColor="@color/black"
             android:textSize="25dp"
             android:textStyle="bold"
-            android:paddingLeft="30dp"
+            android:paddingLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
