@@ -111,8 +111,9 @@ public class RidingRecordListActivity extends AppCompatActivity {
                             String startingPoint = jsonObject.getString("starting_region");
                             String endPoint = jsonObject.getString("end_region");
                             String uniqueId = jsonObject.getString("unique_id");
+                            int count = jsonObject.getInt("count");
 
-                            adapter.addItem(new RidingRecord(count--, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
+                            adapter.addItem(new RidingRecord(count, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
                             adapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
@@ -137,7 +138,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mLockListView = false; // lock 반납
             }
-        },800);
+        },600);
     }
 
     public void getTotalInfo(){
@@ -156,7 +157,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                         tv_riding_total.setText("총 거리: 0m"+"  "+"총 시간: 0분 : 0초");
                     }
 
-                    count = response.body().getCount();
+//                    count = response.body().getCount();
 
                 } else {
                     Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
