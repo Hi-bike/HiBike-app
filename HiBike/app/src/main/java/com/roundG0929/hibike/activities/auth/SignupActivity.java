@@ -61,7 +61,7 @@ public class SignupActivity extends AppCompatActivity {
                             Intent intent = new Intent(getApplicationContext(), SigninActivity.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(getApplicationContext(), "서버 에러", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                         }
                     }
                     @Override

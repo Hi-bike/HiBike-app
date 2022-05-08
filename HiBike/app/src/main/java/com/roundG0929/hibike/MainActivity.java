@@ -150,6 +150,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnSigninOrNickname = (TextView) findViewById(R.id.btn_signin_or_nickname);
 
+        //내 주행 기록
+        tvMyRecord = findViewById(R.id.tv_my_record);
+        tvMyRecord.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
+                startActivity(intent);
+            }
+        });
         if (id == "") {
             btnSigninOrNickname.setText("로그인 후 이용해주세요!");
             ll = findViewById(R.id.layout_profile);
@@ -199,15 +208,7 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-        //내 주행 기록
-        tvMyRecord = findViewById(R.id.tv_my_record);
-        tvMyRecord.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getApplicationContext(), RidingRecordListActivity.class);
-                startActivity(intent);
-            }
-        });
+
         //권한요청, 확인
         TedPermission.create()
                 .setPermissionListener(permissionlistener)

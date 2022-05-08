@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -51,6 +52,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
 
     // ui
     TextView tv_riding_id, tv_route, tv_riding_info, tv_starting_point, tv_unique_id, tv_riding_total;
+    ImageView ivRidingBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,6 +70,14 @@ public class RidingRecordListActivity extends AppCompatActivity {
         getTotalInfo();
 
         tv_riding_total = findViewById(R.id.tv_riding_total);
+
+        ivRidingBack = findViewById(R.id.iv_riding_back);
+        ivRidingBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         listView = (ListView) findViewById(R.id.listview_riding);
         progressBar = (ProgressBar) findViewById(R.id.progressbar);
@@ -111,8 +121,9 @@ public class RidingRecordListActivity extends AppCompatActivity {
                             String startingPoint = jsonObject.getString("starting_region");
                             String endPoint = jsonObject.getString("end_region");
                             String uniqueId = jsonObject.getString("unique_id");
+                            int count = jsonObject.getInt("count");
 
-                            adapter.addItem(new RidingRecord(count--, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
+                            adapter.addItem(new RidingRecord(count, createTime, time, aveSpeed, distance, startingPoint, endPoint, uniqueId));
                             adapter.notifyDataSetChanged();
 
                         } catch (JSONException e) {
@@ -137,7 +148,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                 progressBar.setVisibility(View.GONE);
                 mLockListView = false; // lock 반납
             }
-        },800);
+        },600);
     }
 
     public void getTotalInfo(){
@@ -156,7 +167,7 @@ public class RidingRecordListActivity extends AppCompatActivity {
                         tv_riding_total.setText("총 거리: 0m"+"  "+"총 시간: 0분 : 0초");
                     }
 
-                    count = response.body().getCount();
+//                    count = response.body().getCount();
 
                 } else {
                     Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
