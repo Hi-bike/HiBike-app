@@ -161,6 +161,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                                 Toast.makeText(getApplicationContext(),response.code()+"등록완료.",Toast.LENGTH_SHORT).show();
                             }
                             Toast.makeText(getApplicationContext(),response.code()+"",Toast.LENGTH_SHORT).show();
+                            finish();
                         }
 
                         @Override
