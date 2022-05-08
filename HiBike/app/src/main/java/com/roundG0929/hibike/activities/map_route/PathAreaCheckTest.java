@@ -4,6 +4,8 @@ import com.naver.maps.geometry.LatLng;
 
 import java.util.ArrayList;
 
+
+//위험경로 지정 클래스
 public class PathAreaCheckTest {
 
     public PathAreaCheckTest() {
@@ -56,8 +58,8 @@ public class PathAreaCheckTest {
         areaPoints.add(twoPoints.get(0));
 
         //순환을 위한 첫 point 추가
-        twoPoints = getTargetPoints(gradient_Area,startPoint,0.00008);
-        areaPoints.add(twoPoints.get(0));
+//        twoPoints = getTargetPoints(gradient_Area,startPoint,0.00008);
+//        areaPoints.add(twoPoints.get(0));
 
         return  areaPoints;
     }

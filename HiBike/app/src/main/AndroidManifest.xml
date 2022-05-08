@@ -20,6 +20,9 @@
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.information.InformationWriteActivity"
+            android:exported="true" />
+        <activity
             android:name=".activities.riding_record.RidingRecordActivity"
             android:exported="false" />
         <activity

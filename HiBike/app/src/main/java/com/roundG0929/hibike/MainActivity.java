@@ -21,6 +21,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -36,6 +37,7 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
+import com.roundG0929.hibike.activities.information.InformationWriteActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
 import com.roundG0929.hibike.activities.map_route.RidingActivity;
 import com.roundG0929.hibike.activities.riding_record.RidingRecordListActivity;
@@ -279,10 +281,11 @@ public class MainActivity extends AppCompatActivity {
                         long now = System.currentTimeMillis();
                         Date date = new Date(now);
                         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                        SimpleDateFormat timeFormat = new SimpleDateFormat("hhmm");
+                        SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
                         String nowDate = dateFormat.format(date);
                         date = new Date(now-3600000);
                         String nowTime = timeFormat.format(date);
+                        Log.d("timecheck", nowTime);
 
                         int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
                         int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
@@ -337,6 +340,16 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+
+        Button inforTestButton = findViewById(R.id.inforWriteButton);
+        inforTestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent inforIntent = new Intent(getApplicationContext(), InformationWriteActivity.class);
+                startActivity(inforIntent);
+                overridePendingTransition(0, 0);
+            }
+        });
 
     }//onCreate()
 

@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -53,6 +55,8 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.ZoomControlView;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.api.information.InformationApi;
+import com.roundG0929.hibike.api.information.dto.DangerInformation_Points;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -324,8 +328,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
             //길찾기버튼 findButton, 선그리기 객체
-        PathOverlay pathOverlay = new PathOverlay();
-        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>();
+        PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
+        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //영역그리기 객체
+        ArrayList<Marker> informationMarkerList = new ArrayList<>();
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -350,43 +355,87 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
                             }
+                            for (int j = 0;j<coordsForDrawLine.size();j++){
+
+                            }
+
                             //경로그리기
                             pathOverlay.setCoords(coordsForDrawLine);
                             pathOverlay.setColor(Color.BLUE);
                             pathOverlay.setMap(naverMapObj);
 
 
+                            //위험정보 요청 바디 설정
+                            InformationApi informationApi = new InformationApi();
+
+
+                            //위험정보요청 영역 지정
                             for(int i = 0; coordsForDrawLine.size()-1>i;i++){
                                 areaTestPathOverlay.add(new PathOverlay());
                                 areaTestPathOverlay.get(i).setColor(Color.GREEN);
                                 areaTestPathOverlay.get(i).setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
                                 areaTestPathOverlay.get(i).setMap(naverMapObj);
 
+
+                                List<LatLng> informationAreaPoints_Latlng = new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1));
+                                List<Double> informationAreaPoints_Double = new ArrayList<>();
+                                for(int j = 0;j<4;j++){
+                                    informationAreaPoints_Double.add(informationAreaPoints_Latlng.get(j).latitude);
+                                    informationAreaPoints_Double.add(informationAreaPoints_Latlng.get(j).longitude);
+                                }
+                                informationApi.dangerInformationRequestBody.danger_range.add(informationAreaPoints_Double);
+
+
 //                                PathOverlay areaTestPathOverlay = new PathOverlay();
 //                                areaTestPathOverlay.setColor(Color.GREEN);
 //                                areaTestPathOverlay.setCoords(new PathAreaCheckTest().getAreaPoints(coordsForDrawLine.get(i),coordsForDrawLine.get(i+1)));
 //                                areaTestPathOverlay.setMap(naverMapObj);
+
+
                             }
 
-
-                            Marker marker = new Marker();
-                            marker.setPosition(startEndPoint[0]);
-                            marker.setMap(naverMapObj);
-                            marker.setOnClickListener(new Overlay.OnClickListener() {
+                            //위험정보 요청
+                            informationApi.getDangerPointsApiRaw(informationApi.dangerInformationRequestBody).enqueue(new Callback<DangerInformation_Points>() {
                                 @Override
-                                public boolean onClick(@NonNull Overlay overlay) {
-                                    naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
-                                            0,convertDpToPx(getApplicationContext(),300));
-                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
-                                    naverMapObj.moveCamera(cameraUpdate);
-                                    LinearLayout linearLayout = findViewById(R.id.informationBottomSheet);
-                                    BottomSheetBehavior behavior = BottomSheetBehavior.from(linearLayout);
-                                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
-                                    naverMapObj.setContentPadding(0,0,0,0);
-                                    return false;
+                                public void onResponse(Call<DangerInformation_Points> call, Response<DangerInformation_Points> response) {
+                                    if(response.body().danger_list.size() != 0){
+                                        for(int i =0;i<response.body().danger_list.size();i++){
+                                            informationMarkerList.add(new Marker(new LatLng(response.body().danger_list.get(i).get(0),response.body().danger_list.get(i).get(1))));
+                                        }
+                                        for(int j=0;j<informationMarkerList.size();j++){
+                                            informationMarkerList.get(j).setMap(naverMapObj);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onFailure(Call<DangerInformation_Points> call, Throwable t) {
+
                                 }
                             });
 
+
+
+                            //마커클릭 리스너
+//                            Marker marker = new Marker();
+//                            marker.setPosition(startEndPoint[0]);
+//                            marker.setMap(naverMapObj);
+//                            marker.setOnClickListener(new Overlay.OnClickListener() {
+//                                @Override
+//                                public boolean onClick(@NonNull Overlay overlay) {
+//                                    naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
+//                                            0,convertDpToPx(getApplicationContext(),300));
+//                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(marker.getPosition());
+//                                    naverMapObj.moveCamera(cameraUpdate);
+//                                    LinearLayout linearLayout = findViewById(R.id.informationBottomSheet);
+//                                    BottomSheetBehavior behavior = BottomSheetBehavior.from(linearLayout);
+//                                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+//                                    naverMapObj.setContentPadding(0,0,0,0);
+//                                    return false;
+//                                }
+//                            });
+
+                            //ui개선을 위한 경로선 보이기
                             ArrayList<LatLng> forMakeLatLngBounds = getLatLngBounds(coordsForDrawLine);
                             LatLngBounds latLngBounds = new LatLngBounds(forMakeLatLngBounds.get(0),forMakeLatLngBounds.get(1));
                             CameraUpdate cameraUpdate = CameraUpdate.fitBounds(latLngBounds,
@@ -396,6 +445,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                     convertDpToPx(getApplicationContext(),100));
                             cameraUpdate.animate(CameraAnimation.Easing);
                             naverMapObj.moveCamera(cameraUpdate);
+
                         }
                         @Override
                         public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
@@ -429,7 +479,61 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
 
-        // test--------------------------------------------------------------
+        // test--------------------------------------------------------------  위험지점
+
+        InformationApi informationApi = new InformationApi(); //위험정보api
+        TextView testText = findViewById(R.id.dangerTestText);
+        Button callTestBtn = findViewById(R.id.callTestButton);
+        callTestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Double> one_Area = new ArrayList<>();
+                //37.481294033646925, 126.58248016791308
+
+                double lat = 37.57393955757429;
+                double lng = 126.55585128033412;
+                double lat_down = 37.57393955757429 - 0.3;
+                double lng_right = 126.55585128033412 + 0.3;
+
+                one_Area.add(lat);
+                one_Area.add(lng);
+
+                one_Area.add(lat_down);
+                one_Area.add(lng);
+
+                one_Area.add(lat);
+                one_Area.add(lng_right);
+
+                one_Area.add(lat_down);
+                one_Area.add(lng_right);
+
+                informationApi.dangerInformationRequestBody.danger_range.add(one_Area);
+                Log.d("AREA", "points_area"+informationApi.dangerInformationRequestBody.danger_range.get(0).get(0) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(1) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(2) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(3) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(4) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(5) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(6) + "\n"
+                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(7) + "\n");
+
+                informationApi.getDangerPointsApiRaw(informationApi.dangerInformationRequestBody).enqueue(new Callback<DangerInformation_Points>() {
+                    @Override
+                    public void onResponse(Call<DangerInformation_Points> call, Response<DangerInformation_Points> response) {
+                        testText.append(response.code() + "\n");
+                        testText.append(response.code() + "\n");
+                        testText.append(response.code() + "\n");
+                        testText.append(response.body().danger_list.get(0).get(0)+ "\n");
+                    }
+                    @Override
+                    public void onFailure(Call<DangerInformation_Points> call, Throwable t) {
+                        Log.d("dsdas", "onFailure: " + t);
+                    }
+                });
+            }
+        });
+
+
 
 
 
@@ -468,6 +572,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
     }
 
+
+
     private void setStartOrend(int startOrend,LatLng latLng){
         LatLng inputLatlng = new LatLng(Double.parseDouble(String.format("%.6f",latLng.latitude)),
                                         Double.parseDouble(String.format("%.6f",latLng.longitude)));
@@ -481,6 +587,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+
+    //검색 액티비티
     ActivityResultLauncher<Intent> searchPlaceForResult = registerForActivityResult(
             new ActivityResultContracts.StartActivityForResult(),
             new ActivityResultCallback<ActivityResult>() {
