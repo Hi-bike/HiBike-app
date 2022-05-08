@@ -51,7 +51,7 @@ public class WeatherApi {
 
         Date date = new Date(now);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-        SimpleDateFormat timeFormat = new SimpleDateFormat("hhmm");
+        SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
         base_date = dateFormat.format(date);
         date = new Date(now-3600000);
         base_time = timeFormat.format(date);

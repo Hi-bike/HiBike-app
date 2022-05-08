@@ -9,6 +9,7 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -17,6 +18,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResult;
@@ -53,6 +55,7 @@ import com.naver.maps.map.widget.CompassView;
 import com.naver.maps.map.widget.ZoomControlView;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.api.information.InformationApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -324,8 +327,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
             //길찾기버튼 findButton, 선그리기 객체
-        PathOverlay pathOverlay = new PathOverlay();
-        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>();
+        PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
+        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //영역그리기 객체
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -350,6 +353,10 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
                             }
+                            for (int j = 0;j<coordsForDrawLine.size();j++){
+
+                            }
+
                             //경로그리기
                             pathOverlay.setCoords(coordsForDrawLine);
                             pathOverlay.setColor(Color.BLUE);
@@ -430,6 +437,59 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         // test--------------------------------------------------------------
+
+        InformationApi informationApi = new InformationApi(); //위험정보api
+        TextView testText = findViewById(R.id.dangerTestText);
+        Button callTestBtn = findViewById(R.id.callTestButton);
+        callTestBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                List<Double> one_Area = new ArrayList<>();
+                //37.481294033646925, 126.58248016791308
+
+                double lat = 37.57393955757429;
+                double lng = 126.55585128033412;
+                double lat_down = 37.57393955757429 - 0.3;
+                double lng_right = 126.55585128033412 + 0.3;
+
+                one_Area.add(lat);
+                one_Area.add(lng);
+
+                one_Area.add(lat_down);
+                one_Area.add(lng);
+
+                one_Area.add(lat);
+                one_Area.add(lng_right);
+
+                one_Area.add(lat_down);
+                one_Area.add(lng_right);
+
+                informationApi.dangerInformationRequest.danger_range.add(one_Area);
+                Log.d("AREA", "points_area"+informationApi.dangerInformationRequest.danger_range.get(0).get(0) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(1) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(2) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(3) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(4) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(5) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(6) + "\n"
+                        + informationApi.dangerInformationRequest.danger_range.get(0).get(7) + "\n");
+
+                informationApi.getDangerPointsApiRaw(informationApi.dangerInformationRequest).enqueue(new Callback<Object>() {
+                    @Override
+                    public void onResponse(Call<Object> call, Response<Object> response) {
+                        testText.append(response.code() + "\n");
+                        testText.append(response.body().toString() + "\n");
+                        testText.append(response.toString() + "\n");
+                    }
+                    @Override
+                    public void onFailure(Call<Object> call, Throwable t) {
+                        Log.d("dsdas", "onFailure: " + t);
+                    }
+                });
+            }
+        });
+
+
 
 
 
