@@ -35,11 +35,13 @@ public class ListViewActivity extends AppCompatActivity {
     private ListView listview ;
     private ListViewAdapter adapter;
     int page = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_view);
         adapter = new ListViewAdapter();
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         btnPost = (Button) findViewById(R.id.btn_post);
         btnPost.setOnClickListener(new View.OnClickListener() {
@@ -61,7 +63,6 @@ public class ListViewActivity extends AppCompatActivity {
         getItem(page);
     }
     public void getItem(int page){
-        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         GetPost data = new GetPost();
         GetPostContent data2 = new GetPostContent();
         data.setPage(page);
