@@ -55,10 +55,10 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
     TextView latitudeText;
     TextView longitudeText;
     ImageView infoImage;
-    Button selectImageButton;
-    Button newImageButton;
+//    Button selectImageButton;
+    TextView newImageButton;
     EditText contentText;
-    Button postButton;
+    TextView postButton;
 
     FrameLayout mapLayout;
     Button selectLocationButton;
@@ -93,7 +93,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
         latitudeText = findViewById(R.id.latitudeText);
         longitudeText = findViewById(R.id.longitudeText);
         infoImage = findViewById(R.id.infoImage);
-        selectImageButton = findViewById(R.id.selectImageButton);
+//        selectImageButton = findViewById(R.id.selectImageButton);
         newImageButton = findViewById(R.id.newImageButton);
         contentText = findViewById(R.id.contentText);
 
@@ -103,13 +103,13 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
 
 
 
-        selectImageButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(intent, SELECT_IMAGE);
-            }
-        });
+//        selectImageButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+//                startActivityForResult(intent, SELECT_IMAGE);
+//            }
+//        });
 
 
 
