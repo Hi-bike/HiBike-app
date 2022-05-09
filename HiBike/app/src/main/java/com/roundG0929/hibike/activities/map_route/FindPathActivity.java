@@ -57,6 +57,8 @@ import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.information.InformationApi;
 import com.roundG0929.hibike.api.information.dto.DangerInformation_Points;
+import com.roundG0929.hibike.api.information.dto.DangerInformation_detail;
+import com.roundG0929.hibike.api.information.requestBody.Danger_infoBody;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
@@ -89,6 +91,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     int startOrendFlag = -1; //0 start, 1 end
     ArrayList<ArrayList<Double>> routePoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 경로 좌표
     ArrayList<ArrayList<Double>> markerPoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 마커 좌표
+    Danger_infoBody danger_infoBody = new Danger_infoBody(); //마커 클릭시 요청할 api body
 
 
     //ui 객체
@@ -107,6 +110,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     Button fromMapSelectButton;//지도에서선택 이후 결정 버튼
     ImageView targetPoint;
     Button ridingStartButton;
+        //bottomsheet 요소
+    LinearLayout linearLayout;
+    BottomSheetBehavior behavior;
+    TextView titleText;
+    TextView dateText;
+    TextView contentText;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -129,6 +138,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         fromMapSelectButton = findViewById(R.id.fromMapSelectButton);
         targetPoint = findViewById(R.id.targetPoint);
         ridingStartButton = findViewById(R.id.ridingStartButton);
+        linearLayout = findViewById(R.id.informationBottomSheet);
+        behavior = BottomSheetBehavior.from(linearLayout);
+        titleText = findViewById(R.id.titleText);
+        dateText = findViewById(R.id.dateText);
+        contentText = findViewById(R.id.contentText);
+
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
@@ -358,6 +373,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             pointList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
                             ArrayList<LatLng> coordsForDrawLine = new ArrayList<>();
 
+                            if(!routePoints_ForIntent.isEmpty()){
+                                routePoints_ForIntent.clear();
+                            }
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
                                 routePoints_ForIntent.add(new ArrayList<>(Arrays.asList(pointList.get(i).get(1),pointList.get(i).get(0))));
@@ -406,11 +424,45 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                 @Override
                                 public void onResponse(Call<DangerInformation_Points> call, Response<DangerInformation_Points> response) {
                                     if(response.body().danger_list.size() != 0){
+                                        if(!markerPoints_ForIntent.isEmpty()){
+                                            markerPoints_ForIntent.clear();
+                                        }
                                         for(int i =0;i<response.body().danger_list.size();i++){
                                             informationMarkerList.add(
                                                     new Marker(
                                                             new LatLng(response.body().danger_list.get(i).get(0),
                                                                     response.body().danger_list.get(i).get(1))));
+                                            int target_i = i;
+                                            informationMarkerList.get(i).setOnClickListener(new Overlay.OnClickListener() {
+                                                @Override
+                                                public boolean onClick(@NonNull Overlay overlay) {
+                                                    naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
+                                                            0,convertDpToPx(getApplicationContext(),300));
+                                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(informationMarkerList.get(target_i).getPosition());
+                                                    naverMapObj.moveCamera(cameraUpdate);
+                                                    behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
+                                                    naverMapObj.setContentPadding(0,0,0,0);
+                                                    danger_infoBody.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
+                                                    danger_infoBody.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
+                                                    new InformationApi().getDangetInformationDetail(danger_infoBody).enqueue(new Callback<DangerInformation_detail>() {
+                                                        @Override
+                                                        public void onResponse(Call<DangerInformation_detail> call, Response<DangerInformation_detail> response) {
+                                                            if (response.isSuccessful()){
+                                                                titleText.setText(response.body().result.getTitle());
+                                                                dateText.setText(response.body().result.getTime());
+                                                                contentText.setText(response.body().result.getContents());
+                                                                Log.d("DANGERINFOR", "DangerInfo: " + response.body().result.getTitle());
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onFailure(Call<DangerInformation_detail> call, Throwable t) {
+
+                                                        }
+                                                    });
+                                                    return false;
+                                                }
+                                            });
                                             markerPoints_ForIntent.add(
                                                     new ArrayList<>(
                                                             Arrays.asList(
@@ -428,6 +480,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
                                 }
                             });
+
+
 
 
 
@@ -499,17 +553,17 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         ridingStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String routePointsString = "";
-                for(int i = 0; i<routePoints_ForIntent.size();i++){
-                    routePointsString = routePointsString + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
-                }
-                Log.d("POINTS", "routePointsString: " + routePointsString);
-
-                String markerPointsSting = "";
-                for(int i = 0; i<markerPoints_ForIntent.size();i++){
-                    markerPointsSting = markerPointsSting + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
-                }
-                Log.d("POINTS", "markerPointsSting: " + markerPointsSting);
+//                String routePointsString = "";
+//                for(int i = 0; i<routePoints_ForIntent.size();i++){
+//                    routePointsString = routePointsString + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
+//                }
+//                Log.d("POINTS", "routePointsString: " + routePointsString);
+//
+//                String markerPointsSting = "";
+//                for(int i = 0; i<markerPoints_ForIntent.size();i++){
+//                    markerPointsSting = markerPointsSting + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
+//                }
+//                Log.d("POINTS", "markerPointsSting: " + markerPointsSting);
 
                 Intent intent = new Intent(getApplicationContext(),RidingActivity.class);
                 intent.putExtra("from","findpath");
@@ -531,6 +585,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
     }//onCreate()
+
+
+    //뒤로가기 버튼
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+//        if(info)
+    }
 
     @Override
     public void finish() {
@@ -564,6 +627,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         });
 
     }
+
 
 
 

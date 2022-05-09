@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -172,36 +173,59 @@
             android:src="@drawable/crosshair"
             android:visibility="gone"
             />
+        <Button
+            android:visibility="gone"
+            android:id="@+id/ridingStartButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="주행시작"
+            android:layout_marginBottom="10dp"
+            android:layout_gravity="bottom|center_horizontal"/>
     </FrameLayout>
-    <Button
-        android:visibility="gone"
-        android:id="@+id/ridingStartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="주행시작"
-        android:layout_marginBottom="10dp"
-        android:layout_gravity="bottom|center_horizontal"/>
+
     <LinearLayout
         android:id="@+id/informationBottomSheet"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
-        app:behavior_hideable="true"
         app:behavior_peekHeight="0dp"
-        app:behavior_expandedOffset="500dp"
-        app:behavior_fitToContents="false"
+        app:behavior_fitToContents="true"
         app:behavior_skipCollapsed="true">
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@color/white"
-            app:cardCornerRadius="10dp">
-            <TextView
-                android:layout_width="wrap_content"
+            app:cardCornerRadius="10dp"
+            >
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="infomation detail"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="100dp"/>
+                android:orientation="vertical"
+                android:layout_margin="10dp">
+                <TextView
+                    android:id="@+id/titleText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="title"
+                    android:textSize="25sp"
+                    android:textStyle="bold"/>
+                <TextView
+                    android:id="@+id/dateText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="time"/>
+
+                <ImageView
+                    android:id="@+id/informationImage"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    app:srcCompat="@drawable/icons_close" />
+                <TextView
+                    android:id="@+id/contentText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="content"/>
+            </LinearLayout>
         </androidx.cardview.widget.CardView>
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
