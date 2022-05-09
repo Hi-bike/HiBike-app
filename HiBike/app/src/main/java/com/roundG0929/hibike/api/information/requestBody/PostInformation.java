@@ -19,6 +19,18 @@ public class PostInformation {  //위험정보 등록 body
     @Expose
     @SerializedName("contents")
     String contents;
+    @Expose
+    @SerializedName("image")
+    String image;
+    @Expose
+    @SerializedName("region")
+    String region;
+    @Expose
+    @SerializedName("region_detail")
+    String regionDetail;
+    @Expose
+    @SerializedName("period")
+    int period;
 
 //    public PostInformation() {
 //        this.id = "";
@@ -66,5 +78,37 @@ public class PostInformation {  //위험정보 등록 body
 
     public void setContents(String contents) {
         this.contents = contents;
+    }
+
+    public String getImage() {
+        return image;
+    }
+
+    public void setImage(String image) {
+        this.image = image;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public String getRegionDetail() {
+        return regionDetail;
+    }
+
+    public void setRegionDetail(String regionDetail) {
+        this.regionDetail = regionDetail;
+    }
+
+    public int getPeriod() {
+        return period;
+    }
+
+    public void setPeriod(int period) {
+        this.period = period;
     }
 }

@@ -6,9 +6,9 @@ import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.dto.GetRidingAll;
 import com.roundG0929.hibike.api.server.dto.GetRidingOne;
 import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
+import com.roundG0929.hibike.api.server.dto.PostDanger;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.ProfileImage;
-import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
 import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.RidingRegion;
 import com.roundG0929.hibike.api.server.dto.SendReply;
@@ -20,22 +20,16 @@ import com.roundG0929.hibike.api.server.dto.GetReply;
 import com.roundG0929.hibike.api.server.dto.GetReplyContent;
 import com.roundG0929.hibike.api.server.dto.GetPostContent;
 
-import java.util.Map;
-
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.Header;
-import retrofit2.http.HeaderMap;
-import retrofit2.http.Headers;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
-import retrofit2.http.QueryMap;
 
 public interface ApiInterface {
     @POST("api/auth/signin")
@@ -100,4 +94,18 @@ public interface ApiInterface {
 
     @POST("api/auth/eregion")
     Call<RidingRegion> setRidingERegion(@Body RidingRegion ridingRegion);
+
+    @Multipart
+    @POST("api/board/post-danger")
+    Call<PostDanger> postDanger (
+            @Part MultipartBody.Part file,
+            @Part("id") RequestBody id,
+            @Part("title") RequestBody title,
+            @Part("contents") RequestBody contents,
+            @Part("latitude") RequestBody latitude,
+            @Part("longitude") RequestBody longitude,
+            @Part("region") RequestBody region,
+            @Part("region_detail") RequestBody region_detail,
+            @Part("period") RequestBody period
+    );
 }

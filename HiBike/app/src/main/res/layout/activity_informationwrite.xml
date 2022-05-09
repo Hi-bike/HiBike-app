@@ -81,6 +81,7 @@
                 android:layout_height="40dp"
                 android:background="@drawable/edittext_rounded_corner"
                 android:textSize="18dp"
+                android:paddingLeft="10dp"
                 android:layout_marginTop="7dp" />
 
 
@@ -99,7 +100,9 @@
                 android:layout_height="40dp"
                 android:background="@drawable/edittext_rounded_corner"
                 android:textSize="18dp"
+                android:textColor="#000000"
                 android:paddingLeft="10dp"
+                android:drawableRight="@drawable/icons_forward"
                 android:gravity="center_vertical"
                 android:layout_marginTop="7dp" />
 
@@ -110,30 +113,59 @@
                 android:background="@drawable/edittext_rounded_corner"
                 android:textSize="18dp"
                 android:hint="상세 정보를 입력하세요"
+                android:maxLength="50"
                 android:layout_marginTop="7dp"
                 android:paddingLeft="10dp"/>
 
-            <LinearLayout
+<!--            <LinearLayout-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:orientation="horizontal"-->
+<!--                android:layout_marginTop="10dp">-->
+<!--                <TextView-->
+<!--                    android:id="@+id/latitudeText"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:text="경도 : "/>-->
+<!--                <TextView-->
+<!--                    android:id="@+id/longitudeText"-->
+<!--                    android:layout_width="0dp"-->
+<!--                    android:layout_height="wrap_content"-->
+<!--                    android:layout_weight="1"-->
+<!--                    android:textSize="15sp"-->
+<!--                    android:text="위도 : "/>-->
+<!--            </LinearLayout>-->
+            <TextView
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="10dp">
-                <TextView
-                    android:id="@+id/latitudeText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="경도 : "/>
-                <TextView
-                    android:id="@+id/longitudeText"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:textSize="15sp"
-                    android:text="위도 : "/>
-            </LinearLayout>
+                android:layout_height="match_parent"
+                android:text="기간 설정"
+                android:textSize="18dp"
+                android:textStyle="bold"
+                android:textColor="#000000"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="10dp"/>
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="위험요소가 유지될 기간을 입력해주세요. 최대 30일까지 입력가능합니다."
+                android:textSize="13dp"
+                android:layout_marginTop="5dp"
+                android:paddingLeft="10dp"/>
+
+            <EditText
+                android:id="@+id/periodText"
+                android:layout_width="match_parent"
+                android:layout_height="40dp"
+                android:background="@drawable/edittext_rounded_corner"
+                android:textSize="17dp"
+                android:text="5"
+                android:inputType="numberSigned"
+                android:maxLength="50"
+                android:paddingLeft="10dp"
+                android:layout_marginTop="7dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -142,13 +174,13 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="#000000"
-                android:layout_marginTop="30dp"
-                android:paddingLeft="10dp"/>
+                android:layout_marginTop="30dp" />
 
             <ImageView
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="5dp"
                 android:id="@+id/infoImage"
-                android:layout_width="match_parent"
+                android:layout_gravity="center"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
@@ -203,8 +235,7 @@
                 android:textSize="18dp"
                 android:textStyle="bold"
                 android:textColor="#000000"
-                android:layout_marginTop="30dp"
-                android:paddingLeft="10dp"/>
+                android:layout_marginTop="30dp" />
 
             <EditText
                 android:id="@+id/contentText"
@@ -215,6 +246,7 @@
                 android:background="@drawable/edittext_rounded_corner"
                 android:gravity="start"
                 android:layout_marginTop="10dp"
+                android:layout_marginBottom="30dp"
                 android:paddingLeft="10dp"
                 android:paddingTop="10dp"/>
 
