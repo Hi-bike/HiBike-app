@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.location.Location;
 import android.media.ExifInterface;
@@ -253,6 +254,10 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                 } else if (!isFile) {
                     Toast.makeText(getApplicationContext(),"사진을 올려주세요.",Toast.LENGTH_SHORT).show();
                 } else {
+                    // 버튼 비활성화
+                    postButton.setEnabled(false);
+                    postButton.setTextColor(Color.parseColor("#939393"));
+
                     postInformation.setTitle(titleText.getText().toString());
                     postInformation.setContents(contentText.getText().toString());
                     postInformation.setPeriod(Integer.parseInt(periodText.getText().toString()));
