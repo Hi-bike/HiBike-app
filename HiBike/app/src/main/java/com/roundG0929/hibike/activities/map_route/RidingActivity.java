@@ -171,8 +171,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
 
-        //=============TEST==================
-        TextView testText = findViewById(R.id.testText);
 
 
 
@@ -222,14 +220,15 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     //네이버 자체 메소드 사용
                     //speed = Double.parseDouble(String.format("%.1f", nowLatLng.distanceTo(beforeLatLng)*3.6));
 
-                    //==========TEST
-
 
                     //외부함수 사용
                     pointDistance = distance(beforeLatLng.latitude,beforeLatLng.longitude, nowLatLng.latitude,nowLatLng.longitude,"meter");
 
                     //총거리
-                    totalDistance += pointDistance;
+                    if(!Double.isNaN(pointDistance)){ //isNaN 에러 대응
+                        totalDistance += pointDistance;
+                    }
+
                     //속도 km/h
                     speed = Double.parseDouble(String.format("%.1f", pointDistance * 3.6));
 
@@ -242,7 +241,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
 
-                            testText.append(pointDistance+"\n");
                             Log.d("RIDING THREAD",
                                     "\ndistance:" + totalDistance +
                                     "\npoint:"+pointDistance+

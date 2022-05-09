@@ -66,6 +66,7 @@ import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import org.w3c.dom.Text;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import gun0912.tedkeyboardobserver.BaseKeyboardObserver;
@@ -86,6 +87,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     MapSetting mapSetting = new MapSetting();
     LatLng[] startEndPoint = new LatLng[2]; //0 start, 1 end
     int startOrendFlag = -1; //0 start, 1 end
+    ArrayList<ArrayList<Double>> routePoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 경로 좌표
+    ArrayList<ArrayList<Double>> markerPoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 마커 좌표
+
 
     //ui 객체
     EditText startText;
@@ -102,6 +106,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     Button fromsearchButton;
     Button fromMapSelectButton;//지도에서선택 이후 결정 버튼
     ImageView targetPoint;
+    Button ridingStartButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -123,6 +128,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         fromsearchButton = findViewById(R.id.fromsearchButton);
         fromMapSelectButton = findViewById(R.id.fromMapSelectButton);
         targetPoint = findViewById(R.id.targetPoint);
+        ridingStartButton = findViewById(R.id.ridingStartButton);
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
@@ -354,6 +360,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
                             for(int i = 0;i<pointList.size();i++){
                                 coordsForDrawLine.add(new LatLng(pointList.get(i).get(1),pointList.get(i).get(0)));
+                                routePoints_ForIntent.add(new ArrayList<>(Arrays.asList(pointList.get(i).get(1),pointList.get(i).get(0))));
                             }
                             for (int j = 0;j<coordsForDrawLine.size();j++){
 
@@ -400,7 +407,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                 public void onResponse(Call<DangerInformation_Points> call, Response<DangerInformation_Points> response) {
                                     if(response.body().danger_list.size() != 0){
                                         for(int i =0;i<response.body().danger_list.size();i++){
-                                            informationMarkerList.add(new Marker(new LatLng(response.body().danger_list.get(i).get(0),response.body().danger_list.get(i).get(1))));
+                                            informationMarkerList.add(
+                                                    new Marker(
+                                                            new LatLng(response.body().danger_list.get(i).get(0),
+                                                                    response.body().danger_list.get(i).get(1))));
+                                            markerPoints_ForIntent.add(
+                                                    new ArrayList<>(
+                                                            Arrays.asList(
+                                                                    response.body().danger_list.get(i).get(0),
+                                                                    response.body().danger_list.get(i).get(1))));
                                         }
                                         for(int j=0;j<informationMarkerList.size();j++){
                                             informationMarkerList.get(j).setMap(naverMapObj);
@@ -446,6 +461,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                             cameraUpdate.animate(CameraAnimation.Easing);
                             naverMapObj.moveCamera(cameraUpdate);
 
+
+                            //주행시작 버튼 표시
+                            ridingStartButton.setVisibility(View.VISIBLE);
                         }
                         @Override
                         public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
@@ -476,62 +494,33 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        ridingStartButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String routePointsString = "";
+                for(int i = 0; i<routePoints_ForIntent.size();i++){
+                    routePointsString = routePointsString + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
+                }
+                Log.d("POINTS", "routePointsString: " + routePointsString);
+
+                String markerPointsSting = "";
+                for(int i = 0; i<markerPoints_ForIntent.size();i++){
+                    markerPointsSting = markerPointsSting + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
+                }
+                Log.d("POINTS", "markerPointsSting: " + markerPointsSting);
+
+                Intent intent = new Intent(getApplicationContext(),RidingActivity.class);
+                intent.putExtra("route_point",routePoints_ForIntent);
+                intent.putExtra("marker_point",markerPoints_ForIntent);
+                
+            }
+        });
+
 
 
 
         // test--------------------------------------------------------------  위험지점
 
-        InformationApi informationApi = new InformationApi(); //위험정보api
-        TextView testText = findViewById(R.id.dangerTestText);
-        Button callTestBtn = findViewById(R.id.callTestButton);
-        callTestBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                List<Double> one_Area = new ArrayList<>();
-                //37.481294033646925, 126.58248016791308
-
-                double lat = 37.57393955757429;
-                double lng = 126.55585128033412;
-                double lat_down = 37.57393955757429 - 0.3;
-                double lng_right = 126.55585128033412 + 0.3;
-
-                one_Area.add(lat);
-                one_Area.add(lng);
-
-                one_Area.add(lat_down);
-                one_Area.add(lng);
-
-                one_Area.add(lat);
-                one_Area.add(lng_right);
-
-                one_Area.add(lat_down);
-                one_Area.add(lng_right);
-
-                informationApi.dangerInformationRequestBody.danger_range.add(one_Area);
-                Log.d("AREA", "points_area"+informationApi.dangerInformationRequestBody.danger_range.get(0).get(0) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(1) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(2) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(3) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(4) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(5) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(6) + "\n"
-                        + informationApi.dangerInformationRequestBody.danger_range.get(0).get(7) + "\n");
-
-                informationApi.getDangerPointsApiRaw(informationApi.dangerInformationRequestBody).enqueue(new Callback<DangerInformation_Points>() {
-                    @Override
-                    public void onResponse(Call<DangerInformation_Points> call, Response<DangerInformation_Points> response) {
-                        testText.append(response.code() + "\n");
-                        testText.append(response.code() + "\n");
-                        testText.append(response.code() + "\n");
-                        testText.append(response.body().danger_list.get(0).get(0)+ "\n");
-                    }
-                    @Override
-                    public void onFailure(Call<DangerInformation_Points> call, Throwable t) {
-                        Log.d("dsdas", "onFailure: " + t);
-                    }
-                });
-            }
-        });
 
 
 
