@@ -494,6 +494,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+
+        //길찾기후 주행시작 버튼
         ridingStartButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -510,9 +512,11 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 Log.d("POINTS", "markerPointsSting: " + markerPointsSting);
 
                 Intent intent = new Intent(getApplicationContext(),RidingActivity.class);
+                intent.putExtra("from","findpath");
                 intent.putExtra("route_point",routePoints_ForIntent);
                 intent.putExtra("marker_point",markerPoints_ForIntent);
-                
+                startActivity(intent);
+                finish();
             }
         });
 

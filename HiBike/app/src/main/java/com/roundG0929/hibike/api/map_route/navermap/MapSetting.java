@@ -13,6 +13,7 @@ import androidx.annotation.NonNull;
 import androidx.core.app.ActivityCompat;
 
 import com.naver.maps.geometry.LatLng;
+import com.naver.maps.map.CameraAnimation;
 import com.naver.maps.map.CameraUpdate;
 import com.naver.maps.map.LocationTrackingMode;
 import com.naver.maps.map.NaverMap;
@@ -85,13 +86,18 @@ public class MapSetting {
         uiSettings.setCompassEnabled(false);
 
         //현재위치바로가기 (ux개선)
-        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng);
+
+        CameraUpdate cameraUpdate = CameraUpdate.scrollTo(latLng).zoomTo(17.0);
         locationOverlay.setPosition(latLng);
         naverMap.moveCamera(cameraUpdate);
+//        cameraUpdate = CameraUpdate.zoomTo(17.0)
+//                .animate(CameraAnimation.Easing);
+//        naverMap.moveCamera(cameraUpdate);
 
         //내 위치 트래킹 설정
         naverMap.setLocationSource(fusedLocationSource);
         naverMap.setLocationTrackingMode(LocationTrackingMode.Follow);
+
 
     }
 
