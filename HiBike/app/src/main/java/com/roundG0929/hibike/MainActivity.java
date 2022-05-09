@@ -284,59 +284,61 @@ public class MainActivity extends AppCompatActivity {
                         SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
                         String nowDate = dateFormat.format(date);
                         date = new Date(now-3600000);
+                        //date = new Date(now);
                         String nowTime = timeFormat.format(date);
                         Log.d("timecheck", nowTime);
 
                         int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
                         int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
-
+                        Log.d("TAG", "realTimeWeathercheck: " +x +" "+y+" "+nowDate+" "+nowTime);
                         //위치불러오기 성공시 날씨 불러오기
-//                        new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
-//                            @Override
-//                            public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
-//                                if (response.isSuccessful()) {
-//
-//                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
-//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-//                                        if (realTimeWeather.get(i).category.equals("T1H")) {
-//                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
-//                                            break;
-//                                        }
-//                                    }
-//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-//                                        if (realTimeWeather.get(i).category.equals("SKY")) {
-//                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
-//                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
-//                                            if (cloud_amount <= 5) {
-//                                                weatherImage.setAnimation(R.raw.animation_sunny);
-//                                            } else if (cloud_amount <= 8) {
-//                                                weatherImage.setAnimation(R.raw.animation_cloudy);
-//                                            } else {
-//                                                weatherImage.setAnimation(R.raw.animation_overcast);
-//                                            }
-//                                            weatherImage.playAnimation();
-//                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
-//                                            break;
-//                                        }
-//
-//                                    }
-//                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-//                                        if (realTimeWeather.get(i).category.equals("REH")) {
-//                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
-//                                            break;
-//                                        }
-//                                    }
-//                                } else {
-//                                    Log.e("api error", response.message());
-//                                }
-//
-//                            }
-//
-//                            @Override
-//                            public void onFailure(Call<RealTimeWeather> call, Throwable t) {
-//
-//                            }
-//                        });
+
+                        new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
+                            @Override
+                            public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
+                                if (response.isSuccessful()) {
+                                    Log.d("TAG", "realTimeWeathercode: " + response.message());
+                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("T1H")) {
+                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
+                                            break;
+                                        }
+                                    }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("SKY")) {
+                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
+                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
+                                            if (cloud_amount <= 5) {
+                                                weatherImage.setAnimation(R.raw.animation_sunny);
+                                            } else if (cloud_amount <= 8) {
+                                                weatherImage.setAnimation(R.raw.animation_cloudy);
+                                            } else {
+                                                weatherImage.setAnimation(R.raw.animation_overcast);
+                                            }
+                                            weatherImage.playAnimation();
+                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
+                                            break;
+                                        }
+
+                                    }
+                                    for (int i = 0; realTimeWeather.size() > i; i++) {
+                                        if (realTimeWeather.get(i).category.equals("REH")) {
+                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
+                                            break;
+                                        }
+                                    }
+                                } else {
+                                    Log.e("api error", response.message());
+                                }
+
+                            }
+
+                            @Override
+                            public void onFailure(Call<RealTimeWeather> call, Throwable t) {
+
+                            }
+                        });
                     }
                 });
 
