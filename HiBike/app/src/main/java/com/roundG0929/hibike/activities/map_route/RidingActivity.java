@@ -4,6 +4,7 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
@@ -39,11 +40,14 @@ import com.naver.maps.map.MapFragment;
 import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
+import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.Path;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
 import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
@@ -86,6 +90,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     LatLng nowLatLng = new LatLng(0,0);   //속도측정
     LatLng startingPoint = new LatLng(0,0);;
     LatLng endPoint = new LatLng(0,0);;
+    //길찾기에서 넘어왔을경우 필요한 변수
+    ArrayList<LatLng> routePoints = new ArrayList<>();  //실질적 경로배열
+    PathOverlay routeline = new PathOverlay(); //경로 오버레이 객체
+    ArrayList<Marker> markerPoints = new ArrayList<>(); //실질 마커(위험정보) 배열
+
 
     double speed;
     boolean ridingStartFlag = false;
@@ -121,6 +130,34 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_riding);
+
+        //어떤 액티비티에서 넘어왔는지 구분후 길찾기에서 넘어왔으면 경로, 위험정보 데이터 표기
+        Intent intent = getIntent();
+        String fromString = intent.getStringExtra("from");
+        if(fromString.equals("findpath")){
+            ArrayList<ArrayList<Double>> routePoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("route_point");
+            ArrayList<ArrayList<Double>> markerPoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("marker_point");
+            Toast.makeText(getApplicationContext(),markerPoints_double.get(0).get(0)+" ",Toast.LENGTH_SHORT).show();
+
+            for(int i =0;i<routePoints_double.size();i++){  //경로배열 할당
+                routePoints.add(new LatLng(routePoints_double.get(i).get(0),
+                                    routePoints_double.get(i).get(1)));
+            }
+            Log.d("TAG", "routepoints: "
+            +routePoints.get(0).latitude
+                    +"  "+routePoints.get(0).longitude);
+            routeline.setCoords(routePoints);
+
+            if(!markerPoints_double.isEmpty()){
+                for(int i =0;i<markerPoints_double.size();i++){ //마커배열 할당
+                    markerPoints.add(new Marker(new LatLng(markerPoints_double.get(i).get(0),markerPoints_double.get(i).get(1))));
+                }
+            }
+        }
+
+
+
+
 
         //userId
         pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
@@ -171,8 +208,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
 
-        //=============TEST==================
-        TextView testText = findViewById(R.id.testText);
+
 
 
 
@@ -222,14 +258,15 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     //네이버 자체 메소드 사용
                     //speed = Double.parseDouble(String.format("%.1f", nowLatLng.distanceTo(beforeLatLng)*3.6));
 
-                    //==========TEST
-
 
                     //외부함수 사용
                     pointDistance = distance(beforeLatLng.latitude,beforeLatLng.longitude, nowLatLng.latitude,nowLatLng.longitude,"meter");
 
                     //총거리
-                    totalDistance += pointDistance;
+                    if(!Double.isNaN(pointDistance)){ //isNaN 에러 대응
+                        totalDistance += pointDistance;
+                    }
+
                     //속도 km/h
                     speed = Double.parseDouble(String.format("%.1f", pointDistance * 3.6));
 
@@ -242,7 +279,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
 
-                            testText.append(pointDistance+"\n");
                             Log.d("RIDING THREAD",
                                     "\ndistance:" + totalDistance +
                                     "\npoint:"+pointDistance+
@@ -296,9 +332,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         naverMapObj = naverMap;
         locationOverlay = naverMap.getLocationOverlay();
         mapSetting.routeActivityMapSet(naverMapObj,getApplicationContext(),fusedLocationSource);
-        CameraUpdate cameraUpdate = CameraUpdate.zoomTo(17.0)
-                .animate(CameraAnimation.Easing);
-        naverMap.moveCamera(cameraUpdate);
+
+        if(!routePoints.isEmpty()){
+            routeline.setColor(Color.BLUE);
+            routeline.setMap(naverMap);
+        }
+        if(!markerPoints.isEmpty()){
+            for(int i =0;i<markerPoints.size();i++){
+                markerPoints.get(i).setMap(naverMapObj);
+            }
+        }
     }
 
     //주행종료 다이얼로그

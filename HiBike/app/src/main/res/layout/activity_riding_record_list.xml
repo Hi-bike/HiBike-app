@@ -34,7 +34,7 @@
             android:gravity="center_vertical"
             android:text="📝 주행 기록"
             android:textColor="@color/black"
-            android:textSize="25dp"
+            android:textSize="20dp"
             android:textStyle="bold"
             android:paddingLeft="10dp"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,7 +42,6 @@
 
 
     </LinearLayout>
-
 
 
     <TextView

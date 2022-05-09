@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent ridingIntent = new Intent(getApplicationContext(), RidingActivity.class);
-
+                ridingIntent.putExtra("from","main");
                 startActivity(ridingIntent);
             }
         });
