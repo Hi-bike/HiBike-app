@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
 import android.Manifest;
 import android.app.Activity;
@@ -15,11 +14,8 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.location.Location;
-import android.location.LocationManager;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -47,7 +43,11 @@ import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 import com.roundG0929.hibike.activities.board.ListViewActivity;
+import com.roundG0929.hibike.api.weather.AirconditionApi;
 import com.roundG0929.hibike.api.weather.WeatherApi;
+import com.roundG0929.hibike.api.weather.WeatherAnalysis;
+import com.roundG0929.hibike.api.weather.airconditionDto.Aircondition;
+import com.roundG0929.hibike.api.weather.airconditionDto.AirconditionItem;
 import com.roundG0929.hibike.api.weather.wheatherDto.Item;
 import com.roundG0929.hibike.api.weather.wheatherDto.RealTimeWeather;
 
@@ -82,6 +82,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mainRidingAchievement;
     LinearLayout llProfile;
 
+
     //다른 activity에서 main component 접근에 이용용
     public static Context context_main;
 
@@ -94,6 +95,9 @@ public class MainActivity extends AppCompatActivity {
     private long backKeyPressedTime = 0;
     Toast toast;
     boolean isDrawerOpened;
+
+    //날씨분석 객체
+    WeatherAnalysis weatherAnalysis = new WeatherAnalysis();
 
 
     //권한 요청 후 승인, 거부 리스너
@@ -268,6 +272,9 @@ public class MainActivity extends AppCompatActivity {
 //        현재위치 불러오기
         TextView temperature = findViewById(R.id.temperatureText);
         TextView moisture = findViewById(R.id.moistureText);
+        TextView pm10Text = findViewById(R.id.pm10Text);
+        TextView pm25Text = findViewById(R.id.pm25Text);
+        TextView weatherComment = findViewById(R.id.weatherText);
         FusedLocationProviderClient fusedLocationClient;
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -278,56 +285,72 @@ public class MainActivity extends AppCompatActivity {
                 .addOnSuccessListener(this, new OnSuccessListener<Location>() {
                     @Override
                     public void onSuccess(Location location) {
-                        long now = System.currentTimeMillis();
-                        Date date = new Date(now);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
-                        SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
-                        String nowDate = dateFormat.format(date);
-                        date = new Date(now-3600000);
-                        //date = new Date(now);
-                        String nowTime = timeFormat.format(date);
-                        Log.d("timecheck", nowTime);
-
                         int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
                         int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
-                        Log.d("TAG", "realTimeWeathercheck: " +x +" "+y+" "+nowDate+" "+nowTime);
                         //위치불러오기 성공시 날씨 불러오기
 
+
+                        //날씨
                         new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
                             @Override
                             public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
                                 if (response.isSuccessful()) {
                                     Log.d("TAG", "realTimeWeathercode: " + response.message());
-                                    ArrayList<Item> realTimeWeather = response.body().response.body.items.item;
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("T1H")) {
-                                            temperature.setText("\uD83C\uDF21 "+realTimeWeather.get(i).fcstValue + " ℃");
-                                            break;
-                                        }
+                                    weatherAnalysis.setWeatherData(response.body().response.body.items.item);
+
+                                    //기온
+                                    temperature.setText("\uD83C\uDF21"+ weatherAnalysis.getTemperature() + " ℃");
+
+                                    //구름
+                                    LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
+                                    if (weatherAnalysis.getCloud() <= 1) {
+                                        weatherImage.setAnimation(R.raw.animation_sunny);
+                                    } else if (weatherAnalysis.getCloud() <= 3) {
+                                        weatherImage.setAnimation(R.raw.animation_cloudy);
+                                    } else {
+                                        weatherImage.setAnimation(R.raw.animation_overcast);
                                     }
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("SKY")) {
-                                            int cloud_amount = Integer.parseInt(realTimeWeather.get(i).fcstValue);
-                                            LottieAnimationView weatherImage = findViewById(R.id.weatherImage);
-                                            if (cloud_amount <= 5) {
-                                                weatherImage.setAnimation(R.raw.animation_sunny);
-                                            } else if (cloud_amount <= 8) {
-                                                weatherImage.setAnimation(R.raw.animation_cloudy);
-                                            } else {
-                                                weatherImage.setAnimation(R.raw.animation_overcast);
-                                            }
-                                            weatherImage.playAnimation();
-                                            weatherImage.setRepeatCount(LottieDrawable.INFINITE);
-                                            break;
+                                    weatherImage.playAnimation();
+                                    weatherImage.setRepeatCount(LottieDrawable.INFINITE);
+
+                                    //습도
+                                    moisture.setText("💧"+weatherAnalysis.getMoisture() + " %");
+
+                                    //비
+                                    if(weatherAnalysis.getNow_RainSnowType() == 1 ||weatherAnalysis.getNow_RainSnowType() == 2 ||
+                                            weatherAnalysis.getNow_RainSnowType() == 5||weatherAnalysis.getNow_RainSnowType() == 6){
+                                        weatherImage.setAnimation(R.raw.animation_rain);
+                                    }
+
+
+                                    //미세먼지
+                                    new AirconditionApi().getApi().enqueue(new Callback<Aircondition>() {
+                                        @Override
+                                        public void onResponse(Call<Aircondition> call, Response<Aircondition> response) {
+                                            weatherAnalysis.setAirconditionData(response.body().response.body.items);
+                                            Log.d("TAG", "aircondition: " + weatherAnalysis.getPm10Average() + " " + weatherAnalysis.getPm25Average());
+
+                                            pm10Text.setText(weatherAnalysis.getPm10Condition());
+                                            if(weatherAnalysis.getPm10Condition().equals("좋음")){pm10Text.setTextColor(Color.parseColor("#549cf8"));}
+                                            else if(weatherAnalysis.getPm10Condition().equals("보통")){pm10Text.setTextColor(Color.parseColor("#5ac451"));}
+                                            else if(weatherAnalysis.getPm10Condition().equals("나쁨")){pm10Text.setTextColor(Color.parseColor("#efa066"));}
+                                            else if(weatherAnalysis.getPm10Condition().equals("최악")){pm10Text.setTextColor(Color.parseColor("#ec655f"));}
+
+                                            pm25Text.setText(weatherAnalysis.getPm25Condition());
+                                            if(weatherAnalysis.getPm25Condition().equals("좋음")){pm25Text.setTextColor(Color.parseColor("#549cf8"));}
+                                            else if(weatherAnalysis.getPm25Condition().equals("보통")){pm25Text.setTextColor(Color.parseColor("#5ac451"));}
+                                            else if(weatherAnalysis.getPm25Condition().equals("나쁨")){pm25Text.setTextColor(Color.parseColor("#efa066"));}
+                                            else if(weatherAnalysis.getPm25Condition().equals("최악")){pm25Text.setTextColor(Color.parseColor("#ec655f"));}
+
+                                            weatherComment.setText(weatherAnalysis.makeComment());
                                         }
 
-                                    }
-                                    for (int i = 0; realTimeWeather.size() > i; i++) {
-                                        if (realTimeWeather.get(i).category.equals("REH")) {
-                                            moisture.setText("💧 "+realTimeWeather.get(i).fcstValue + " %");
-                                            break;
+                                        @Override
+                                        public void onFailure(Call<Aircondition> call, Throwable t) {
+
                                         }
-                                    }
+                                    });
+
                                 } else {
                                     Log.e("api error", response.message());
                                 }
@@ -339,6 +362,8 @@ public class MainActivity extends AppCompatActivity {
 
                             }
                         });
+
+
                     }
                 });
 

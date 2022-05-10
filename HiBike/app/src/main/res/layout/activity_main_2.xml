@@ -56,7 +56,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="27 ℃"
+                    android:text="20 ℃"
                     android:textColor="#FF9800"
                     android:textSize="17sp"
                     app:layout_constraintStart_toEndOf="@+id/weatherImage"
@@ -66,12 +66,50 @@
                     android:id="@+id/moistureText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="28dp"
                     android:layout_marginTop="16dp"
                     android:text="30 %"
                     android:textColor="#8FE0FF"
                     android:textSize="17sp"
                     app:layout_constraintStart_toEndOf="@+id/temperatureText"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView3"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/icons_pm10"
+                    app:layout_constraintStart_toEndOf="@+id/moistureText"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/pm10Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="좋음"
+                    android:textSize="17sp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView3"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/imageView4"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginTop="16dp"
+                    android:src="@drawable/icons_pm25"
+                    app:layout_constraintStart_toEndOf="@+id/pm10Text"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/pm25Text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="0dp"
+                    android:layout_marginTop="16dp"
+                    android:text="좋음"
+                    android:textSize="17sp"
+                    app:layout_constraintStart_toEndOf="@+id/imageView4"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
