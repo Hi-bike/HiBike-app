@@ -111,7 +111,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     long endTime;
     int totalTime_second, result_second, result_minute;;
     String userId, uniqueId;
-    PostRiding data;
     double averageSpeed;
 
     //ui 객체 선언
@@ -179,7 +178,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         averageSpeedText = findViewById(R.id.averageSpeedText);
         resultLayout = findViewById(R.id.resultLayout);
         speedLayout = findViewById(R.id.speedLayout);
-        data = new PostRiding();
         //test ui
 //        timeText = findViewById(R.id.timeText);
         distText = findViewById(R.id.distText);
@@ -474,24 +472,12 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             @Override
                             public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {}
                         });
-//                Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
-//                new SRGCall().execute(callSp);
-//
-//                Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
-//                new ERGCall().execute(callEp);
-
 
                         postRidingMulti.setUserId(userId);
                         postRidingMulti.setUniqueId(uniqueId);
                         postRidingMulti.setRidingTime(result_minute +" : "+result_second);
                         postRidingMulti.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
                         postRidingMulti.setDistance(totalDistance+"");
-
-//                data.setUserId(userId);
-//                data.setUniqueId(uniqueId);
-//                data.setRidingTime(result_minute +" : "+result_second);
-//                data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
-//                data.setDistance(totalDistance+"");
 
                         //ridingGoal ridingAchievement
                         int ridingGoal = pref.getInt("ridingGoal", 0);
@@ -511,19 +497,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
                         }
 
-//                api.postRiding(data).enqueue(new Callback<PostRiding>() {
-//                    @Override
-//                    public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
-//                        if(!response.isSuccessful()){
-//                            Toast toast = Toast.makeText(getApplicationContext(), "error. (" + response.message() + ")", Toast.LENGTH_LONG);
-//                            toast.setGravity(Gravity.TOP, 0, 0);
-//                            toast.show();
-//                        }
-//                    }
-//                    @Override
-//                    public void onFailure(Call<PostRiding> call, Throwable t) {}
-//                });
-
                         ridingGoAndStopButton.setText("나가기");
                         ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                             @Override
@@ -531,7 +504,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                                 saveRidingInfo();
                             }
                         });
-
                     }
                 });
                 naverMapObj.moveCamera(cameraUpdate);
@@ -553,11 +525,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
+
                 RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
                 MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-
-                Log.v("filename", file.getName());
-
                 RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getUserId());
                 RequestBody uniqueId = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getUniqueId());
                 RequestBody ridingTime = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getRidingTime());
@@ -651,8 +621,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         return (rad * 180 / Math.PI);
     }
 
-
-
     //dp단위 px로 변환
     public int convertDpToPx(Context context,int dp){
         float density = context.getResources().getDisplayMetrics().density;
@@ -662,44 +630,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     public String getUniqueId() {
         String uniqueId = UUID.randomUUID().toString().substring(0,8);
         return uniqueId;
-    }
-
-    public void postRidingImage(){
-        View rootView = getWindow().getDecorView();
-        File file = ScreenShot(rootView);
-        RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
-        MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
-        RequestBody idToUpload = RequestBody.create(MediaType.parse("text/plain"), uniqueId);
-        api.setRidingImage(fileToUpload,idToUpload).enqueue(new Callback<RidingImage>() {
-            @Override
-            public void onResponse(retrofit2.Call<RidingImage> call, Response<RidingImage> response) {
-                if (response.isSuccessful()) {
-                    Log.v("image", "success");
-                } else {
-                    Log.v("image", response.message());
-                }
-            }
-            @Override
-            public void onFailure(retrofit2.Call<RidingImage> call, Throwable t) {}
-        });
-    }
-    public File ScreenShot(View view){
-        view.setDrawingCacheEnabled(true);  //화면에 뿌릴때 캐시를 사용하게 한다
-        Bitmap screenBitmap = view.getDrawingCache();   //캐시를 비트맵으로 변환
-        String filename = "screenshot.png";
-        File file = new File(Environment.getExternalStorageDirectory()+"/Pictures", filename);  //Pictures폴더 screenshot.png 파일
-        FileOutputStream os = null;
-        try{
-            os = new FileOutputStream(file);
-            screenBitmap.compress(Bitmap.CompressFormat.PNG, 90, os);   //비트맵을 PNG파일로 변환
-            os.close();
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
-
-        view.setDrawingCacheEnabled(false);
-        return file;
     }
 
     private class SRGCall extends AsyncTask<Call, Void, String> {
