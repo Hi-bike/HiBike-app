@@ -80,6 +80,19 @@ public class MapRouteApi {
 
         return requestUrl;
     }
+    public String makeUrl4point(LatLng startPoint, LatLng endPoint,LatLng sub1,LatLng sub2){
+        String requestUrl = null;
+
+        requestUrl = "route?" + "point=" + String.format("%.5f",startPoint.latitude) + "," +String.format("%.5f",startPoint.longitude);
+
+        if(sub1 != null) { requestUrl = requestUrl + "&point=" + String.format("%.5f",sub1.latitude) + "," +String.format("%.5f",sub1.longitude); }
+        if(sub2 != null) { requestUrl = requestUrl + "&point=" + String.format("%.5f",sub2.latitude) + "," +String.format("%.5f",sub2.longitude); }
+
+        requestUrl = requestUrl + "&point=" + String.format("%.5f",endPoint.latitude) + "," +String.format("%.5f",endPoint.longitude)
+                + "&profile=bike&locale=kr&calc_points=true&points_encoded=false&key=8543250c-bd7b-4aa7-a013-ad631125b667" ;
+
+        return requestUrl;
+    }
 
     //길찾기 api 호출 함수
     public Call<GraphhopperResponse> getApi(){
@@ -91,55 +104,16 @@ public class MapRouteApi {
         Call<GraphhopperResponse> responseCall = mapRouteApiInterface.getResponseObject(makeUrl(startPoint,endPoint));
         return responseCall;
     }
+    public Call<GraphhopperResponse> getApi(LatLng startPoint,LatLng endPoint,LatLng sub1,LatLng sub2){
+        Call<GraphhopperResponse> responseCall = mapRouteApiInterface.getResponseObject(makeUrl4point(startPoint,endPoint,sub1,sub2));
+        return responseCall;
+    }
 
     //3point test method
     public Call<GraphhopperResponse> getApi_Test(){
         Call<GraphhopperResponse> responseCall = mapRouteApiInterface.getdata_3pointTest();
         return  responseCall;
     }
-
-//
-//    public List<LatLng> getRoutePoints(LatLng startPoint,LatLng endPoint){
-//        List<LatLng> coordsForDrawLine = new ArrayList<>();
-//
-////        this.getApi().enqueue(new Callback<GraphhopperResponse>() {
-////            @Override
-////            public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
-////                GraphhopperResponse graphhopperResponse = response.body();
-////                ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
-////                pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-////
-////                if (coordsForDrawLine != null){
-////                    coordsForDrawLine.clear();
-////                }
-////                for(int i = 0;i<pointsList.size();i++) {
-////                    coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1),pointsList.get(i).get(0)));
-////                }
-////            }
-////
-////            @Override
-////            public void onFailure(Call<GraphhopperResponse> call, Throwable t) {
-////                Log.d("getRoutePoints", "onFailure: " + t.toString());
-////            }
-////        });
-//
-//        try {
-//            GraphhopperResponse graphhopperResponse = this.getApi().execute().body();
-//            ArrayList<ArrayList<Double>> pointsList = new ArrayList<>();
-//            pointsList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-//
-//            if (coordsForDrawLine != null) {
-//                coordsForDrawLine.clear();
-//            }
-//            for (int i = 0; i < pointsList.size(); i++) {
-//                coordsForDrawLine.add(new LatLng(pointsList.get(i).get(1), pointsList.get(i).get(0)));
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        return coordsForDrawLine;
-//    }
 
 
 
