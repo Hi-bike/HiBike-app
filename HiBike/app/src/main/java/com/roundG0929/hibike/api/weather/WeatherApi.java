@@ -1,6 +1,7 @@
 package com.roundG0929.hibike.api.weather;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -50,12 +51,14 @@ public class WeatherApi {
         this.nx = Integer.toString(nx);
         this.ny = Integer.toString(ny);
 
-        Date date = new Date(now);
+        Date date = new Date(now-3600000);
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         SimpleDateFormat timeFormat = new SimpleDateFormat("HHmm");
         base_date = dateFormat.format(date);
-        date = new Date(now-3600000);
+//        date = new Date(now-3600000);
         base_time = timeFormat.format(date);
+
+        Log.d("TAG", "realTimeWeathercheck: " +nx +" "+ny+" "+base_date+" "+base_time);
     }
     //retrofit 인터페이스
     public interface WeatherApiInterface {
@@ -72,6 +75,7 @@ public class WeatherApi {
                                          @Query("base_time") String base_time,
                                          @Query("nx") String nx,
                                          @Query("ny") String ny);
+
 
     }
 

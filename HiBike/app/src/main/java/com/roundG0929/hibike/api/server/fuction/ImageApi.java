@@ -53,9 +53,9 @@ public class ImageApi extends Activity{
                         runOnUiThread(new Runnable() {
                             @SuppressLint("NewApi")
                             public void run() {
-                                Bitmap rotatedBitmap = RotateBitmap(bitmap, 90);
+//                                Bitmap rotatedBitmap = RotateBitmap(bitmap, 90);
                                 // 변환된 이미지 사용
-                                imageView.setImageBitmap(rotatedBitmap);
+                                imageView.setImageBitmap(bitmap);
                             }
                         });
                     }
