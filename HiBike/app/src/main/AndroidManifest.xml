@@ -23,12 +23,6 @@
             android:name=".activities.riding_record.FullScreenActivity"
             android:exported="false" />
         <activity
-            android:name=".ImageFullScreen"
-            android:exported="false" />
-        <activity
-            android:name=".RidingRecordImageActivity"
-            android:exported="false" />
-        <activity
             android:name=".activities.information.InformationWriteActivity"
             android:exported="true" />
         <activity

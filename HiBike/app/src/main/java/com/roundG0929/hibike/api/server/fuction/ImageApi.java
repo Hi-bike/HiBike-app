@@ -2,6 +2,7 @@ package com.roundG0929.hibike.api.server.fuction;
 
 import android.app.Activity;
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -10,11 +11,8 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
-import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-
-import java.io.IOException;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -64,7 +62,7 @@ public class ImageApi extends Activity{
         }).start();
     }
 
-    private Bitmap getBitmap(String url) {
+    public Bitmap getBitmap(String url) {
         HttpURLConnection connection = null;
         Bitmap retBitmap = null;
         try{
@@ -84,10 +82,10 @@ public class ImageApi extends Activity{
             return retBitmap;
         }
     }
-    public Bitmap RotateBitmap(Bitmap source, float angle)
-    {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(angle);
-        return Bitmap.createBitmap(source, 0, 0, source.getWidth(), source.getHeight(), matrix, true);
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
     }
 }

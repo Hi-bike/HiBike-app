@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -33,6 +34,7 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
@@ -53,8 +55,6 @@ import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
-import com.naver.maps.map.widget.ZoomControlView;
-import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.information.InformationApi;
 import com.roundG0929.hibike.api.information.dto.DangerInformation_Points;
@@ -62,12 +62,8 @@ import com.roundG0929.hibike.api.information.dto.DangerInformation_detail;
 import com.roundG0929.hibike.api.information.requestBody.Danger_infoBody;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
-import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
-import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -465,8 +461,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                                 contentText.setText(response.body().result.getContents());
                                                                 locationText.setText(response.body().result.getRegion() + " " + response.body().result.getRegion_detail());
                                                                 imageApi.getImage(informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
-
-                                                                Log.d("DANGERINFOR", "DangerInfo: " + response.body().result.getTitle());
                                                             }
                                                         }
 
