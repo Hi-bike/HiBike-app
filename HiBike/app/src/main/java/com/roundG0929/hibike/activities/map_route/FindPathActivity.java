@@ -65,6 +65,7 @@ import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.Graphho
 import com.roundG0929.hibike.api.map_route.navermap.AfterRouteMap;
 import com.roundG0929.hibike.api.map_route.navermap.FirstNaverMapSet;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.api.server.fuction.ImageApi;
 
 import org.w3c.dom.Text;
 
@@ -117,6 +118,10 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     TextView titleText;
     TextView dateText;
     TextView contentText;
+    TextView locationText;
+    ImageView informationImage;
+
+    ImageApi imageApi;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -144,7 +149,10 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         titleText = findViewById(R.id.titleText);
         dateText = findViewById(R.id.dateText);
         contentText = findViewById(R.id.contentText);
+        locationText = findViewById(R.id.locationText);
+        informationImage = findViewById(R.id.informationImage);
 
+        imageApi  = new ImageApi();
 
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
@@ -450,8 +458,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                         public void onResponse(Call<DangerInformation_detail> call, Response<DangerInformation_detail> response) {
                                                             if (response.isSuccessful()){
                                                                 titleText.setText(response.body().result.getTitle());
-                                                                dateText.setText(response.body().result.getTime());
+                                                                String[] splitedTime = response.body().result.getTime().split(" ");
+                                                                String createTime = splitedTime[0] + " " + splitedTime[1] + " "
+                                                                        + splitedTime[2] + " " + splitedTime[3] + " " + splitedTime[4];
+                                                                dateText.setText(createTime);
                                                                 contentText.setText(response.body().result.getContents());
+                                                                locationText.setText(response.body().result.getRegion() + " " + response.body().result.getRegion_detail());
+                                                                imageApi.getImage(informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
+
                                                                 Log.d("DANGERINFOR", "DangerInfo: " + response.body().result.getTitle());
                                                             }
                                                         }

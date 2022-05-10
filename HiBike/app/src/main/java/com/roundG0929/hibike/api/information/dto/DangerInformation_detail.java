@@ -28,6 +28,50 @@ public class DangerInformation_detail {
         @Expose
         @SerializedName("time")
         String time;
+        @Expose
+        @SerializedName("image")
+        String image;
+        @Expose
+        @SerializedName("region")
+        String region;
+        @Expose
+        @SerializedName("region_detail")
+        String region_detail;
+        @Expose
+        @SerializedName("period")
+        int period;
+
+        public String getImage() {
+            return image;
+        }
+
+        public void setImage(String image) {
+            this.image = image;
+        }
+
+        public String getRegion() {
+            return region;
+        }
+
+        public void setRegion(String region) {
+            this.region = region;
+        }
+
+        public String getRegion_detail() {
+            return region_detail;
+        }
+
+        public void setRegion_detail(String region_detail) {
+            this.region_detail = region_detail;
+        }
+
+        public int getPeriod() {
+            return period;
+        }
+
+        public void setPeriod(int period) {
+            this.period = period;
+        }
 
         public String getNickname() {
             return nickname;
