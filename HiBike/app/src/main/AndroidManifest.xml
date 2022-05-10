@@ -20,6 +20,15 @@
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.riding_record.FullScreenActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ImageFullScreen"
+            android:exported="false" />
+        <activity
+            android:name=".RidingRecordImageActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.information.InformationWriteActivity"
             android:exported="true" />
         <activity
@@ -83,12 +92,12 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.roundG0929.hibike"
             android:exported="false"
             android:grantUriPermissions="true">
-
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
