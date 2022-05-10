@@ -42,38 +42,29 @@
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/layout/fragment_profile.xml" value="0.20742753623188406" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/bottom_menu.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/menu/botton_menu.xml" value="0.2682291666666667" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable-v24/bar_rounded2.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/add_photo.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/bar_rounded.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/ic_launcher_background.xml" value="0.13854166666666667" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/image_rounded_corner.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/imagebtn_states.xml" value="0.13854166666666667" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/round_button.xml" value="0.13854166666666667" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/view_cornor_top.xml" value="0.265625" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/view_rounded.xml" value="0.265625" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_basic_profile.xml" value="0.5" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_basic_profile.xml" value="0.2" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.12132725430597771" />
+
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_findpath.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_full_screen.xml" value="0.19895833333333332" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_image_full_screen.xml" value="0.19895833333333332" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_informationwrite.xml" value="0.33" />
+
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.264" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main_2.xml" value="0.5" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main_2.xml" value="0.2375" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_reply_list_view.xml" value="0.12132725430597771" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding.xml" value="0.12132725430597771" />
+
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record.xml" value="0.33" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record_image.xml" value="0.19895833333333332" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record_list.xml" value="0.33" />
+
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_searchplace.xml" value="0.12132725430597771" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_sendpost.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.12132725430597771" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signup.xml" value="0.12132725430597771" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.1" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.4" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.378125" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/xml/file_paths.xml" value="0.14719202898550723" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.19895833333333332" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.24739583333333334" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.19895833333333332" />
@@ -82,16 +73,21 @@
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_view_board.xml" value="0.14606741573033707" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.19895833333333332" />
         <entry key="app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.488" />
+        <entry key="app/src/main/res/drawable/button_findpathlayout_selectlocationsource.xml" value="0.273" />
+        <entry key="app/src/main/res/drawable/button_rounded_corner.xml" value="0.273" />
         <entry key="app/src/main/res/drawable/ic_launcher_background.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/imagebtn_states.xml" value="0.488" />
         <entry key="app/src/main/res/drawable/round_button.xml" value="0.2935" />
         <entry key="app/src/main/res/layout/activity_basic_profile.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_drawer.xml" value="0.25" />
-        <entry key="app/src/main/res/layout/activity_findpath.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/activity_findpath.xml" value="0.2574324324324324" />
+        <entry key="app/src/main/res/layout/activity_informationwrite.xml" value="0.3655405405405405" />
         <entry key="app/src/main/res/layout/activity_list_view.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/activity_main_2.xml" value="0.7943015983321752" />
         <entry key="app/src/main/res/layout/activity_reply_list_view.xml" value="0.396875" />
-        <entry key="app/src/main/res/layout/activity_riding.xml" value="0.375" />
+        <entry key="app/src/main/res/layout/activity_riding.xml" value="0.2574324324324324" />
+        <entry key="app/src/main/res/layout/activity_riding_record.xml" value="0.2574324324324324" />
         <entry key="app/src/main/res/layout/activity_searchplace.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_sendpost.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/activity_signin.xml" value="0.335" />
@@ -100,6 +96,10 @@
         <entry key="app/src/main/res/layout/item_searchplace.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/list_item_reply.xml" value="0.396875" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.273" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.273" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_main.xml" value="0.273" />
+        <entry key="app/src/main/res/mipmap-anydpi-v26/ic_main_round.xml" value="0.273" />
       </map>
     </option>
   </component>
