@@ -6,7 +6,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="290dp"
-    android:layout_height="420dp"
+    android:layout_height="380dp"
     android:background="@drawable/view_rounded"
     tools:context=".activities.auth.BasicProfileActivity"
     android:orientation="vertical"
@@ -176,7 +176,7 @@
             android:layout_gravity="center"
             android:background="@drawable/button_rounded_corner"
             android:textColor="#ffffff"
-            android:layout_marginTop="40dp"
+            android:layout_marginTop="20dp"
             android:text="확인" />
 
         <TextView

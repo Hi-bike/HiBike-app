@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class RidingRecordActivity extends AppCompatActivity {
     //ui
     TextView tvRoute, tvCreateTime, tvTime, tvDistance, tvSpeed;
     ImageView ivRidingImage;
+    ImageView ivRidingBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +48,14 @@ public class RidingRecordActivity extends AppCompatActivity {
         tvDistance = findViewById(R.id.tv_distance);
         tvSpeed = findViewById(R.id.tv_speed);
         ivRidingImage = findViewById(R.id.iv_riding_image);
+        ivRidingBack = findViewById(R.id.iv_riding_back);
+
+        ivRidingBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         api.getRidingInfoOne(uniqueId).enqueue(new Callback<GetRidingOne>() {
