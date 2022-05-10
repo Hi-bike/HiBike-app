@@ -1,6 +1,7 @@
 package com.roundG0929.hibike.activities.map_route;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
@@ -55,6 +57,7 @@ import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
+import com.roundG0929.hibike.api.server.dto.PostRidingMulti;
 import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
 import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.RidingRegion;
@@ -63,7 +66,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -75,6 +80,7 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Part;
 
 public class RidingActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -125,6 +131,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     //test ui
     TextView distText;//timeText,
 
+    PostRidingMulti postRidingMulti = new PostRidingMulti();
+    File file;
+    AlertDialog endDialog;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -154,9 +163,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
         }
-
-
-
 
 
         //userId
@@ -344,6 +350,14 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         }
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (endDialog != null && endDialog.isShowing()) {
+            endDialog.dismiss();
+        }
+    }
+
     //주행종료 다이얼로그
     private void showMessage(){
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -380,25 +394,102 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 cameraUpdate.animate(CameraAnimation.Easing);
                 naverMapObj.moveCamera(cameraUpdate);
 
+                //지도 캡쳐
+                naverMapObj.takeSnapshot(false, new NaverMap.SnapshotReadyCallback() {
+                    @SuppressLint("WrongThread")
+                    @Override
+                    public void onSnapshotReady(@NonNull Bitmap bitmap) {
+                        //임시 파일 생성 후 서버로 전송
+                        file = new File(getApplicationContext().getCacheDir(), HibikeUtils.getRandomString(5)+".png");
+                        try {
+                            file.createNewFile();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        //Convert bitmap to byte array
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                            bitmap.compress(Bitmap.CompressFormat.WEBP_LOSSLESS, 100, bos);
+                        } else {
+                            bitmap.compress(Bitmap.CompressFormat.PNG, 100, bos);
+                        }
+                        byte[] bitmapdata = bos.toByteArray();
+
+                        //write the bytes in file
+                        FileOutputStream fos = null;
+                        try {
+                            fos = new FileOutputStream(file);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            fos.write(bitmapdata);
+                            fos.flush();
+                            fos.close();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
+
+                postRidingMulti.setSouthwestLati(forMakeLatLngBounds.get(0).latitude+"");
+                postRidingMulti.setSouthwestLong(forMakeLatLngBounds.get(0).longitude+"");
+                postRidingMulti.setNortheastLati(forMakeLatLngBounds.get(1).latitude+"");
+                postRidingMulti.setNortheastLong(forMakeLatLngBounds.get(1).longitude+"");
+
                 startingPoint = ridingPointRecord.get(0);
                 endPoint = ridingPointRecord.get(ridingPointRecord.size() - 1);
                 uniqueId = getUniqueId();
-                // 좌표 -> 주소
 
+                // 시작 좌표 -> 지역이름
                 ReverseGeocodingGenerator sprg = new ReverseGeocodingGenerator(startingPoint.longitude, startingPoint.latitude);
+                nApi.getRegion(sprg.getHeaders(), sprg.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
+                    @Override
+                    public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
+                        if (response.isSuccessful()) {
+                            Object obj = response.body().getResult();
+                            ArrayList<String> result = HibikeUtils.regionJsonToArray(obj);
+                            postRidingMulti.setStartingRegion(result.get(0)+" "+result.get(1)+" "+result.get(2));
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {}
+                });
+
+                // 종료 좌표 -> 지역이름
                 ReverseGeocodingGenerator eprg = new ReverseGeocodingGenerator(endPoint.longitude, endPoint.latitude);
 
-                Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
-                new SRGCall().execute(callSp);
+                nApi.getRegion(eprg.getHeaders(), eprg.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
+                    @Override
+                    public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
+                        if (response.isSuccessful()) {
+                            Object obj = response.body().getResult();
+                            ArrayList<String> result = HibikeUtils.regionJsonToArray(obj);
+                            postRidingMulti.setEndRegion(result.get(0)+" "+result.get(1)+" "+result.get(2));
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {}
+                });
+//                Call<ReverseGeocodingDto> callSp = nApi.getRegion(sprg.getHeaders(), sprg.getQueries());
+//                new SRGCall().execute(callSp);
+//
+//                Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
+//                new ERGCall().execute(callEp);
 
-                Call<ReverseGeocodingDto> callEp = nApi.getRegion(eprg.getHeaders(), eprg.getQueries());
-                new ERGCall().execute(callEp);
 
-                data.setUserId(userId);
-                data.setUniqueId(uniqueId);
-                data.setRidingTime(result_minute +" : "+result_second);
-                data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
-                data.setDistance(totalDistance+"");
+                postRidingMulti.setUserId(userId);
+                postRidingMulti.setUniqueId(uniqueId);
+                postRidingMulti.setRidingTime(result_minute +" : "+result_second);
+                postRidingMulti.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
+                postRidingMulti.setDistance(totalDistance+"");
+
+//                data.setUserId(userId);
+//                data.setUniqueId(uniqueId);
+//                data.setRidingTime(result_minute +" : "+result_second);
+//                data.setAveSpeed(Double.parseDouble(String.format("%.1f", averageSpeed))+"");
+//                data.setDistance(totalDistance+"");
 
                 //ridingGoal ridingAchievement
                 int ridingGoal = pref.getInt("ridingGoal", 0);
@@ -418,25 +509,24 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     mainRidingAchievement.setText(Double.parseDouble(String.format("%.1f", (double) nowRidingAchievement / 1000))+"km");
                 }
 
-                api.postRiding(data).enqueue(new Callback<PostRiding>() {
-                    @Override
-                    public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
-                        if(!response.isSuccessful()){
-                            Toast toast = Toast.makeText(getApplicationContext(), "error. (" + response.message() + ")", Toast.LENGTH_LONG);
-                            toast.setGravity(Gravity.TOP, 0, 0);
-                            toast.show();
-                        }
-                    }
-                    @Override
-                    public void onFailure(Call<PostRiding> call, Throwable t) {}
-                });
+//                api.postRiding(data).enqueue(new Callback<PostRiding>() {
+//                    @Override
+//                    public void onResponse(Call<PostRiding> call, Response<PostRiding> response) {
+//                        if(!response.isSuccessful()){
+//                            Toast toast = Toast.makeText(getApplicationContext(), "error. (" + response.message() + ")", Toast.LENGTH_LONG);
+//                            toast.setGravity(Gravity.TOP, 0, 0);
+//                            toast.show();
+//                        }
+//                    }
+//                    @Override
+//                    public void onFailure(Call<PostRiding> call, Throwable t) {}
+//                });
 
                 ridingGoAndStopButton.setText("나가기");
                 ridingGoAndStopButton.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-//                        postRidingImage();
-                        finish();
+                        saveRidingInfo();
                     }
                 });
             }
@@ -447,6 +537,59 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         });
         AlertDialog dialog = builder.create();
         dialog.show();
+    }
+
+    public void saveRidingInfo(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("저장하시겠습니까?");
+        builder.setPositiveButton("확인", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                RequestBody requestBody = RequestBody.create(MediaType.parse("image/*"), file);
+                MultipartBody.Part fileToUpload = MultipartBody.Part.createFormData("file", file.getName(), requestBody);
+
+                Log.v("filename", file.getName());
+
+                RequestBody userId = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getUserId());
+                RequestBody uniqueId = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getUniqueId());
+                RequestBody ridingTime = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getRidingTime());
+                RequestBody aveSpeed = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getAveSpeed());
+                RequestBody distance = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getDistance());
+                RequestBody startingRegion = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getStartingRegion());
+                RequestBody endRegion = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getEndRegion());
+                RequestBody northeastLati = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getNortheastLati());
+                RequestBody northeastLong = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getNortheastLong());
+                RequestBody southwestLati = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getSouthwestLati());
+                RequestBody southwestLong = RequestBody.create(MediaType.parse("text/plain"), postRidingMulti.getSouthwestLong());
+
+                api.postRidingMulti(
+                    userId, uniqueId, ridingTime, aveSpeed, distance,
+                    startingRegion, endRegion, northeastLati, northeastLong,southwestLati, southwestLong,
+                    fileToUpload
+                ).enqueue(new Callback<PostRidingMulti>() {
+                    @Override
+                    public void onResponse(Call<PostRidingMulti> call, Response<PostRidingMulti> response) {
+                        if (!response.isSuccessful()) {
+                            Log.e("error", response.message());
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<PostRidingMulti> call, Throwable t) {
+                        Log.e("t", t.getMessage());
+                    }
+                });
+                finish();
+            }
+        });
+
+        builder.setNegativeButton("취소", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                finish();
+            }
+        });
+        endDialog = builder.create();
+        endDialog.show();
     }
 
 

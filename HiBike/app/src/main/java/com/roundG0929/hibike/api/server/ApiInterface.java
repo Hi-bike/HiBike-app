@@ -8,6 +8,7 @@ import com.roundG0929.hibike.api.server.dto.GetRidingOne;
 import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
 import com.roundG0929.hibike.api.server.dto.PostDanger;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
+import com.roundG0929.hibike.api.server.dto.PostRidingMulti;
 import com.roundG0929.hibike.api.server.dto.ProfileImage;
 import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.RidingRegion;
@@ -98,14 +99,31 @@ public interface ApiInterface {
     @Multipart
     @POST("api/board/post-danger")
     Call<PostDanger> postDanger (
-            @Part MultipartBody.Part file,
-            @Part("id") RequestBody id,
-            @Part("title") RequestBody title,
-            @Part("contents") RequestBody contents,
-            @Part("latitude") RequestBody latitude,
-            @Part("longitude") RequestBody longitude,
-            @Part("region") RequestBody region,
-            @Part("region_detail") RequestBody region_detail,
-            @Part("period") RequestBody period
+        @Part MultipartBody.Part file,
+        @Part("id") RequestBody id,
+        @Part("title") RequestBody title,
+        @Part("contents") RequestBody contents,
+        @Part("latitude") RequestBody latitude,
+        @Part("longitude") RequestBody longitude,
+        @Part("region") RequestBody region,
+        @Part("region_detail") RequestBody region_detail,
+        @Part("period") RequestBody period
+    );
+
+    @Multipart
+    @POST("api/auth/rmulti")
+    Call<PostRidingMulti> postRidingMulti (
+        @Part("user_id") RequestBody userId,
+        @Part("unique_id") RequestBody uniqueId,
+        @Part("riding_time") RequestBody ridingTime,
+        @Part("ave_speed") RequestBody aveSpeed,
+        @Part("distance") RequestBody distance,
+        @Part("starting_region") RequestBody startingRegion,
+        @Part("end_region") RequestBody endRegion,
+        @Part("northeast_lati") RequestBody northeastLati,
+        @Part("northeast_long") RequestBody northeastLong,
+        @Part("southwest_lati") RequestBody southwestLati,
+        @Part("southwest_long") RequestBody southwestLong,
+        @Part MultipartBody.Part file
     );
 }

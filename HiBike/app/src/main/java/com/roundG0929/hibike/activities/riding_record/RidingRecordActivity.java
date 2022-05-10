@@ -56,6 +56,7 @@ public class RidingRecordActivity extends AppCompatActivity {
                 finish();
             }
         });
+        imageApi = new ImageApi();
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         api.getRidingInfoOne(uniqueId).enqueue(new Callback<GetRidingOne>() {
@@ -88,7 +89,7 @@ public class RidingRecordActivity extends AppCompatActivity {
                         tvTime.setText(tvTime.getText() +"    "+ ridingTime);
                         tvSpeed.setText(tvSpeed.getText() +"    "+ aveSpeed+" km/h");
                         tvDistance.setText(tvDistance.getText() +"    "+ distance+" m");
-
+                        imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
 
                     } catch (JSONException e) {
                         Log.e("eeee", e.toString());
