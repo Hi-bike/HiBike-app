@@ -1,5 +1,6 @@
 package com.roundG0929.hibike.activities.riding_record;
 
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -9,7 +10,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.google.gson.annotations.SerializedName;
 import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.server.ApiInterface;
@@ -56,6 +56,7 @@ public class RidingRecordActivity extends AppCompatActivity {
                 finish();
             }
         });
+        imageApi = new ImageApi();
 
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         api.getRidingInfoOne(uniqueId).enqueue(new Callback<GetRidingOne>() {
@@ -81,14 +82,12 @@ public class RidingRecordActivity extends AppCompatActivity {
                         String[] splitedRidingTime = ridingTime.split(" : ");
                         ridingTime = splitedRidingTime[0] + "분 " + splitedRidingTime[1]+"초 ";
 
-
-
                         tvRoute.setText(startingRegion + " > " + endRegion);
                         tvCreateTime.setText(createTime);
                         tvTime.setText(tvTime.getText() +"    "+ ridingTime);
                         tvSpeed.setText(tvSpeed.getText() +"    "+ aveSpeed+" km/h");
                         tvDistance.setText(tvDistance.getText() +"    "+ distance+" m");
-
+                        imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
 
                     } catch (JSONException e) {
                         Log.e("eeee", e.toString());
@@ -109,8 +108,15 @@ public class RidingRecordActivity extends AppCompatActivity {
 //        } catch (Exception e) {
 //
 //        }
-
-
+        ivRidingImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), FullScreenActivity.class);
+                intent.putExtra("uniqueId", uniqueId);
+                intent.addFlags (Intent.FLAG_ACTIVITY_NO_ANIMATION);
+                startActivity(intent);
+            }
+        });
 
     }
 
