@@ -17,6 +17,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,14 +35,9 @@ import androidx.cardview.widget.CardView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.tasks.CancellationToken;
-import com.google.android.gms.tasks.OnTokenCanceledListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
-import com.gun0912.tedpermission.normal.TedPermission;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -86,17 +82,33 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     Handler     handler=new Handler();
     MapSetting mapSetting = new MapSetting();
     LatLng[] startEndPoint = new LatLng[2]; //0 start, 1 end
+    LatLng[] subPoint = new LatLng[2]; //0 sub1, 1 sub2
     int startOrendFlag = -1; //0 start, 1 end
+    int sub1Orsub2Flag = -1; //0 sub1, 1 sub2
     ArrayList<ArrayList<Double>> routePoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 경로 좌표
     ArrayList<ArrayList<Double>> markerPoints_ForIntent = new ArrayList<>(); //라이딩 액티비티로 넘기기위한 마커 좌표
     Danger_infoBody danger_infoBody = new Danger_infoBody(); //마커 클릭시 요청할 api body
-
+    ArrayList<LatLng> coordsForDrawLine = new ArrayList<>(); //경로 좌표 배열
+    PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
+    ArrayList<Marker> informationMarkerList = new ArrayList<>();  //위험정보 마커객체
+    ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //탐색 영역그리기 객체
 
     //ui 객체
     EditText startText;
     EditText endText;
+    EditText sub1Text;
+    EditText sub2Text;
+
     ImageButton startTextCancle;
     ImageButton endTextCancle;
+    ImageButton sub1TextCancle;
+    ImageButton sub2TextCancle;
+
+    FrameLayout sub1Layout; //경유지 레이아웃
+    FrameLayout sub2Layout;
+
+    Button addSubButton;
+
     ImageButton findButton;
     ImageButton changeButton;
     LinearLayout uiLayout;
@@ -127,8 +139,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         //ui 객체 할당
         startText = findViewById(R.id.startText);
         endText = findViewById(R.id.endText);
+        sub1Text = findViewById(R.id.sub1Text);
+        sub2Text = findViewById(R.id.sub2Text);
         startTextCancle = findViewById(R.id.startTextCancle);
         endTextCancle = findViewById(R.id.endTextCancle);
+        sub1TextCancle = findViewById(R.id.sub1TextCancle);
+        sub2TextCancle = findViewById(R.id.sub2TextCancle);
+        sub1Layout = findViewById(R.id.sub1Layout);
+        sub2Layout = findViewById(R.id.sub2Layout);
+        addSubButton = findViewById(R.id.addSubButton);
         findButton = findViewById(R.id.findButton);
         changeButton = findViewById(R.id.changeButton);
         uiLayout = findViewById(R.id.uiLayout);
@@ -171,41 +190,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this::onMapReady);
 
         //각 ui listener
-        Button button = findViewById(R.id.button);
-        button.setText("test");
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(trackingflag == false){
-                    trackingflag = true;
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            while (trackingflag){
-                                Location location = fusedLocationSource.getLastLocation();
-                                handler.post(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        startText.setText(location.getLatitude() + ", " + location.getLongitude());
-                                    }
-                                });
-                                try {
-                                    Thread.sleep(1000);
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }).start();
-                }
-                else if(trackingflag == true){trackingflag = false;}
-//                Location location = fusedLocationSource.getLastLocation();
-//                EditText editText = findViewById(R.id.startText);
-//                editText.setText("");
-//                editText.append(location.getLatitude() + ", " + location.getLongitude());
-            }
-        });
-
             //출발, 도착 editText
         startText.setTextIsSelectable(true);
         startText.setShowSoftInputOnFocus(false);
@@ -250,6 +234,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         });
+            //경유지텍스트 속성부여
+        sub1Text.setTextIsSelectable(true);
+        sub1Text.setShowSoftInputOnFocus(false);
+        sub1Text.setLongClickable(false);
+        sub2Text.setTextIsSelectable(true);
+        sub2Text.setShowSoftInputOnFocus(false);
+        sub2Text.setLongClickable(false);
+
         new TedKeyboardObserver(this).listen(new BaseKeyboardObserver.OnKeyboardListener() { //키보드 상태변환 리스너(show, hide)
             @Override
             public void onKeyboardChange(boolean isShow) {
@@ -266,6 +258,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 startText.setText("");
                 startEndPoint[0] = null;
+                resetUI();
             }
         });
         endTextCancle.setOnClickListener(new View.OnClickListener() {
@@ -273,6 +266,24 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 endText.setText("");
                 startEndPoint[1] = null;
+                resetUI();
+            }
+        });
+            //경유지1,2 취소 버튼
+        sub1TextCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sub1Text.setText("");
+                subPoint[0]=null;
+                sub1Layout.setVisibility(View.GONE);
+            }
+        });
+        sub2TextCancle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sub2Text.setText("");
+                subPoint[1]=null;
+                sub2Layout.setVisibility(View.GONE);
             }
         });
 
@@ -345,38 +356,58 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     setStartOrend(0,naverMapObj.getCameraPosition().target);
                 }else if(startOrendFlag == 1){
                     setStartOrend(1,naverMapObj.getCameraPosition().target);
+                }else if(sub1Orsub2Flag == 0){
+                    setStartOrend(2,naverMapObj.getCameraPosition().target);
+                    addSubButton.setVisibility(View.VISIBLE);
+                }else if(sub1Orsub2Flag == 1){
+                    setStartOrend(3,naverMapObj.getCameraPosition().target);
+                    addSubButton.setVisibility(View.VISIBLE);
                 }
                 startOrendFlag = -1;
+                sub1Orsub2Flag = -1;
                 findPathCardView.setVisibility(View.VISIBLE);
                 fromMapSelectButton.setVisibility(View.GONE);
                 targetPoint.setVisibility(View.GONE);
             }
         });
 
-            //길찾기버튼 findButton, 선그리기 객체
-        PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
-        ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //영역그리기 객체
-        ArrayList<Marker> informationMarkerList = new ArrayList<>();
+            //길찾기버튼 findButton
         findButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                if(areaTestPathOverlay.size() != 0){
-//                    for(int i = 0; coordsForDrawLine.size()-1>i;i++){
-//                        areaTestPathOverlay.get(i).setMap(null);
-//                    }
-//                }
+                pathOverlay.setMap(null);
+                for(int j=0;j<informationMarkerList.size();j++){
+                    informationMarkerList.get(j).setMap(null);
+                }
+                informationMarkerList.clear();
+                for(int j=0;j<areaTestPathOverlay.size();j++){
+                    areaTestPathOverlay.get(j).setMap(null);
+                }
+                areaTestPathOverlay.clear();
+                coordsForDrawLine.clear();
 
                 if(startEndPoint[0] == null || startEndPoint[1] == null){
                     Toast.makeText(getApplicationContext(),"경로 지정이 필요합니다.",Toast.LENGTH_SHORT).show();
                 }else{
-                    new MapRouteApi().getApi(startEndPoint[0],startEndPoint[1]).enqueue(new Callback<GraphhopperResponse>() {
+                    new MapRouteApi().getApi(startEndPoint[0],startEndPoint[1],subPoint[0],subPoint[1]).enqueue(new Callback<GraphhopperResponse>() {
                         @Override
                         public void onResponse(Call<GraphhopperResponse> call, Response<GraphhopperResponse> response) {
+                            pathOverlay.setMap(null);
+                            for(int j=0;j<informationMarkerList.size();j++){
+                                informationMarkerList.get(j).setMap(null);
+                            }
+                            informationMarkerList.clear();
+                            for(int j=0;j<areaTestPathOverlay.size();j++){
+                                areaTestPathOverlay.get(j).setMap(null);
+                            }
+                            areaTestPathOverlay.clear();
+                            coordsForDrawLine.clear();
+
                             GraphhopperResponse graphhopperResponse = new GraphhopperResponse();
                             graphhopperResponse = response.body();
                             ArrayList<ArrayList<Double>> pointList = new ArrayList<>();
                             pointList = graphhopperResponse.getPaths().get(0).getPoints().getCoordinates();
-                            ArrayList<LatLng> coordsForDrawLine = new ArrayList<>();
+
 
                             if(!routePoints_ForIntent.isEmpty()){
                                 routePoints_ForIntent.clear();
@@ -482,6 +513,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                             informationMarkerList.get(j).setMap(naverMapObj);
                                         }
                                     }
+
+                                    addSubButton.setVisibility(View.VISIBLE);//위험정보 확인후 경유지 추가 선택
                                 }
 
                                 @Override
@@ -553,6 +586,41 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     endText.setText("");
                 }else{
                     endText.setText(startEndPoint[1].latitude +", "+startEndPoint[1].longitude);
+                }
+                resetUI();
+            }
+        });
+
+            //경유지추가버튼
+        addSubButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(sub1Layout.getVisibility() == View.VISIBLE && sub2Layout.getVisibility() == View.VISIBLE){
+                    Toast.makeText(getApplicationContext(),"경유지는 두 개가 최대입니다.",Toast.LENGTH_SHORT).show();
+                }else if(sub1Layout.getVisibility() == View.GONE){
+
+                    addSubButton.setVisibility(View.GONE);
+                    sub1Orsub2Flag = 0;
+
+                    findPathCardView.setVisibility(View.GONE);
+                    fromMapSelectButton.setVisibility(View.VISIBLE);
+                    targetPoint.setVisibility(View.VISIBLE);
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(startText.getWindowToken(),0);
+
+                    sub1Layout.setVisibility(View.VISIBLE);
+                }else if(sub2Layout.getVisibility() == View.GONE){
+
+                    addSubButton.setVisibility(View.GONE);
+                    sub1Orsub2Flag = 1;
+
+                    findPathCardView.setVisibility(View.GONE);
+                    fromMapSelectButton.setVisibility(View.VISIBLE);
+                    targetPoint.setVisibility(View.VISIBLE);
+                    InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    inputMethodManager.hideSoftInputFromWindow(startText.getWindowToken(),0);
+
+                    sub2Layout.setVisibility(View.VISIBLE);
                 }
             }
         });
@@ -635,7 +703,27 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
     }
 
-
+    //가변 ui 숨기기
+    private void resetUI(){
+        pathOverlay.setMap(null);
+        for(int j=0;j<informationMarkerList.size();j++){
+            informationMarkerList.get(j).setMap(null);
+        }
+        informationMarkerList.clear();
+        for(int j=0;j<areaTestPathOverlay.size();j++){
+            areaTestPathOverlay.get(j).setMap(null);
+        }
+        areaTestPathOverlay.clear();
+        coordsForDrawLine.clear();
+        ridingStartButton.setVisibility(View.GONE);
+        sub1Layout.setVisibility(View.GONE);
+        sub2Layout.setVisibility(View.GONE);
+        addSubButton.setVisibility(View.GONE);
+        sub1Text.setText("");
+        subPoint[0] = null;
+        sub2Text.setText("");
+        subPoint[1] = null;
+    }
 
 
     private void setStartOrend(int startOrend,LatLng latLng){
@@ -648,6 +736,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         }else if(startOrend == 1){
             startEndPoint[1] = inputLatlng;
             endText.setText(latlngString);
+        }
+        else if(startOrend == 2){
+            subPoint[0] = inputLatlng;
+            sub1Text.setText(latlngString);
+        }
+        else if(startOrend == 3){
+            subPoint[1] = inputLatlng;
+            sub2Text.setText(latlngString);
         }
     }
 

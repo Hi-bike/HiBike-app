@@ -24,7 +24,7 @@
             <androidx.cardview.widget.CardView
                 android:id="@+id/findPathCardView"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
+                android:layout_height="wrap_content"
                 app:cardCornerRadius="10dp"
                 app:cardElevation="5dp"
                 android:background="#ffffffff"
@@ -33,13 +33,14 @@
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal"
                     android:layout_margin="5dp">
                     <ImageButton
                         android:id="@+id/findButton"
                         android:layout_width="40dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="93dp"
+                        android:layout_gravity="center"
                         android:src="@drawable/icons_searchroute"
                         android:scaleType="fitCenter"
                         android:background="@drawable/round_button"
@@ -47,13 +48,13 @@
                         android:layout_marginBottom="2dp"/>
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
+                        android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:orientation="vertical">
+                        android:orientation="vertical"
+                        android:layout_gravity="center">
                         <FrameLayout
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1">
+                            android:layout_height="48dp">
                             <EditText
                                 android:id="@+id/startText"
                                 android:layout_width="match_parent"
@@ -77,9 +78,64 @@
                         </FrameLayout>
 
                         <FrameLayout
+                            android:id="@+id/sub1Layout"
+                            android:visibility="gone"
                             android:layout_width="match_parent"
-                            android:layout_height="0dp"
-                            android:layout_weight="1">
+                            android:layout_height="48dp">
+                            <EditText
+                                android:id="@+id/sub1Text"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:paddingLeft="5dp"
+                                android:background="#dddddd"
+                                android:hint="경유지1"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:theme="@style/routeEditText" />
+                            <ImageButton
+                                android:id="@+id/sub1TextCancle"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:padding="5dp"
+                                android:layout_gravity="right|center"
+                                android:src="@drawable/icons_close"
+                                android:scaleType="fitCenter"
+                                android:background="#00000000" />
+                        </FrameLayout>
+                        <FrameLayout
+                            android:id="@+id/sub2Layout"
+                            android:visibility="gone"
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp">
+                            <EditText
+                                android:id="@+id/sub2Text"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:layout_margin="2dp"
+                                android:paddingLeft="5dp"
+                                android:background="#dddddd"
+                                android:hint="경유지2"
+                                android:inputType="text"
+                                android:maxLines="1"
+                                android:theme="@style/routeEditText" />
+                            <ImageButton
+                                android:id="@+id/sub2TextCancle"
+                                android:layout_width="35dp"
+                                android:layout_height="35dp"
+                                android:padding="5dp"
+                                android:layout_gravity="right|center"
+                                android:src="@drawable/icons_close"
+                                android:scaleType="fitCenter"
+                                android:background="#00000000" />
+                        </FrameLayout>
+
+
+
+
+                        <FrameLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="48dp">
                             <EditText
                                 android:id="@+id/endText"
                                 android:layout_width="match_parent"
@@ -147,17 +203,19 @@
                     android:layout_margin="5dp"/>
             </LinearLayout>
             <Button
-                android:id="@+id/button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"/>
-            <Button
                 android:id="@+id/fromMapSelectButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="결정"
                 android:layout_gravity="right"
                 android:visibility="gone"/>
+            <Button
+                android:visibility="gone"
+                android:id="@+id/addSubButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="경유지추가"
+                android:layout_gravity="right"/>
 
             <com.naver.maps.map.widget.CompassView
                 android:id="@+id/compass"
