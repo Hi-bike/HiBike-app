@@ -15,9 +15,13 @@ import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
@@ -120,6 +124,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main_2);
         context_main = this;
 
+        Handler mainAnimHandler = new Handler();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                mainAnimHandler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        FrameLayout frameLayout = findViewById(R.id.loadingLayout);
+                        frameLayout.startAnimation(AnimationUtils.loadAnimation(getApplicationContext(),R.anim.animation_main));
+                        frameLayout.setVisibility(View.GONE);
+                        LinearLayout linearLayout = findViewById(R.id.mainLayout);
+                    }
+                });
+            }
+        }).start();
 //        getWindow().setNavigationBarColor(Color.WHITE);//네이게이션바 투명
 
         //로그인 성공시, 유저 아이디 핸드폰에 저장
