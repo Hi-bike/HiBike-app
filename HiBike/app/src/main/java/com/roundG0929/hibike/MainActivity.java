@@ -70,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
     TextView btnRidingRecord;//로그인 버튼
     TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
     TextView tvMyRecord;
-    CardView btnPosts;//게시판
+    TextView btnPosts;//게시판
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
@@ -367,7 +367,7 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        Button inforTestButton = findViewById(R.id.inforWriteButton);
+        TextView inforTestButton = findViewById(R.id.inforWriteButton);
         inforTestButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
