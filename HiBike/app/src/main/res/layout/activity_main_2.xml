@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <LinearLayout
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
@@ -466,4 +467,23 @@
 
 
     </LinearLayout>
+    <FrameLayout
+        android:id="@+id/loadingLayout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:background="#ffffff">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="300dp"
+            android:src="@drawable/icons_main_toplogo"
+            android:layout_gravity="top"/>
+        <com.airbnb.lottie.LottieAnimationView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:paddingBottom="15dp"
+            app:lottie_autoPlay="true"
+            app:lottie_loop="true"
+            app:lottie_rawRes="@raw/animation_riding"/>
+    </FrameLayout>
 </androidx.drawerlayout.widget.DrawerLayout>
