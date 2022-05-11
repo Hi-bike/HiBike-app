@@ -48,6 +48,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.Marker;
 import com.naver.maps.map.overlay.Overlay;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
@@ -98,7 +99,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
     ArrayList<Marker> informationMarkerList = new ArrayList<>();  //위험정보 마커객체
     ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //탐색 영역그리기 객체
-    String addressString;
+    Marker startMarker = new Marker();
+    Marker endMarker = new Marker();
+
 
     //ui 객체
     EditText startText;
@@ -173,6 +176,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         contentText = findViewById(R.id.contentText);
         locationText = findViewById(R.id.locationText);
         informationImage = findViewById(R.id.informationImage);
+        startMarker.setIcon(OverlayImage.fromResource(R.drawable.marker_start));
+        startMarker.setHeight(convertDpToPx(getApplicationContext(),70));
+        startMarker.setWidth(convertDpToPx(getApplicationContext(),70));
+        endMarker.setIcon(OverlayImage.fromResource(R.drawable.marker_end));
+        endMarker.setHeight(convertDpToPx(getApplicationContext(),70));
+        endMarker.setWidth(convertDpToPx(getApplicationContext(),70));
 
         imageApi  = new ImageApi();
         napi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
@@ -265,6 +274,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 startText.setText("");
                 startEndPoint[0] = null;
+                startMarker.setMap(null);
                 resetUI();
             }
         });
@@ -273,6 +283,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             public void onClick(View view) {
                 endText.setText("");
                 startEndPoint[1] = null;
+                endMarker.setMap(null);
                 resetUI();
             }
         });
@@ -304,11 +315,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
                     startEndPoint[0] = latLng;
                     latlngToAddress(latLng,1);
+                    startMarker.setPosition(startEndPoint[0]);
+                    startMarker.setMap(naverMapObj);
                 }else if(endText.isFocused()){
                     Location location = fusedLocationSource.getLastLocation();
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
                     startEndPoint[1] = latLng;
                     latlngToAddress(latLng,4);
+                    endMarker.setPosition(startEndPoint[1]);
+                    endMarker.setMap(naverMapObj);
                 }
 
                 startText.clearFocus();
@@ -476,11 +491,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                             new LatLng(response.body().danger_list.get(i).get(0),
                                                                     response.body().danger_list.get(i).get(1))));
                                             int target_i = i;
-                                            informationMarkerList.get(i).setOnClickListener(new Overlay.OnClickListener() {
+                                            informationMarkerList.get(i).setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
+                                            informationMarkerList.get(i).setWidth(convertDpToPx(getApplicationContext(),40));
+                                            informationMarkerList.get(i).setHeight(convertDpToPx(getApplicationContext(),40));
+                                            informationMarkerList.get(i).setOnClickListener(new Overlay.OnClickListener() {  //마커 클릭리스너
                                                 @Override
                                                 public boolean onClick(@NonNull Overlay overlay) {
                                                     naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
-                                                            0,convertDpToPx(getApplicationContext(),300));
+                                                            0,convertDpToPx(getApplicationContext(),400));
                                                     CameraUpdate cameraUpdate = CameraUpdate.scrollTo(informationMarkerList.get(target_i).getPosition());
                                                     naverMapObj.moveCamera(cameraUpdate);
                                                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
@@ -737,21 +755,25 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         LatLng inputLatlng = new LatLng(Double.parseDouble(String.format("%.6f",latLng.latitude)),
                                         Double.parseDouble(String.format("%.6f",latLng.longitude)));
         String latlngString = inputLatlng.latitude + ", " + inputLatlng.longitude;
-        if(startOrend == 0){
+        if(startOrend == 0){//출발
             startEndPoint[0] = inputLatlng;
 //            startText.setText(latlngString);
             latlngToAddress(inputLatlng,1);
-        }else if(startOrend == 1){
+            startMarker.setPosition(startEndPoint[0]);
+            startMarker.setMap(naverMapObj);
+        }else if(startOrend == 1){//도착
             startEndPoint[1] = inputLatlng;
 //            endText.setText(latlngString);
             latlngToAddress(inputLatlng,4);
+            endMarker.setPosition(startEndPoint[1]);
+            endMarker.setMap(naverMapObj);
         }
-        else if(startOrend == 2){
+        else if(startOrend == 2){//경유1
             subPoint[0] = inputLatlng;
 //            sub1Text.setText(latlngString);
             latlngToAddress(inputLatlng,2);
         }
-        else if(startOrend == 3){
+        else if(startOrend == 3){//경유2
             subPoint[1] = inputLatlng;
 //            sub2Text.setText(latlngString);
             latlngToAddress(inputLatlng,3);
@@ -773,11 +795,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                         Toast.makeText(getApplicationContext(),place_name,Toast.LENGTH_SHORT).show();
                         if(startOrend == 0){
                             startEndPoint[0] = searchplaceLatlng;
-                            startText.setText(searchplaceLatlng.latitude + ", " + searchplaceLatlng.longitude);
+                            latlngToAddress(searchplaceLatlng,1);
+                            startMarker.setPosition(startEndPoint[0]);
+                            startMarker.setMap(naverMapObj);
 
                         }else if(startOrend == 1){
                             startEndPoint[1] = searchplaceLatlng;
-                            endText.setText(searchplaceLatlng.latitude + ", " + searchplaceLatlng.longitude);
+                            latlngToAddress(searchplaceLatlng,4);
+                            endMarker.setPosition(startEndPoint[1]);
+                            endMarker.setMap(naverMapObj);
                         }else{
                             Toast.makeText(getApplicationContext(),"검색 위치 불러오기 오류입니다.",Toast.LENGTH_SHORT).show();
                         }

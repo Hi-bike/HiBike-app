@@ -44,6 +44,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
@@ -165,6 +166,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 for(int i =0;i<markerPoints_double.size();i++){ //마커배열 할당
                     markerPoints.add(new Marker(new LatLng(markerPoints_double.get(i).get(0),markerPoints_double.get(i).get(1))));
                     dangerPointSpeakFlag.add(false);
+                    markerPoints.get(i).setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
+                    markerPoints.get(i).setHeight(convertDpToPx(getApplicationContext(),40));
+                    markerPoints.get(i).setWidth(convertDpToPx(getApplicationContext(),40));
                 }
             }
 
@@ -271,7 +275,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         Thread ridingThread = new Thread(new Runnable() {
             @Override
             public void run() {
-                while (fusedLocationSource.getLastLocation() == null){
+                while (fusedLocationSource.isActivated() == false){
                     Log.d("checkfusedLocationSource", "run");
                     try {
                         Thread.sleep(100);
