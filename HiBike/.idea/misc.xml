@@ -18,8 +18,25 @@
         <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/drawable/round_button.xml" value="0.2" />
         <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_basic_profile.xml" value="0.25555555555555554" />
         <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.25555555555555554" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_findpath.xml" value="0.1875" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_full_screen.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_informationwrite.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.36614583333333334" />
         <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.25555555555555554" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_main_2.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_reply_list_view.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_riding.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_riding_record_list.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_searchplace.xml" value="0.33" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_sendpost.xml" value="0.35052083333333334" />
         <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.25555555555555554" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_signup.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/activity_view_board.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/item_searchplace.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.36614583333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/list_item_reply.xml" value="0.35052083333333334" />
+        <entry key="..\:/Users/limsu/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.35052083333333334" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1574074074074074" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1574074074074074" />
         <entry key="..\:/Workspaces/HiBike/HiBike-app/HiBike/app/src/main/res/drawable/ic_menu_camera.xml" value="0.1574074074074074" />
