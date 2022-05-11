@@ -145,7 +145,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         if(fromString.equals("findpath")){
             ArrayList<ArrayList<Double>> routePoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("route_point");
             ArrayList<ArrayList<Double>> markerPoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("marker_point");
-            Toast.makeText(getApplicationContext(),markerPoints_double.get(0).get(0)+" ",Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getApplicationContext(),markerPoints_double.get(0).get(0)+" ",Toast.LENGTH_SHORT).show();
 
             for(int i =0;i<routePoints_double.size();i++){  //경로배열 할당
                 routePoints.add(new LatLng(routePoints_double.get(i).get(0),
