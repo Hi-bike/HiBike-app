@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.speech.tts.TextToSpeech;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -72,6 +73,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.UUID;
 
 import okhttp3.MediaType;
@@ -100,6 +102,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     ArrayList<LatLng> routePoints = new ArrayList<>();  //실질적 경로배열
     PathOverlay routeline = new PathOverlay(); //경로 오버레이 객체
     ArrayList<Marker> markerPoints = new ArrayList<>(); //실질 마커(위험정보) 배열
+    ArrayList<Boolean> dangerPointSpeakFlag = new ArrayList<>();
 
 
     double speed;
@@ -112,6 +115,8 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     int totalTime_second, result_second, result_minute;;
     String userId, uniqueId;
     double averageSpeed;
+
+    TextToSpeech tts;
 
     //ui 객체 선언
     TextView speedText;
@@ -159,9 +164,24 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
             if(!markerPoints_double.isEmpty()){
                 for(int i =0;i<markerPoints_double.size();i++){ //마커배열 할당
                     markerPoints.add(new Marker(new LatLng(markerPoints_double.get(i).get(0),markerPoints_double.get(i).get(1))));
+                    dangerPointSpeakFlag.add(false);
                 }
             }
+
+            //text to speak 객체 초기화
+            tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+                @Override
+                public void onInit(int status) {
+                    if(status != TextToSpeech.ERROR){
+                        tts.setLanguage(Locale.KOREA);
+                        tts.setPitch(1.0f);
+                        tts.setSpeechRate(1.0f);
+                    }
+                }
+            });
         }
+
+
 
 
         //userId
@@ -214,6 +234,39 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
 
 
+
+        //위험 요소 거리 확인 쓰레드
+        Handler dangerInfoNearCheckHandler = new Handler();
+        Thread dangerInfoNearCheck = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while(ridingStartFlag){
+
+
+                    dangerInfoNearCheckHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            for(int j=0;j<markerPoints.size();j++){
+                                if(dangerPointSpeakFlag.get(0) == false){
+
+
+                                    if(50 > (markerPoints.get(j).getPosition().distanceTo(new LatLng(fusedLocationSource.getLastLocation())))){
+                                        tts.speak("위험 요소가 근방에 있습니다. 주의하십시오",TextToSpeech.QUEUE_ADD,null);
+                                        dangerPointSpeakFlag.set(j,true);
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    try {
+                        Thread.sleep(2000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
 
 
         //실시간 속도 표출 thread
@@ -299,13 +352,16 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 if (!ridingStartFlag) {
+                    tts.speak("주행을 시작합니다.",TextToSpeech.QUEUE_FLUSH,null);
+
                     ridingStartFlag = true;
                     ridingGoAndStopButton.setText("주행 종료");
                     ridingThread.start();
+
+                    if(fromString.equals("findpath")){dangerInfoNearCheck.start();}
                 } else if(ridingStartFlag){
                     showMessage();
                 }
-
             }
         });
 
@@ -353,6 +409,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         super.onDestroy();
         if (endDialog != null && endDialog.isShowing()) {
             endDialog.dismiss();
+        }
+        if (tts != null) {
+            tts.stop();
+            tts.shutdown();
+            tts = null;
         }
     }
 

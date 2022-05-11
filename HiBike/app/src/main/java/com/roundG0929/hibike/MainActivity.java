@@ -286,6 +286,8 @@ public class MainActivity extends AppCompatActivity {
                     public void onSuccess(Location location) {
                         int x = (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).x;
                         int y= (int) convertGRID_GPS(0,location.getLatitude(),location.getLongitude()).y;
+
+                        Log.d("TAG", "mainLocation: ");
                         //위치불러오기 성공시 날씨 불러오기
 
 
@@ -293,6 +295,7 @@ public class MainActivity extends AppCompatActivity {
                         new WeatherApi(x,y,System.currentTimeMillis()).getApi().enqueue(new Callback<RealTimeWeather>() {
                             @Override
                             public void onResponse(Call<RealTimeWeather> call, Response<RealTimeWeather> response) {
+                                Log.d("TAG", "realTimeWeathercode: " + response.message());
                                 if (response.isSuccessful()) {
                                     Log.d("TAG", "realTimeWeathercode: " + response.message());
                                     weatherAnalysis.setWeatherData(response.body().response.body.items.item);
@@ -351,14 +354,14 @@ public class MainActivity extends AppCompatActivity {
                                     });
 
                                 } else {
-                                    Log.e("api error", response.message());
+                                    Log.e("api_error", response.message());
                                 }
 
                             }
 
                             @Override
                             public void onFailure(Call<RealTimeWeather> call, Throwable t) {
-
+                                Log.e("weather_call_error", t.toString());
                             }
                         });
 
