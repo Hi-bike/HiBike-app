@@ -56,7 +56,7 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/view_rounded.xml" value="0.265625" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_basic_profile.xml" value="0.5" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.12132725430597771" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_findpath.xml" value="0.17889492753623187" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_findpath.xml" value="0.33" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_full_screen.xml" value="0.19895833333333332" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_image_full_screen.xml" value="0.19895833333333332" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_informationwrite.xml" value="0.33" />
@@ -104,6 +104,7 @@
         <entry key="app/src/main/res/layout/item_searchplace.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/list_item.xml" value="0.396875" />
         <entry key="app/src/main/res/layout/list_item_reply.xml" value="0.396875" />
+        <entry key="app/src/main/res/layout/list_item_riding.xml" value="0.2574324324324324" />
       </map>
     </option>
   </component>

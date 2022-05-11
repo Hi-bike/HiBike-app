@@ -51,6 +51,7 @@ import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
+import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.api.information.InformationApi;
 import com.roundG0929.hibike.api.information.dto.DangerInformation_Points;
@@ -59,6 +60,10 @@ import com.roundG0929.hibike.api.information.requestBody.Danger_infoBody;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.MapRouteApi;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.GraphhopperResponse;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
+import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
+import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
+import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
+import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 
 import java.util.ArrayList;
@@ -81,6 +86,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     boolean trackingflag = false;  //위치추적flag
     Handler     handler=new Handler();
     MapSetting mapSetting = new MapSetting();
+    NaverApiInterface napi;
     LatLng[] startEndPoint = new LatLng[2]; //0 start, 1 end
     LatLng[] subPoint = new LatLng[2]; //0 sub1, 1 sub2
     int startOrendFlag = -1; //0 start, 1 end
@@ -92,6 +98,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     PathOverlay pathOverlay = new PathOverlay(); //경로그리기 객체
     ArrayList<Marker> informationMarkerList = new ArrayList<>();  //위험정보 마커객체
     ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //탐색 영역그리기 객체
+    String addressString;
 
     //ui 객체
     EditText startText;
@@ -168,7 +175,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         informationImage = findViewById(R.id.informationImage);
 
         imageApi  = new ImageApi();
-
+        napi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
@@ -296,12 +303,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     Location location = fusedLocationSource.getLastLocation();
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
                     startEndPoint[0] = latLng;
-                    startText.setText(startEndPoint[0].latitude +", "+startEndPoint[0].longitude);
+                    latlngToAddress(latLng,1);
                 }else if(endText.isFocused()){
                     Location location = fusedLocationSource.getLastLocation();
                     LatLng latLng = new LatLng(location.getLatitude(),location.getLongitude());
                     startEndPoint[1] = latLng;
-                    endText.setText(startEndPoint[1].latitude +", "+startEndPoint[1].longitude);
+                    latlngToAddress(latLng,4);
                 }
 
                 startText.clearFocus();
@@ -732,18 +739,22 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         String latlngString = inputLatlng.latitude + ", " + inputLatlng.longitude;
         if(startOrend == 0){
             startEndPoint[0] = inputLatlng;
-            startText.setText(latlngString);
+//            startText.setText(latlngString);
+            latlngToAddress(inputLatlng,1);
         }else if(startOrend == 1){
             startEndPoint[1] = inputLatlng;
-            endText.setText(latlngString);
+//            endText.setText(latlngString);
+            latlngToAddress(inputLatlng,4);
         }
         else if(startOrend == 2){
             subPoint[0] = inputLatlng;
-            sub1Text.setText(latlngString);
+//            sub1Text.setText(latlngString);
+            latlngToAddress(inputLatlng,3);
         }
         else if(startOrend == 3){
             subPoint[1] = inputLatlng;
-            sub2Text.setText(latlngString);
+//            sub2Text.setText(latlngString);
+            latlngToAddress(inputLatlng,4);
         }
     }
 
@@ -801,6 +812,36 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     public int convertDpToPx(Context context,int dp){
         float density = context.getResources().getDisplayMetrics().density;
         return Math.round((float) dp * density);
+    }
+
+
+    public void latlngToAddress(LatLng latLng,int text){
+
+        ReverseGeocodingGenerator nowRegion = new ReverseGeocodingGenerator(latLng.longitude, latLng.latitude);
+        napi.getRegion(nowRegion.getHeaders(), nowRegion.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
+            @Override
+            public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
+                if (response.isSuccessful()) {
+
+                    Object obj = response.body().getResult();
+                    String result = HibikeUtils.regionJsonToArray(obj);
+                    if(text == 1){
+                        startText.setText(result);
+                    }
+                    else if(text == 2){
+                        startText.setText(result);
+                    }
+                    else if(text == 3){
+                        startText.setText(result);
+                    }
+                    else if(text == 4){
+                        endText.setText(result);
+                    }
+                }
+            }
+            @Override
+            public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {}
+        });
     }
 
 //    //EditText 외부 터치시 키보드 숨기기
