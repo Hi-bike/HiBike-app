@@ -32,10 +32,9 @@ public class HibikeUtils {
         return new Gson().toJson(object);
     }
 
-    public static ArrayList<String> regionJsonToArray(Object obj) {
-        ArrayList<String> result = new ArrayList<>();
-
+    public static String regionJsonToArray(Object obj) {
         String json = new Gson().toJson(obj);
+        Log.v("json", json);
         try {
             JSONArray jsonArray = new JSONArray(json);
             JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
@@ -44,14 +43,20 @@ public class HibikeUtils {
             String area2 = regionObject.getJSONObject("area2").getString("name");
             String area3 = regionObject.getJSONObject("area3").getString("name");
 
-            result.add(area1);
-            result.add(area2);
-            result.add(area3);
+            JSONObject jsonObject2 = (JSONObject) jsonArray.opt(2);
+            JSONObject regionObject2 = jsonObject2.getJSONObject("land");
+            String number1 = regionObject2.getString("number1");
+            String number2 = regionObject2.getString("number2");
+            String name = regionObject2.getString("name");
 
+            if (!number2.equals("")){
+                return area1 + " " + area2 + " " + area3 + " " + name + " " + number1 + "-" + number2;
+            }
+            return area1 + " " + area2 + " " + area3 + " " + name + " " + number1;
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return result;
+        return "";
     }
 
     public static String getRandomString(int length) {

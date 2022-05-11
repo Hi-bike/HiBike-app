@@ -212,7 +212,6 @@ public class MainActivity extends AppCompatActivity {
             });
         }
 
-
         //권한요청, 확인
         TedPermission.create()
                 .setPermissionListener(permissionlistener)
