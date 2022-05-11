@@ -43,16 +43,24 @@ public class HibikeUtils {
             String area2 = regionObject.getJSONObject("area2").getString("name");
             String area3 = regionObject.getJSONObject("area3").getString("name");
 
-            JSONObject jsonObject2 = (JSONObject) jsonArray.opt(2);
-            JSONObject regionObject2 = jsonObject2.getJSONObject("land");
-            String number1 = regionObject2.getString("number1");
-            String number2 = regionObject2.getString("number2");
-            String name = regionObject2.getString("name");
+            if (!jsonArray.isNull(2)) {
+                JSONObject jsonObject2 = (JSONObject) jsonArray.opt(2);
+                JSONObject regionObject2 = jsonObject2.getJSONObject("land");
+                String number1 = regionObject2.getString("number1");
+                String number2 = regionObject2.getString("number2");
+                String name = regionObject2.getString("name");
+                if (!number2.equals("")) {
+                    return area1 + " " + area2 + " " + area3 + " " + name + " " + number1 + "-" + number2;
+                }
+                return area1 + " " + area2 + " " + area3 + " " + name + " " + number1;
 
-            if (!number2.equals("")){
-                return area1 + " " + area2 + " " + area3 + " " + name + " " + number1 + "-" + number2;
+            } else {
+                String landNumber1 = jsonObject.getJSONObject("land").getString("number1");
+                return area1 + " " + area2 + " " + area3 + " " + landNumber1;
             }
-            return area1 + " " + area2 + " " + area3 + " " + name + " " + number1;
+
+
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
