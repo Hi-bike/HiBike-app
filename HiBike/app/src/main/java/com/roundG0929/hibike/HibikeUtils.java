@@ -49,7 +49,7 @@ public class HibikeUtils {
                 String number1 = regionObject2.getString("number1");
                 String number2 = regionObject2.getString("number2");
                 String name = regionObject2.getString("name");
-                if (number2.equals("")) {
+                if (!number2.equals("")) {
                     return area1 + " " + area2 + " " + area3 + " " + name + " " + number1 + "-" + number2;
                 }
                 return area1 + " " + area2 + " " + area3 + " " + name + " " + number1;
