@@ -46,119 +46,128 @@
                         android:background="@drawable/round_button"
                         android:layout_marginTop="2dp"
                         android:layout_marginBottom="2dp"/>
+
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
                         android:layout_weight="1"
-                        android:orientation="vertical"
-                        android:layout_gravity="center">
+                        android:orientation="vertical">
+
                         <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="48dp">
+
                             <EditText
-                                android:textSize="15sp"
                                 android:id="@+id/startText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:paddingLeft="5dp"
-                                android:background="#dddddd"
+                                android:background="#99dddddd"
                                 android:hint="출발"
                                 android:inputType="text"
                                 android:maxLines="1"
+                                android:paddingLeft="5dp"
+                                android:textSize="15sp"
                                 android:theme="@style/routeEditText" />
+
                             <ImageButton
                                 android:id="@+id/startTextCancle"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:padding="5dp"
                                 android:layout_gravity="right|center"
-                                android:src="@drawable/icons_close"
+                                android:background="#00000000"
+                                android:padding="5dp"
                                 android:scaleType="fitCenter"
-                                android:background="#00000000" />
+                                android:src="@drawable/icons_close" />
                         </FrameLayout>
 
                         <FrameLayout
                             android:id="@+id/sub1Layout"
-                            android:visibility="gone"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp">
+                            android:layout_height="48dp"
+                            android:visibility="gone">
+
                             <EditText
                                 android:id="@+id/sub1Text"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:paddingLeft="5dp"
                                 android:background="#dddddd"
                                 android:hint="경유지1"
                                 android:inputType="text"
                                 android:maxLines="1"
+                                android:paddingLeft="5dp"
                                 android:theme="@style/routeEditText" />
+
                             <ImageButton
                                 android:id="@+id/sub1TextCancle"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:padding="5dp"
                                 android:layout_gravity="right|center"
-                                android:src="@drawable/icons_close"
+                                android:background="#00000000"
+                                android:padding="5dp"
                                 android:scaleType="fitCenter"
-                                android:background="#00000000" />
+                                android:src="@drawable/icons_close" />
                         </FrameLayout>
+
                         <FrameLayout
                             android:id="@+id/sub2Layout"
-                            android:visibility="gone"
                             android:layout_width="match_parent"
-                            android:layout_height="48dp">
+                            android:layout_height="48dp"
+                            android:visibility="gone">
+
                             <EditText
                                 android:id="@+id/sub2Text"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:paddingLeft="5dp"
                                 android:background="#dddddd"
                                 android:hint="경유지2"
                                 android:inputType="text"
                                 android:maxLines="1"
+                                android:paddingLeft="5dp"
                                 android:theme="@style/routeEditText" />
+
                             <ImageButton
                                 android:id="@+id/sub2TextCancle"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:padding="5dp"
                                 android:layout_gravity="right|center"
-                                android:src="@drawable/icons_close"
+                                android:background="#00000000"
+                                android:padding="5dp"
                                 android:scaleType="fitCenter"
-                                android:background="#00000000" />
+                                android:src="@drawable/icons_close" />
                         </FrameLayout>
-
-
 
 
                         <FrameLayout
                             android:layout_width="match_parent"
                             android:layout_height="48dp">
+
                             <EditText
-                                android:textSize="15sp"
                                 android:id="@+id/endText"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:layout_margin="2dp"
-                                android:paddingLeft="5dp"
                                 android:layout_weight="1"
-                                android:background="#dddddd"
+                                android:background="#99dddddd"
                                 android:hint="도착"
                                 android:inputType="text"
                                 android:maxLines="1"
+                                android:paddingLeft="5dp"
+                                android:textSize="15sp"
                                 android:theme="@style/routeEditText" />
+
                             <ImageButton
                                 android:id="@+id/endTextCancle"
                                 android:layout_width="35dp"
                                 android:layout_height="35dp"
-                                android:padding="5dp"
                                 android:layout_gravity="right|center"
-                                android:src="@drawable/icons_close"
+                                android:background="#00000000"
+                                android:padding="5dp"
                                 android:scaleType="fitCenter"
-                                android:background="#00000000"/>
+                                android:src="@drawable/icons_close" />
                         </FrameLayout>
 
                     </LinearLayout>
