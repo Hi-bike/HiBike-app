@@ -749,12 +749,12 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         else if(startOrend == 2){
             subPoint[0] = inputLatlng;
 //            sub1Text.setText(latlngString);
-            latlngToAddress(inputLatlng,3);
+            latlngToAddress(inputLatlng,2);
         }
         else if(startOrend == 3){
             subPoint[1] = inputLatlng;
 //            sub2Text.setText(latlngString);
-            latlngToAddress(inputLatlng,4);
+            latlngToAddress(inputLatlng,3);
         }
     }
 
@@ -829,10 +829,10 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                         startText.setText(result);
                     }
                     else if(text == 2){
-                        startText.setText(result);
+                        sub1Text.setText(result);
                     }
                     else if(text == 3){
-                        startText.setText(result);
+                        sub2Text.setText(result);
                     }
                     else if(text == 4){
                         endText.setText(result);

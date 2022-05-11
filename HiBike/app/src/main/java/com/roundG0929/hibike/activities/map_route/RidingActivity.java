@@ -168,18 +168,20 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
 
-            //text to speak 객체 초기화
-            tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-                @Override
-                public void onInit(int status) {
-                    if(status != TextToSpeech.ERROR){
-                        tts.setLanguage(Locale.KOREA);
-                        tts.setPitch(1.0f);
-                        tts.setSpeechRate(1.0f);
-                    }
-                }
-            });
+
         }
+
+        //text to speak 객체 초기화
+        tts = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if(status != TextToSpeech.ERROR){
+                    tts.setLanguage(Locale.KOREA);
+                    tts.setPitch(1.0f);
+                    tts.setSpeechRate(1.0f);
+                }
+            }
+        });
 
 
 
@@ -241,15 +243,11 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void run() {
                 while(ridingStartFlag){
-
-
                     dangerInfoNearCheckHandler.post(new Runnable() {
                         @Override
                         public void run() {
                             for(int j=0;j<markerPoints.size();j++){
                                 if(dangerPointSpeakFlag.get(0) == false){
-
-
                                     if(50 > (markerPoints.get(j).getPosition().distanceTo(new LatLng(fusedLocationSource.getLastLocation())))){
                                         tts.speak("위험 요소가 근방에 있습니다. 주의하십시오",TextToSpeech.QUEUE_ADD,null);
                                         dangerPointSpeakFlag.set(j,true);
@@ -258,7 +256,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             }
                         }
                     });
-
                     try {
                         Thread.sleep(2000);
                     } catch (InterruptedException e) {
@@ -333,6 +330,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         public void run() {
                             speedText.setText(speed+"");
                             distText.setText(String.format("%.1f", pointDistance)+"");
+                            if(Double.isNaN(pointDistance)){
+                                speedText.setText("0");
+                                distText.setText("0");
+                            }
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
 
