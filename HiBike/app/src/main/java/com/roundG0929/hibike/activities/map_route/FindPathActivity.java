@@ -1,8 +1,10 @@
 package com.roundG0929.hibike.activities.map_route;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -63,6 +65,9 @@ import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
 import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
 import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
+import com.roundG0929.hibike.api.server.ApiInterface;
+import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.DeleteDanger;
 import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
 import com.roundG0929.hibike.api.server.fuction.ImageApi;
 
@@ -99,6 +104,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     ArrayList<Marker> informationMarkerList = new ArrayList<>();  //위험정보 마커객체
     ArrayList<PathOverlay> areaTestPathOverlay = new ArrayList<>(); //탐색 영역그리기 객체
     String addressString;
+    ApiInterface api;
 
     //ui 객체
     EditText startText;
@@ -135,8 +141,14 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     TextView contentText;
     TextView locationText;
     ImageView informationImage;
+    TextView dangerDelete;
 
     ImageApi imageApi;
+
+    SharedPreferences pref;
+    SharedPreferences.Editor editor;
+    String id;
+    int target_i; // 위험요소 자세한 정보 index
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -173,7 +185,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         contentText = findViewById(R.id.contentText);
         locationText = findViewById(R.id.locationText);
         informationImage = findViewById(R.id.informationImage);
+        dangerDelete = findViewById(R.id.dangerDelete);
 
+        behavior.setHideable(true);
+
+        pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
+        editor = pref.edit();
+        id = pref.getString("id", "");
+
+        api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         imageApi  = new ImageApi();
         napi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
         fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
@@ -181,7 +201,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
-
 
         //초기맵설정
             //맵 뷰 객체 할당
@@ -475,7 +494,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                     new Marker(
                                                             new LatLng(response.body().danger_list.get(i).get(0),
                                                                     response.body().danger_list.get(i).get(1))));
-                                            int target_i = i;
+                                            target_i = i;
                                             informationMarkerList.get(i).setOnClickListener(new Overlay.OnClickListener() {
                                                 @Override
                                                 public boolean onClick(@NonNull Overlay overlay) {
@@ -577,6 +596,49 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
+        dangerDelete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dangerDelete.setEnabled(false);
+
+                DeleteDanger deleteDanger = new DeleteDanger();
+                deleteDanger.setUserId(id);
+                deleteDanger.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
+                deleteDanger.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
+                deleteDanger.setMyLatitude(fusedLocationSource.getLastLocation().getLatitude());
+                deleteDanger.setMyLongitude(fusedLocationSource.getLastLocation().getLongitude());
+
+                api.deleteDanger(deleteDanger).enqueue(new Callback<DeleteDanger>() {
+                    @Override
+                    public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
+                        if (response.isSuccessful()) {
+                            String result = response.body().getResult();
+                            if (!result.equals("fail")) {
+                                Log.v("hhh", result);
+                                Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                informationMarkerList.get(target_i).setMap(null);
+                                informationMarkerList.remove(target_i);
+                            } else {
+                                Log.v("hhh", result);
+                                Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
+                                dangerDelete.setEnabled(true);
+                            }
+                        } else {
+                            Log.e("delete Danger error", response.message());
+                            dangerDelete.setEnabled(true);
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<DeleteDanger> call, Throwable t) {
+                        Log.e("deleteDanger error", t.toString());
+                    }
+                });
+
+            }
+        });
+
             //출발,도착지점 변경버튼 changeButton
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -660,7 +722,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 
 
         // test--------------------------------------------------------------  위험지점
-
 
 
 

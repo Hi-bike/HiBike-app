@@ -281,6 +281,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                         @Override
                         public void onResponse(Call<PostDanger> call, Response<PostDanger> response) {
                             if (response.isSuccessful()) {
+                                Toast.makeText(getApplicationContext(), "위험요소 등록이 완료되었습니다.", Toast.LENGTH_SHORT).show();
                                 finish();
                             } else {
                                 Toast.makeText(getApplicationContext(), response.code() + "", Toast.LENGTH_SHORT).show();

@@ -2,6 +2,7 @@ package com.roundG0929.hibike.api.server;
 
 
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
+import com.roundG0929.hibike.api.server.dto.DeleteDanger;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.dto.GetRidingAll;
 import com.roundG0929.hibike.api.server.dto.GetRidingOne;
@@ -49,24 +50,25 @@ public interface ApiInterface {
     Call<BasicProfile> setNickname(@Body BasicProfile data);
 
     @Multipart
-    @POST("/api/auth/image") //프로필 사진 업데이트
-    Call<ProfileImage> setProfile (@Part MultipartBody.Part file, @Part("id") RequestBody param);
+    @POST("/api/auth/image")
+        //프로필 사진 업데이트
+    Call<ProfileImage> setProfile(@Part MultipartBody.Part file, @Part("id") RequestBody param);
 
     @GET("api/board/posts/{page}")
-    //Call<Object> getdata();
-    Call<GetPost> getPost (@Path("page") int page);
+        //Call<Object> getdata();
+    Call<GetPost> getPost(@Path("page") int page);
 
     @GET("api/board/reply/{page}/{post_id}")
         //Call<Object> getdata();
-    Call<GetReply> getReply (@Path("page") int page, @Path("post_id") int post_id);
+    Call<GetReply> getReply(@Path("page") int page, @Path("post_id") int post_id);
 
     @GET("api/board/post_content/{post_id}")
         //Call<Object> getdata();
-    Call<GetPostContent> getPostContent (@Path("post_id") int post_id);
+    Call<GetPostContent> getPostContent(@Path("post_id") int post_id);
 
     @GET("api/board/reply_content/{reply_id}")
         //Call<Object> getdata();
-    Call<GetReplyContent> getReplyContent (@Path("reply_id") int reply_id);
+    Call<GetReplyContent> getReplyContent(@Path("reply_id") int reply_id);
 
     @POST("api/board/post")
     Call<SendPost> sendPost(@Body SendPost data);
@@ -87,8 +89,9 @@ public interface ApiInterface {
     Call<GetRidingAll> getRidingAll(@Path("userId") String userId, @Path("page") int page);
 
     @Multipart
-    @POST("api/auth/rimage") //프로필 사진 업데이트
-    Call<RidingImage> setRidingImage (@Part MultipartBody.Part file, @Part("unique_id") RequestBody param);
+    @POST("api/auth/rimage")
+        //프로필 사진 업데이트
+    Call<RidingImage> setRidingImage(@Part MultipartBody.Part file, @Part("unique_id") RequestBody param);
 
     @POST("api/auth/sregion")
     Call<RidingRegion> setRidingSRegion(@Body RidingRegion ridingRegion);
@@ -98,32 +101,35 @@ public interface ApiInterface {
 
     @Multipart
     @POST("api/board/post-danger")
-    Call<PostDanger> postDanger (
-        @Part MultipartBody.Part file,
-        @Part("id") RequestBody id,
-        @Part("title") RequestBody title,
-        @Part("contents") RequestBody contents,
-        @Part("latitude") RequestBody latitude,
-        @Part("longitude") RequestBody longitude,
-        @Part("region") RequestBody region,
-        @Part("region_detail") RequestBody region_detail,
-        @Part("period") RequestBody period
+    Call<PostDanger> postDanger(
+            @Part MultipartBody.Part file,
+            @Part("id") RequestBody id,
+            @Part("title") RequestBody title,
+            @Part("contents") RequestBody contents,
+            @Part("latitude") RequestBody latitude,
+            @Part("longitude") RequestBody longitude,
+            @Part("region") RequestBody region,
+            @Part("region_detail") RequestBody region_detail,
+            @Part("period") RequestBody period
     );
 
     @Multipart
     @POST("api/auth/rmulti")
-    Call<PostRidingMulti> postRidingMulti (
-        @Part("user_id") RequestBody userId,
-        @Part("unique_id") RequestBody uniqueId,
-        @Part("riding_time") RequestBody ridingTime,
-        @Part("ave_speed") RequestBody aveSpeed,
-        @Part("distance") RequestBody distance,
-        @Part("starting_region") RequestBody startingRegion,
-        @Part("end_region") RequestBody endRegion,
-        @Part("northeast_lati") RequestBody northeastLati,
-        @Part("northeast_long") RequestBody northeastLong,
-        @Part("southwest_lati") RequestBody southwestLati,
-        @Part("southwest_long") RequestBody southwestLong,
-        @Part MultipartBody.Part file
+    Call<PostRidingMulti> postRidingMulti(
+            @Part("user_id") RequestBody userId,
+            @Part("unique_id") RequestBody uniqueId,
+            @Part("riding_time") RequestBody ridingTime,
+            @Part("ave_speed") RequestBody aveSpeed,
+            @Part("distance") RequestBody distance,
+            @Part("starting_region") RequestBody startingRegion,
+            @Part("end_region") RequestBody endRegion,
+            @Part("northeast_lati") RequestBody northeastLati,
+            @Part("northeast_long") RequestBody northeastLong,
+            @Part("southwest_lati") RequestBody southwestLati,
+            @Part("southwest_long") RequestBody southwestLong,
+            @Part MultipartBody.Part file
     );
+
+    @POST("api/board/delete-danger")
+    Call<DeleteDanger> deleteDanger(@Body DeleteDanger deleteDanger);
 }

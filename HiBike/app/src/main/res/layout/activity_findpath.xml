@@ -275,9 +275,9 @@
                 android:paddingLeft="5dp">
                 <ImageView
                     android:id="@+id/close"
-                    android:layout_width="40dp"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/icons_down"
+                    android:layout_width="70dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/icons_horizontal_line_90"
                     android:layout_gravity="center_horizontal"/>
                 <FrameLayout
                     android:layout_width="match_parent"
@@ -289,17 +289,19 @@
                         android:textColor="#000000"
                         android:textSize="20dp"
                         android:layout_gravity="center_vertical"/>
+
                     <TextView
+                        android:id="@+id/dangerDelete"
                         android:layout_width="60dp"
                         android:layout_height="30dp"
                         android:layout_gravity="end"
-                        android:gravity="center"
-                        android:background="@drawable/button_rounded_delete"
-                        android:layout_marginTop="5dp"
+                        android:layout_marginTop="10dp"
                         android:layout_marginRight="5dp"
+                        android:background="@drawable/button_rounded_delete"
+                        android:gravity="center"
                         android:text="삭제"
-                        android:textStyle="bold"
-                        android:textColor="#F44336"/>
+                        android:textColor="#F44336"
+                        android:textStyle="bold" />
 
                 </FrameLayout>
 
