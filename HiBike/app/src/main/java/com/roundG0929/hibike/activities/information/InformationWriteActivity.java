@@ -197,8 +197,8 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                     public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
                         if (response.isSuccessful()) {
                             Object obj = response.body().getResult();
-                            ArrayList<String> result = HibikeUtils.regionJsonToArray(obj);
-                            locationText.setText(result.get(0)+" "+result.get(1)+" "+result.get(2)+" ");
+                            String result = HibikeUtils.regionJsonToArray(obj);
+                            locationText.setText(result);
                             postInformation.setRegion(locationText.getText().toString());
 
                         }
@@ -227,8 +227,8 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                     public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
                         if (response.isSuccessful()) {
                             Object obj = response.body().getResult();
-                            ArrayList<String> result = HibikeUtils.regionJsonToArray(obj);
-                            locationText.setText(result.get(0)+" "+result.get(1)+" "+result.get(2)+" ");
+                            String result = HibikeUtils.regionJsonToArray(obj);
+                            locationText.setText(result);
                             postInformation.setRegion(locationText.getText().toString());
                         }
                     }
