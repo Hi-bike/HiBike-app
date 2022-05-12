@@ -633,20 +633,13 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
                         if (response.isSuccessful()) {
-                            String result = response.body().getResult();
-                            if (!result.equals("fail")) {
-                                Log.v("hhh", result);
-                                Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                                behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                                informationMarkerList.get(target_i).setMap(null);
-                                informationMarkerList.remove(target_i);
-                            } else {
-                                Log.v("hhh", result);
-                                Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
-                                dangerDelete.setEnabled(true);
-                            }
+                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                            informationMarkerList.get(target_i).setMap(null);
+                            informationMarkerList.remove(target_i);
                         } else {
                             Log.e("delete Danger error", response.message());
+                            Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
                             dangerDelete.setEnabled(true);
                         }
                     }
@@ -914,7 +907,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 if (response.isSuccessful()) {
 
                     Object obj = response.body().getResult();
-                    String result = HibikeUtils.regionJsonToArray(obj);
+                    String result = HibikeUtils.regionJsonToString(obj);
                     if(text == 1){
                         startText.setText(result);
                     }

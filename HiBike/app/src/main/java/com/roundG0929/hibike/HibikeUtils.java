@@ -32,7 +32,7 @@ public class HibikeUtils {
         return new Gson().toJson(object);
     }
 
-    public static String regionJsonToArray(Object obj) {
+    public static String regionJsonToString(Object obj) {
         String json = new Gson().toJson(obj);
         Log.v("json", json);
         try {
@@ -65,6 +65,55 @@ public class HibikeUtils {
             e.printStackTrace();
         }
         return "";
+    }
+
+    public static ArrayList<String> regionJsonToArray(Object obj) {
+        String json = new Gson().toJson(obj);
+        ArrayList<String> result = new ArrayList<>();
+        Log.v("json", json);
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            JSONObject jsonObject = (JSONObject) jsonArray.opt(0);
+            JSONObject regionObject = jsonObject.getJSONObject("region");
+            String area1 = regionObject.getJSONObject("area1").getString("name");
+            String area2 = regionObject.getJSONObject("area2").getString("name");
+            String area3 = regionObject.getJSONObject("area3").getString("name");
+
+            if (!jsonArray.isNull(2)) {
+                JSONObject jsonObject2 = (JSONObject) jsonArray.opt(2);
+                JSONObject regionObject2 = jsonObject2.getJSONObject("land");
+                String number1 = regionObject2.getString("number1");
+                String number2 = regionObject2.getString("number2");
+                String name = regionObject2.getString("name");
+                if (!number2.equals("")) {
+                    result.add(area1);
+                    result.add(area2);
+                    result.add(area3);
+                    result.add(name);
+                    result.add(number1);
+                    result.add(number2);
+                    return result;
+                }
+                result.add(area1);
+                result.add(area2);
+                result.add(area3);
+                result.add(name);
+                result.add(number1);
+                return result;
+
+            } else {
+                String landNumber1 = jsonObject.getJSONObject("land").getString("number1");
+                result.add(area1);
+                result.add(area2);
+                result.add(area3);
+                result.add(landNumber1);
+                return result;
+            }
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return result;
     }
 
     public static String getRandomString(int length) {

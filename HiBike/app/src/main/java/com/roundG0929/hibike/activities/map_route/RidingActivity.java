@@ -515,7 +515,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
                                 if (response.isSuccessful()) {
                                     Object obj = response.body().getResult();
-                                    String result = HibikeUtils.regionJsonToArray(obj);
+                                    String result = HibikeUtils.regionJsonToString(obj);
                                     postRidingMulti.setStartingRegion(result);
                                 }
                             }
@@ -531,7 +531,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                             public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
                                 if (response.isSuccessful()) {
                                     Object obj = response.body().getResult();
-                                    String result = HibikeUtils.regionJsonToArray(obj);
+                                    String result = HibikeUtils.regionJsonToString(obj);
                                     postRidingMulti.setEndRegion(result);
                                 }
                             }
