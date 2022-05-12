@@ -51,6 +51,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.activities.information.InformationWriteActivity;
 import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.Path;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
@@ -125,6 +126,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     TextView totalTimeText;
     TextView averageSpeedText;
     Button ridingGoAndStopButton;
+    Button postDangerButton;
     PolylineOverlay ridingPointRecordLine = new PolylineOverlay(); //경로선
     LinearLayout resultLayout;
     FrameLayout speedLayout;
@@ -199,6 +201,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         //ui 객체 할당
         speedText = findViewById(R.id.speedText);
         ridingGoAndStopButton = findViewById(R.id.ridingGoAndStopButton);
+        postDangerButton = findViewById(R.id.postDangerButton);
         totalDistanceText = findViewById(R.id.totalDistanceText);
         totalTimeText = findViewById(R.id.totalTimeText);
         averageSpeedText = findViewById(R.id.averageSpeedText);
@@ -367,6 +370,14 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 } else if(ridingStartFlag){
                     showMessage();
                 }
+            }
+        });
+
+        postDangerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(getApplicationContext(), InformationWriteActivity.class);
+                startActivity(intent1);
             }
         });
 
