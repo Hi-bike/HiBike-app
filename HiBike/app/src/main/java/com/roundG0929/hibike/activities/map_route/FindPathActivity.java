@@ -550,11 +550,11 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                     return false;
                                                 }
                                             });
-                                            markerPoints_ForIntent.add(
-                                                    new ArrayList<>(
-                                                            Arrays.asList(
-                                                                    response.body().danger_list.get(i).get(0),
-                                                                    response.body().danger_list.get(i).get(1))));
+//                                            markerPoints_ForIntent.add(
+//                                                    new ArrayList<>(
+//                                                            Arrays.asList(
+//                                                                    response.body().danger_list.get(i).get(0),
+//                                                                    response.body().danger_list.get(i).get(1))));
                                         }
                                         for(int j=0;j<informationMarkerList.size();j++){
                                             informationMarkerList.get(j).setMap(naverMapObj);
@@ -633,10 +633,11 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                     @Override
                     public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
                         if (response.isSuccessful()) {
-                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                             behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
                             informationMarkerList.get(target_i).setMap(null);
                             informationMarkerList.remove(target_i);
+
+                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
                         } else {
                             Log.e("delete Danger error", response.message());
                             Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
@@ -724,6 +725,15 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
 //                    markerPointsSting = markerPointsSting + routePoints_ForIntent.get(i).get(0) + ", " + routePoints_ForIntent.get(i).get(1) + "\n";
 //                }
 //                Log.d("POINTS", "markerPointsSting: " + markerPointsSting);
+
+                for (Marker markerPoints : informationMarkerList) {
+                    markerPoints_ForIntent.add(
+                            new ArrayList<>(
+                                    Arrays.asList(
+                                            markerPoints.getPosition().latitude,
+                                            markerPoints.getPosition().longitude)
+                            ));
+                }
 
                 Intent intent = new Intent(getApplicationContext(),RidingActivity.class);
                 intent.putExtra("from","findpath");
