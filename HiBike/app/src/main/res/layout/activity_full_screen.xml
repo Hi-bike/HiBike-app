@@ -7,12 +7,12 @@
     tools:context=".activities.riding_record.FullScreenActivity">
     <ImageView
         android:id="@+id/fullscreenFinish"
-        android:layout_width="40dp"
-        android:layout_height="30dp"
-        android:src="@drawable/icons_x"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:src="@drawable/icons_back3"
         android:layout_marginTop="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_gravity="end"/>
+        android:layout_marginLeft="15dp"
+        android:layout_gravity="start"/>
 
     <ImageView
         android:id="@+id/fullscreen"

@@ -7,14 +7,17 @@
     <EditText
         android:id="@+id/searchText"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginTop="10dp"
         android:hint="검색"
         />
     <Button
         android:id="@+id/btn1"
-        android:layout_width="match_parent"
+        android:layout_width="400dp"
         android:layout_height="wrap_content"
-        android:text="call" />
+        android:layout_gravity="center"
+        android:background="@drawable/round_button"
+        android:text="검색" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/placeListRecyclerView"

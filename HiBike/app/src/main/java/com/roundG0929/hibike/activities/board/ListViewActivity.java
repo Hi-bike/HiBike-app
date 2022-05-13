@@ -13,6 +13,7 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 import android.widget.Button;
@@ -29,9 +30,10 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ListViewActivity extends AppCompatActivity {
-    Button btnNext;
-    Button btnPost;
+    ImageView btnNext;
+    ImageView btnPost;
     ApiInterface api;
+    ImageView boardBack;
     private ListView listview ;
     private ListViewAdapter adapter;
     int page = 1;
@@ -41,7 +43,7 @@ public class ListViewActivity extends AppCompatActivity {
         setContentView(R.layout.activity_list_view);
         adapter = new ListViewAdapter();
 
-        btnPost = (Button) findViewById(R.id.btn_post);
+        btnPost = findViewById(R.id.btn_post);
         btnPost.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -50,7 +52,7 @@ public class ListViewActivity extends AppCompatActivity {
             }
         });
 
-        btnNext = (Button) findViewById(R.id.btn_next);
+        btnNext = findViewById(R.id.btn_next);
         btnNext.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -59,6 +61,14 @@ public class ListViewActivity extends AppCompatActivity {
             }
         });
         getItem(page);
+
+        boardBack = findViewById(R.id.boardBack);
+        boardBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
     public void getItem(int page){
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);

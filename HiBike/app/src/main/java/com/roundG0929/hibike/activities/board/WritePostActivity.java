@@ -25,7 +25,8 @@ import retrofit2.Response;
 
 public class WritePostActivity extends AppCompatActivity {
     ApiInterface api;
-    Button btnSend;
+    TextView btnSend;
+    TextView cancel;
     EditText editTitle, editContents;
 
     @Override
@@ -42,7 +43,15 @@ public class WritePostActivity extends AppCompatActivity {
         editTitle = (EditText) findViewById(R.id.edit_title);
         editContents = (EditText) findViewById(R.id.edit_contents);
 
-        btnSend = (Button) findViewById(R.id.btn_send);
+        cancel = findViewById(R.id.cancel);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
+
+        btnSend = findViewById(R.id.btn_send);
         btnSend.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

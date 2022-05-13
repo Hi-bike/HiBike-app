@@ -224,8 +224,8 @@ public class RidingRecordListActivity extends AppCompatActivity {
                             +ridingRecord.getDistance()+" | "
                             +ridingRecord.getAveSpeed()+" | "
                             +ridingRecord.getRidingTime());
-
-            tv_starting_point.setText(ridingRecord.getStarting_point());
+            String[] startPoint = ridingRecord.getStarting_point().split(" ");
+            tv_starting_point.setText(startPoint[0]+" "+startPoint[1]+" "+startPoint[2]);
             tv_unique_id.setText(ridingRecord.getUniqueId());
 
             convertView.setOnClickListener(new View.OnClickListener() {

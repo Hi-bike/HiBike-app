@@ -184,6 +184,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
 //        latitudeText.setOnClickListener(viewMap);
         locationText.setOnClickListener(viewMap);
 
+
         fusedLocationClient.getLastLocation().addOnSuccessListener(InformationWriteActivity.this, new OnSuccessListener<Location>() {
             @Override
             public void onSuccess(Location location) {

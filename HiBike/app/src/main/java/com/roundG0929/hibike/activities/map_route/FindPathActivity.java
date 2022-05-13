@@ -661,15 +661,22 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 LatLng latLng = startEndPoint[0];
                 startEndPoint[0] = startEndPoint[1];
                 startEndPoint[1] = latLng;
+                String endAddress = endText.getText().toString();
+                String startAddress = startText.getText().toString();
+
                 if(startEndPoint[0] == null){
                     startText.setText("");
                 }else{
-                    startText.setText(startEndPoint[0].latitude +", "+startEndPoint[0].longitude);
+                    startText.setText(endAddress);
+                    startMarker.setPosition(startEndPoint[0]);
+                    startMarker.setMap(naverMapObj);
                 }
                 if(startEndPoint[1] == null){
                     endText.setText("");
                 }else{
-                    endText.setText(startEndPoint[1].latitude +", "+startEndPoint[1].longitude);
+                    endText.setText(startAddress);
+                    endMarker.setPosition(startEndPoint[1]);
+                    endMarker.setMap(naverMapObj);
                 }
                 resetUI();
             }

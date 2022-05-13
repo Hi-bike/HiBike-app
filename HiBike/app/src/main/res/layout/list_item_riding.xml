@@ -51,7 +51,7 @@
                     android:background="#FFFFFF"
                     android:gravity="center_vertical"
                     android:paddingLeft="10dp"
-                    android:textSize="8dp"
+                    android:textSize="11dp"
                     android:text="언제 총 거리 평균 속도 총 시간 " />
 
                 <TextView

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 평상시 -->
+    <item android:state_pressed="false">
+        <shape>
+            <!--배경 -->
+            <solid android:color="#006CD1FF"/>
+            <corners
+                android:bottomLeftRadius="0dp"
+                android:bottomRightRadius="3dp"
+                android:topLeftRadius="0dp"
+                android:topRightRadius="3dp"/>
+        </shape>
+    </item>
+    <!--클릭 시-->
+    <item android:state_pressed="true">
+        <shape>
+            <!--배경 -->
+            <solid android:color="#FF03A9F4"/>
+            <corners
+                android:bottomLeftRadius="3dp"
+                android:bottomRightRadius="3dp"
+                android:topLeftRadius="3dp"
+                android:topRightRadius="3dp"/>
+        </shape>
+    </item>
+
+
+
+
+
+</selector>

@@ -218,7 +218,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         nApi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
 
         //경로선 속성지정
-        ridingPointRecordLine.setColor(Color.BLUE); //색상
+        ridingPointRecordLine.setColor(Color.RED); //색상
 
         //위치권환 확인
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&

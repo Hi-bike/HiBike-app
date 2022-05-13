@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="#34EFEFEF">
+        android:background="#23EFEFEF">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -453,7 +453,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:text="위험요소 등록"
-                        android:textSize="15dp"
+                        android:textSize="16dp"
+                        android:textColor="#000000"
                         android:gravity="center"/>
 
                 </FrameLayout>
@@ -482,7 +483,8 @@
                         android:layout_height="match_parent"
                         android:layout_gravity="center"
                         android:text="자유 게시판"
-                        android:textSize="15dp"
+                        android:textSize="16dp"
+                        android:textColor="#000000"
                         android:gravity="center"/>
                 </FrameLayout>
             </LinearLayout>
@@ -494,10 +496,11 @@
         android:layout_width="match_parent"
         android:background="#ffffff">
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="300dp"
+            android:layout_width="250dp"
+            android:layout_height="250dp"
             android:src="@drawable/icons_main_toplogo"
-            android:layout_gravity="top"/>
+            android:layout_marginTop="40dp"
+            android:layout_gravity="center_horizontal"/>
         <com.airbnb.lottie.LottieAnimationView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

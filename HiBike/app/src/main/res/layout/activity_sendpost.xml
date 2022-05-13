@@ -5,56 +5,96 @@
     android:background="#ffffff">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="50dp"
-        android:layout_marginLeft="40dp"
-        android:layout_marginRight="30dp"
-        android:layout_marginBottom="30dp"
-        android:orientation="vertical">
+        android:layout_height="50dp"
+        android:orientation="horizontal"
+        android:weightSum="3"
+        android:background="#ffffff">
+
+        <TextView
+            android:id="@+id/cancel"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:text="취소"
+            android:textSize="16dp"
+            android:textColor="#000000"/>
 
         <TextView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="20dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
             android:text="글 작성"
-            android:textStyle="bold"
-            android:textSize="20dp"
+            android:gravity="center"
+            android:textSize="19dp"
+            android:textColor="#000000"/>
+
+        <TextView
+            android:id="@+id/btn_send"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="완료"
+            android:gravity="center"
+            android:paddingLeft="80dp"
+            android:textSize="16dp"
+            android:textColor="#000000"/>
+    </LinearLayout>
+
+    <View
+        android:id="@+id/line"
+        android:layout_width="wrap_content"
+        android:layout_height="2dp"
+        android:layout_marginTop="50dp"
+        android:background="#4EA0E4" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginRight="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="제목"
+            android:layout_marginTop="20dp"
+            android:textSize="18dp"
             android:textColor="#000000"
-            android:textAlignment="center"
-            android:gravity="center_horizontal" />
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/edit_title"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="40dp"
-            android:layout_marginBottom="10dp"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:hint="제목"
-            android:inputType="textPersonName"
-            android:text="" />
+            android:background="@drawable/edittext_rounded_corner"
+            android:textSize="18dp"
+            android:paddingLeft="10dp"
+            android:layout_marginTop="7dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="내용"
+            android:layout_marginTop="20dp"
+            android:textSize="18dp"
+            android:textColor="#000000"
+            android:textStyle="bold"/>
 
         <EditText
             android:id="@+id/edit_contents"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="400dp"
-            android:layout_gravity="center"
-            android:ems="10"
-            android:hint="내용"
-            android:inputType="textMultiLine"
-            android:scrollHorizontally="false"/>
-
-        <Button
-            android:id="@+id/btn_send"
-            android:background='@drawable/round_button'
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="20dp"
-            android:text="작성완료"
-            android:textSize="13sp"
-            android:textColor="#ffffff"
-            android:textStyle="bold"
-            />
+            android:background="@drawable/edittext_rounded_corner"
+            android:gravity="start"
+            android:textSize="18dp"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:maxLength="2000"
+            android:layout_marginTop="10dp" />
     </LinearLayout>
+
 </FrameLayout>
