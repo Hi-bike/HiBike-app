@@ -36,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
+import com.roundG0929.hibike.activities.auth.MyPostActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.information.InformationWriteActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mainRidingGoal;
     TextView mainRidingAchievement;
     LinearLayout llProfile;
+    TextView myPost;
 
 
     //다른 activity에서 main component 접근에 이용용
@@ -288,6 +290,15 @@ public class MainActivity extends AppCompatActivity {
             int percentRiding = (int) ((double)nowRidingAchievement/(double) ridingGoal * 100);
             mainProgressBar.setProgress(percentRiding);
         }
+
+        myPost = findViewById(R.id.myPost);
+        myPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MyPostActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 

@@ -277,7 +277,7 @@
                             tools:ignore="MissingConstraints" />
 
                         <TextView
-                            android:id="@+id/tv_my_post"
+                            android:id="@+id/myPost"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="5"

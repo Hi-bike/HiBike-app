@@ -20,6 +20,9 @@
         android:theme="@style/Theme.HiBike"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".activities.auth.MyPostActivity"
+            android:exported="false" />
+        <activity
             android:name=".activities.riding_record.FullScreenActivity"
             android:exported="false" />
         <activity
