@@ -35,18 +35,12 @@
 
     </LinearLayout>
 
-    <View
-        android:id="@+id/line"
-        android:layout_width="wrap_content"
-        android:layout_height="2dp"
-        android:background="#4EA0E4"
-        tools:ignore="MissingConstraints" />
-
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        app:tabIndicatorColor="@color/quantum_bluegrey500">
+        app:tabSelectedTextColor="@color/black"
+        app:tabIndicatorColor="#4EA0E4">
 
         <com.google.android.material.tabs.TabItem
             android:id="@+id/tab1"

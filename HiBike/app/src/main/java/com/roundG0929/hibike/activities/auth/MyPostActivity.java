@@ -13,8 +13,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.tabs.TabLayoutMediator;
 import com.roundG0929.hibike.R;
 
-import org.w3c.dom.Text;
-
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,8 +23,8 @@ import java.util.List;
 public class MyPostActivity extends AppCompatActivity {
     private ViewPager2 viewPager; //xml viewpager2
     private ViewPagerAdapter pagerAdapter; //viewpager2 adapter
-    private DangerFragment dangerFragment; //위험요소 fragment(fragment1)
-    private BoardFragment boardFragment; // 게시물 fragment(fragment2)
+    private MyDangerFragment myDangerFragment; //위험요소 fragment(fragment1)
+    private MyBoardFragment myBoardFragment; // 게시물 fragment(fragment2)
     private TabLayout tabLayout; //xml tabLayout
 
     @Override
@@ -37,12 +35,12 @@ public class MyPostActivity extends AppCompatActivity {
         tabLayout = findViewById(R.id.tabLayout);
         viewPager = findViewById(R.id.viewPager_container);
 
-        dangerFragment = DangerFragment.newInstance(0);
-        boardFragment = BoardFragment.newInstance(1);
+        myDangerFragment = MyDangerFragment.newInstance(0);
+        myBoardFragment = MyBoardFragment.newInstance(1);
 
         pagerAdapter = new ViewPagerAdapter(this);
-        pagerAdapter.addFragment(dangerFragment); // adapter 에 fragment1 추가
-        pagerAdapter.addFragment(boardFragment); // adapter 에 fragment2 추가
+        pagerAdapter.addFragment(myDangerFragment); // adapter 에 fragment1 추가
+        pagerAdapter.addFragment(myBoardFragment); // adapter 에 fragment2 추가
 
         viewPager.setAdapter(pagerAdapter); //viewPager 에 adapter 세팅
 

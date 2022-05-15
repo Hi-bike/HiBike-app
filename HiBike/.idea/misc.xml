@@ -3,6 +3,7 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Android-sdk/platforms/android-31/data/res/layout/simple_list_item_1.xml" value="0.3609375" />
         <entry key="..\:/GitHub/hibike/HiBike-app/HiBike/app/src/main/res/drawable/button_rounded_corner.xml" value="0.2475" />
         <entry key="..\:/GitHub/hibike/HiBike-app/HiBike/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1" />
         <entry key="..\:/GitHub/hibike/HiBike-app/HiBike/app/src/main/res/drawable/imagebtn_states.xml" value="0.1" />
@@ -46,6 +47,8 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/add_photo.xml" value="0.378125" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/bar_rounded.xml" value="0.378125" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/button_rounded_corner.xml" value="0.21510416666666668" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/button_rounded_delete.xml" value="0.3723076923076923" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/button_rounded_withdraw.xml" value="0.3723076923076923" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/delete_button.xml" value="0.378125" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/edittext_rounded_corner.xml" value="0.378125" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/drawable/endpath_rounded.xml" value="0.265625" />
@@ -78,12 +81,15 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/frag_board.xml" value="0.3553846153846154" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/frag_danger.xml" value="0.3553846153846154" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_board.xml" value="0.20675105485232068" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_danger.xml" value="0.13764044943820225" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_danger.xml" value="0.14516129032258066" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_board.xml" value="0.3619791666666667" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_danger.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_post.xml" value="0.3115942028985507" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/item_searchplace.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.2501223690651003" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_danger.xml" value="0.33" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_reply.xml" value="0.23143115942028986" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.4" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.33" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.378125" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/xml/file_paths.xml" value="0.14719202898550723" />
         <entry key="..\:/programing/python/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_drawer.xml" value="0.19895833333333332" />
