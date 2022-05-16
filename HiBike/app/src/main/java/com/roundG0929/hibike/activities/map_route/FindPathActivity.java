@@ -150,7 +150,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     String id;
-    int target_i; // 위험요소 자세한 정보 index
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -511,7 +510,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                     new Marker(
                                                             new LatLng(response.body().danger_list.get(i).get(0),
                                                                     response.body().danger_list.get(i).get(1))));
-                                            target_i = i;
+                                            int target = i;
                                             informationMarkerList.get(i).setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
                                             informationMarkerList.get(i).setWidth(convertDpToPx(getApplicationContext(),40));
                                             informationMarkerList.get(i).setHeight(convertDpToPx(getApplicationContext(),40));
@@ -519,15 +518,17 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                             informationMarkerList.get(i).setOnClickListener(new Overlay.OnClickListener() {  //마커 클릭리스너
                                                 @Override
                                                 public boolean onClick(@NonNull Overlay overlay) {
+                                                    Danger_infoBody markerDanger_info = new Danger_infoBody();
                                                     naverMapObj.setContentPadding(0,convertDpToPx(getApplicationContext(),140),
                                                             0,convertDpToPx(getApplicationContext(),400));
-                                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(informationMarkerList.get(target_i).getPosition());
+                                                    CameraUpdate cameraUpdate = CameraUpdate.scrollTo(informationMarkerList.get(target).getPosition());
                                                     naverMapObj.moveCamera(cameraUpdate);
                                                     behavior.setState(BottomSheetBehavior.STATE_EXPANDED);
                                                     naverMapObj.setContentPadding(0,0,0,0);
-                                                    danger_infoBody.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
-                                                    danger_infoBody.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
-                                                    new InformationApi().getDangetInformationDetail(danger_infoBody).enqueue(new Callback<DangerInformation_detail>() {
+                                                    markerDanger_info.setLatitude(informationMarkerList.get(target).getPosition().latitude);
+                                                    markerDanger_info.setLongitude(informationMarkerList.get(target).getPosition().longitude);
+                                                    Log.d("TAG", "markerTarget: " + target + " " + informationMarkerList.get(target).getPosition().latitude + " " + informationMarkerList.get(target).getPosition().longitude);
+                                                    new InformationApi().getDangetInformationDetail(markerDanger_info).enqueue(new Callback<DangerInformation_detail>() {
                                                         @Override
                                                         public void onResponse(Call<DangerInformation_detail> call, Response<DangerInformation_detail> response) {
                                                             if (response.isSuccessful()){
