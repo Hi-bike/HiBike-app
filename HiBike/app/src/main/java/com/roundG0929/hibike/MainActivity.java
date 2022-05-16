@@ -75,7 +75,8 @@ public class MainActivity extends AppCompatActivity {
     TextView btnRidingRecord;//로그인 버튼
     TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
     TextView tvMyRecord;
-    TextView btnPosts;//게시판
+    FrameLayout postFrameLayout;
+    FrameLayout dangerFrameLayout;
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
@@ -220,8 +221,8 @@ public class MainActivity extends AppCompatActivity {
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
 
-            btnPosts = findViewById(R.id.btn_posts);
-            btnPosts.setOnClickListener(new View.OnClickListener() {
+            postFrameLayout = findViewById(R.id.postFrameLayout);
+            postFrameLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), ListViewActivity.class);
@@ -406,8 +407,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        TextView inforTestButton = findViewById(R.id.inforWriteButton);
-        inforTestButton.setOnClickListener(new View.OnClickListener() {
+        dangerFrameLayout = findViewById(R.id.dangerFrameLayout);
+        dangerFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent inforIntent = new Intent(getApplicationContext(), InformationWriteActivity.class);
