@@ -150,6 +150,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     SharedPreferences pref;
     SharedPreferences.Editor editor;
     String id;
+    int target_i; // 위험요소 자세한 정보 index
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -540,6 +541,42 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                                 contentText.setText(response.body().result.getContents());
                                                                 locationText.setText(response.body().result.getRegion() + " " + response.body().result.getRegion_detail());
                                                                 imageApi.getImage(informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
+
+                                                                dangerDelete.setOnClickListener(new View.OnClickListener() {
+                                                                    @Override
+                                                                    public void onClick(View view) {
+                                                                        dangerDelete.setEnabled(false);
+
+                                                                        DeleteDanger deleteDanger = new DeleteDanger();
+                                                                        deleteDanger.setUserId(id);
+                                                                        deleteDanger.setLatitude(informationMarkerList.get(target).getPosition().latitude);
+                                                                        deleteDanger.setLongitude(informationMarkerList.get(target).getPosition().longitude);
+                                                                        deleteDanger.setMyLatitude(fusedLocationSource.getLastLocation().getLatitude());
+                                                                        deleteDanger.setMyLongitude(fusedLocationSource.getLastLocation().getLongitude());
+
+                                                                        api.deleteDanger(deleteDanger).enqueue(new Callback<DeleteDanger>() {
+                                                                            @Override
+                                                                            public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
+                                                                                if (response.isSuccessful()) {
+                                                                                    behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+                                                                                    informationMarkerList.get(target).setMap(null);
+                                                                                    informationMarkerList.remove(target);
+
+                                                                                    Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+                                                                                } else {
+                                                                                    Log.e("delete Danger error", response.message());
+                                                                                    Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
+                                                                                    dangerDelete.setEnabled(true);
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onFailure(Call<DeleteDanger> call, Throwable t) {
+                                                                                Log.e("deleteDanger error", t.toString());
+                                                                            }
+                                                                        });
+                                                                    }
+                                                                });
                                                             }
                                                         }
 
@@ -618,42 +655,42 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-        dangerDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dangerDelete.setEnabled(false);
-
-                DeleteDanger deleteDanger = new DeleteDanger();
-                deleteDanger.setUserId(id);
-                deleteDanger.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
-                deleteDanger.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
-                deleteDanger.setMyLatitude(fusedLocationSource.getLastLocation().getLatitude());
-                deleteDanger.setMyLongitude(fusedLocationSource.getLastLocation().getLongitude());
-
-                api.deleteDanger(deleteDanger).enqueue(new Callback<DeleteDanger>() {
-                    @Override
-                    public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
-                        if (response.isSuccessful()) {
-                            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-                            informationMarkerList.get(target_i).setMap(null);
-                            informationMarkerList.remove(target_i);
-
-                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Log.e("delete Danger error", response.message());
-                            Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
-                            dangerDelete.setEnabled(true);
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(Call<DeleteDanger> call, Throwable t) {
-                        Log.e("deleteDanger error", t.toString());
-                    }
-                });
-
-            }
-        });
+//        dangerDelete.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                dangerDelete.setEnabled(false);
+//
+//                DeleteDanger deleteDanger = new DeleteDanger();
+//                deleteDanger.setUserId(id);
+//                deleteDanger.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
+//                deleteDanger.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
+//                deleteDanger.setMyLatitude(fusedLocationSource.getLastLocation().getLatitude());
+//                deleteDanger.setMyLongitude(fusedLocationSource.getLastLocation().getLongitude());
+//
+//                api.deleteDanger(deleteDanger).enqueue(new Callback<DeleteDanger>() {
+//                    @Override
+//                    public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
+//                        if (response.isSuccessful()) {
+//                            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
+//                            informationMarkerList.get(target_i).setMap(null);
+//                            informationMarkerList.remove(target_i);
+//
+//                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
+//                        } else {
+//                            Log.e("delete Danger error", response.message());
+//                            Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
+//                            dangerDelete.setEnabled(true);
+//                        }
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<DeleteDanger> call, Throwable t) {
+//                        Log.e("deleteDanger error", t.toString());
+//                    }
+//                });
+//
+//            }
+//        });
 
             //출발,도착지점 변경버튼 changeButton
         changeButton.setOnClickListener(new View.OnClickListener() {
