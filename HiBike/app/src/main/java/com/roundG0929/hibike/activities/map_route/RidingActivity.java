@@ -209,7 +209,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         speedLayout = findViewById(R.id.speedLayout);
         //test ui
 //        timeText = findViewById(R.id.timeText);
-        distText = findViewById(R.id.distText);
+
 
         //server connect
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
@@ -254,7 +254,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         @Override
                         public void run() {
                             for(int j=0;j<markerPoints.size();j++){
-                                if(dangerPointSpeakFlag.get(0) == false){
+                                if(dangerPointSpeakFlag.get(j) == false){
                                     if(50 > (markerPoints.get(j).getPosition().distanceTo(new LatLng(fusedLocationSource.getLastLocation())))){
                                         tts.speak("위험 요소가 근방에 있습니다. 주의하십시오",TextToSpeech.QUEUE_ADD,null);
                                         dangerPointSpeakFlag.set(j,true);
@@ -336,10 +336,9 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                         @Override
                         public void run() {
                             speedText.setText(speed+"");
-                            distText.setText(String.format("%.1f", pointDistance)+"");
                             if(Double.isNaN(pointDistance)){
                                 speedText.setText("0");
-                                distText.setText("0");
+
                             }
                             ridingPointRecordLine.setCoords(ridingPointRecord);
                             ridingPointRecordLine.setMap(naverMapObj);
