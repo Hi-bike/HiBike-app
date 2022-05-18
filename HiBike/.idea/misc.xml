@@ -78,6 +78,7 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_sendpost.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signin.xml" value="0.12132725430597771" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_signup.xml" value="0.12132725430597771" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_view_board.xml" value="0.24947916666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/frag_board.xml" value="0.3553846153846154" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/frag_danger.xml" value="0.3553846153846154" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_board.xml" value="0.20675105485232068" />
@@ -86,7 +87,8 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_danger.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_post.xml" value="0.3115942028985507" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/item_searchplace.xml" value="0.3619791666666667" />
-        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.2501223690651003" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.22" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_board.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_danger.xml" value="0.33" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_reply.xml" value="0.23143115942028986" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_riding.xml" value="0.33" />

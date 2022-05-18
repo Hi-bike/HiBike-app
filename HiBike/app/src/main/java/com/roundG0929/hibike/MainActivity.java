@@ -72,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
     CardView btn_open;
     //Navigation 안에 있는 버튼들
 
-    TextView btnRidingRecord;//로그인 버튼
     TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
     TextView tvMyRecord;
     FrameLayout postFrameLayout;

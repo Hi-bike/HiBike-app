@@ -7,6 +7,8 @@ import androidx.viewpager2.widget.ViewPager2;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.tabs.TabLayout;
@@ -26,6 +28,7 @@ public class MyPostActivity extends AppCompatActivity {
     private MyDangerFragment myDangerFragment; //위험요소 fragment(fragment1)
     private MyBoardFragment myBoardFragment; // 게시물 fragment(fragment2)
     private TabLayout tabLayout; //xml tabLayout
+    ImageView myPostBack;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,5 +59,13 @@ public class MyPostActivity extends AppCompatActivity {
                 tab.setCustomView(textView);
             }
         }).attach();
+
+        myPostBack = findViewById(R.id.myPostBack);
+        myPostBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
+            }
+        });
     }
 }
