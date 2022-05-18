@@ -36,6 +36,7 @@ import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.roundG0929.hibike.activities.auth.BasicProfileActivity;
+import com.roundG0929.hibike.activities.auth.MyPostActivity;
 import com.roundG0929.hibike.activities.auth.SigninActivity;
 import com.roundG0929.hibike.activities.information.InformationWriteActivity;
 import com.roundG0929.hibike.activities.map_route.FindPathActivity;
@@ -71,10 +72,10 @@ public class MainActivity extends AppCompatActivity {
     CardView btn_open;
     //Navigation 안에 있는 버튼들
 
-    TextView btnRidingRecord;//로그인 버튼
     TextView btnSigninOrNickname; // 주행기록, 로그인, 프로필변경
     TextView tvMyRecord;
-    TextView btnPosts;//게시판
+    FrameLayout postFrameLayout;
+    FrameLayout dangerFrameLayout;
     ImageView ivProfileImage;
     String id;
     ImageApi imageApi;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
     TextView mainRidingGoal;
     TextView mainRidingAchievement;
     LinearLayout llProfile;
+    TextView myPost;
 
 
     //다른 activity에서 main component 접근에 이용용
@@ -218,8 +220,8 @@ public class MainActivity extends AppCompatActivity {
             imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
 
 
-            btnPosts = findViewById(R.id.btn_posts);
-            btnPosts.setOnClickListener(new View.OnClickListener() {
+            postFrameLayout = findViewById(R.id.postFrameLayout);
+            postFrameLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     Intent intent = new Intent(getApplicationContext(), ListViewActivity.class);
@@ -288,6 +290,15 @@ public class MainActivity extends AppCompatActivity {
             int percentRiding = (int) ((double)nowRidingAchievement/(double) ridingGoal * 100);
             mainProgressBar.setProgress(percentRiding);
         }
+
+        myPost = findViewById(R.id.myPost);
+        myPost.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), MyPostActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
 
@@ -395,8 +406,8 @@ public class MainActivity extends AppCompatActivity {
                 });
 
 
-        TextView inforTestButton = findViewById(R.id.inforWriteButton);
-        inforTestButton.setOnClickListener(new View.OnClickListener() {
+        dangerFrameLayout = findViewById(R.id.dangerFrameLayout);
+        dangerFrameLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent inforIntent = new Intent(getApplicationContext(), InformationWriteActivity.class);

@@ -3,10 +3,13 @@ package com.roundG0929.hibike.api.server;
 
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.DeleteDanger;
+import com.roundG0929.hibike.api.server.dto.DeleteMyBoard;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.dto.GetRidingAll;
 import com.roundG0929.hibike.api.server.dto.GetRidingOne;
 import com.roundG0929.hibike.api.server.dto.GetRidingTotal;
+import com.roundG0929.hibike.api.server.dto.PostMyBoard;
+import com.roundG0929.hibike.api.server.dto.PostMyDanger;
 import com.roundG0929.hibike.api.server.dto.PostDanger;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.PostRidingMulti;
@@ -14,6 +17,7 @@ import com.roundG0929.hibike.api.server.dto.ProfileImage;
 import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.RidingRegion;
 import com.roundG0929.hibike.api.server.dto.SendReply;
+import com.roundG0929.hibike.api.server.dto.ShiftDanger;
 import com.roundG0929.hibike.api.server.dto.Signin;
 import com.roundG0929.hibike.api.server.dto.Signout;
 import com.roundG0929.hibike.api.server.dto.Signup;
@@ -132,4 +136,17 @@ public interface ApiInterface {
 
     @POST("api/board/delete-danger")
     Call<DeleteDanger> deleteDanger(@Body DeleteDanger deleteDanger);
+
+    @GET("api/board/mydanger/{userId}/{page}")
+    Call<PostMyDanger> getMyDanger(@Path("userId") String userId, @Path("page") int page);
+
+    @GET("api/board/myposts/{userId}/{page}")
+    Call<PostMyBoard> getMyBoard(@Path("userId") String userId, @Path("page") int page);
+
+    @POST("api/board/delete-mypost")
+    Call<DeleteMyBoard> deleteMyBoard(@Body DeleteMyBoard deleteMyBoard);
+
+
+    @POST("api/board/shift-mydanger")
+    Call<ShiftDanger> shiftMyDanger(@Body ShiftDanger shiftDanger);
 }

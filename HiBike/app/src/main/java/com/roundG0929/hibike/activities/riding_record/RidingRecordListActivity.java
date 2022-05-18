@@ -40,7 +40,7 @@ import retrofit2.Response;
 public class RidingRecordListActivity extends AppCompatActivity {
     private ListView listView;
     private ridingListViewAdapter adapter;
-    private int page = 0;                           // 페이징변수. 초기 값은 0 이다.
+    private int page = 0;                           // 페이징변수. 초기 값은 0.
     private final int OFFSET = 15;                  // 한 페이지마다 로드할 데이터 갯수.
     private ProgressBar progressBar;                // 데이터 로딩중을 표시할 프로그레스바
     private boolean mLockListView = false;          // 데이터 불러올때 중복안되게 하기위한 변수

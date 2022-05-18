@@ -74,6 +74,7 @@ public class BasicProfileActivity extends Activity {
         editor = pref.edit();
         id = pref.getString("id", "");
 
+
         textId = (TextView) findViewById(R.id.text_profile_id);
         editNickname = (EditText) findViewById(R.id.edit_profile_nickname);
         editRidingGoal = findViewById(R.id.edit_riding_goal);

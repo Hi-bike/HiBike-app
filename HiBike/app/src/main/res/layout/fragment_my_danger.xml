@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".activities.auth.MyDangerFragment">
+
+    <ListView
+        android:id="@+id/listview_danger"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#ffffff"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <ProgressBar
+        android:id="@+id/progressbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:layout_constraintStart_toEndOf="@id/listview_danger"
+        app:layout_constraintTop_toTopOf="@id/listview_danger"
+        app:layout_constraintBottom_toBottomOf="@id/listview_danger"
+        app:layout_constraintEnd_toStartOf="@id/listview_danger"
+        android:layout_marginBottom="190dp" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
