@@ -45,6 +45,10 @@ public class GetDangerOne {
         @SerializedName("period")
         int period;
 
+        @Expose
+        @SerializedName("nickname")
+        String nickname;
+
         public String getTitle() {
             return title;
         }
@@ -108,7 +112,13 @@ public class GetDangerOne {
         public void setRegionDetail(String regionDetail) {
             this.regionDetail = regionDetail;
         }
+
+        public String getNickname() {
+            return nickname;
+        }
+
+        public void setNickname(String nickname) {
+            this.nickname = nickname;
+        }
     }
-
-
 }
