@@ -143,6 +143,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     PostRidingMulti postRidingMulti = new PostRidingMulti();
     File file;
     AlertDialog endDialog;
+    String fromString;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -151,7 +152,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //어떤 액티비티에서 넘어왔는지 구분후 길찾기에서 넘어왔으면 경로, 위험정보 데이터 표기
         Intent intent = getIntent();
-        String fromString = intent.getStringExtra("from");
+        fromString = intent.getStringExtra("from");
         if(fromString.equals("findpath")){
             ArrayList<ArrayList<Double>> routePoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("route_point");
             ArrayList<ArrayList<Double>> markerPoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("marker_point");
@@ -418,7 +419,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 markerPoints.get(i).setMap(naverMapObj);
             }
         }
-        setDangerOnMap();
+        if (!fromString.equals("findpath")) {
+            setDangerOnMap();
+
+        }
     }
 
     @Override
