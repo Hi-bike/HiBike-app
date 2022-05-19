@@ -2,6 +2,7 @@ package com.roundG0929.hibike.activities.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -22,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.activities.board.ViewContentsActivity;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.DeleteMyBoard;
@@ -185,7 +187,13 @@ public class MyBoardFragment extends Fragment {
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(view.getContext(), ViewContentsActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Title", item.getTitle());
+                    bundle.putString("Content", item.getContents());
+                    bundle.putInt("post_id", item.getBoardId());
+                    intent.putExtras(bundle);
+                    context.startActivity(intent);
                 }
             });
 

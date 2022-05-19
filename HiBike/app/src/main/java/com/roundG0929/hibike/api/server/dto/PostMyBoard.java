@@ -10,10 +10,6 @@ public class PostMyBoard {
     @SerializedName("result")
     ArrayList<PostMyBoard.Result> results = new ArrayList<>();
 
-    public void setResults(ArrayList<PostMyBoard.Result> results) {
-        this.results = results;
-    }
-
     public ArrayList<PostMyBoard.Result> getResults() {
         return results;
     }
@@ -26,6 +22,10 @@ public class PostMyBoard {
         @Expose
         @SerializedName("title")
         String title;
+
+        @Expose
+        @SerializedName("contents")
+        String contents;
 
         @Expose
         @SerializedName("time")
@@ -77,6 +77,14 @@ public class PostMyBoard {
 
         public void setCount(int count) {
             this.count = count;
+        }
+
+        public String getContents() {
+            return contents;
+        }
+
+        public void setContents(String contents) {
+            this.contents = contents;
         }
     }
 }

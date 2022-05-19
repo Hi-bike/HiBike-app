@@ -2,6 +2,7 @@ package com.roundG0929.hibike.activities.auth;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -200,7 +201,9 @@ public class MyDangerFragment extends Fragment{
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Toast.makeText(context, item.getTitle(), Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(context, MyDangerOne.class);
+                    intent.putExtra("dangerId", item.getDangerId());
+                    startActivity(intent);
                 }
             });
 

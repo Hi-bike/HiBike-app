@@ -122,17 +122,22 @@
     <Button
         android:id="@+id/ridingGoAndStopButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="주행 시작"
         android:layout_gravity="bottom|center"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="40dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/round_button"/>
 
     <Button
         android:id="@+id/postDangerButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:text="위험정보등록"
         android:layout_gravity="bottom|right"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="40dp"
+        android:layout_marginRight="10dp"
+        android:textColor="#ffffff"
+        android:background="@drawable/round_button"/>
 
 </FrameLayout>
