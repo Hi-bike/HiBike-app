@@ -89,10 +89,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
 
     //ui객체
     EditText titleText;
-//    TextView latitudeText;
-//    TextView longitudeText;
     ImageView infoImage;
-//    Button selectImageButton;
     TextView newImageButton;
     EditText contentText;
     TextView postButton;
@@ -122,9 +119,6 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
             Toast.makeText(getApplicationContext(),"로그인후 이용하세요.",Toast.LENGTH_SHORT).show();
             finish();
         }
-//        else{
-//            Toast.makeText(getApplicationContext(),postInformation.getId()+" 님",Toast.LENGTH_SHORT).show();
-//        }
 
         FragmentManager fragmentManager = getSupportFragmentManager();
         mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.informap);
@@ -148,10 +142,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
 
         titleText = findViewById(R.id.titleText);
-//        latitudeText = findViewById(R.id.latitudeText);
-//        longitudeText = findViewById(R.id.longitudeText);
         infoImage = findViewById(R.id.infoImage);
-//        selectImageButton = findViewById(R.id.selectImageButton);
         newImageButton = findViewById(R.id.newImageButton);
         contentText = findViewById(R.id.contentText);
         locationDetailText = findViewById(R.id.locationDetailText);
@@ -165,14 +156,6 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
 
 
 
-//        selectImageButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                Intent intent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-//                startActivityForResult(intent, SELECT_IMAGE);
-//            }
-//        });
-
         //경위도 텍스트 클릭시 맵뷰 보이기
         View.OnClickListener viewMap = new View.OnClickListener() {
             @Override
@@ -180,8 +163,6 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                 mapLayout.setVisibility(View.VISIBLE);
             }
         };
-//        longitudeText.setOnClickListener(viewMap);
-//        latitudeText.setOnClickListener(viewMap);
         locationText.setOnClickListener(viewMap);
 
 

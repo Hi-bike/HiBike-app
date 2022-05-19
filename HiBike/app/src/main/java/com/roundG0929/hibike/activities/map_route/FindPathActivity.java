@@ -39,6 +39,7 @@ import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.bottomsheet.BottomSheetBehavior;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
@@ -56,6 +57,7 @@ import com.naver.maps.map.util.FusedLocationSource;
 import com.naver.maps.map.widget.CompassView;
 import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.R;
+import com.roundG0929.hibike.activities.information.InformationWriteActivity;
 import com.roundG0929.hibike.api.information.InformationApi;
 import com.roundG0929.hibike.api.information.dto.DangerInformation_Points;
 import com.roundG0929.hibike.api.information.dto.DangerInformation_detail;
@@ -153,6 +155,9 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     String id;
     int target_i; // 위험요소 자세한 정보 index
 
+    FusedLocationProviderClient fusedLocationClient;
+
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -209,8 +214,8 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         api = RetrofitClient.getRetrofit().create(ApiInterface.class);
         imageApi  = new ImageApi();
         napi = NaverRetrofitClient.getRetrofit().create(NaverApiInterface.class);
-        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
 
+        fusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(getApplicationContext());
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED &&
                 ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
         }
@@ -229,7 +234,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         mapFragment.getMapAsync(this::onMapReady);
 
         //각 ui listener
-            //출발, 도착 editText
+        //출발, 도착 editText
         startText.setTextIsSelectable(true);
         startText.setShowSoftInputOnFocus(false);
         startText.setLongClickable(false);
@@ -253,26 +258,32 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-        //TODO: 초기 위치 설정
-//        Location location = fusedLocationSource.getLastLocation();
-//        LatLng startLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-//        ReverseGeocodingGenerator nowRegion = new ReverseGeocodingGenerator(location.getLongitude(), location.getLatitude());
-//        napi.getRegion(nowRegion.getHeaders(), nowRegion.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
-//            @Override
-//            public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
-//                if (response.isSuccessful()) {
-//                    Object obj = response.body().getResult();
-//                    String result = HibikeUtils.regionJsonToString(obj);
-//                    startText.setText(result);
-//                    startEndPoint[0] = startLatLng;
-//                }
-//            }
-//
-//            @Override
-//            public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {
-//
-//            }
-//        });
+
+        //startText 초기 위치 설정
+        fusedLocationProviderClient.getLastLocation().addOnSuccessListener(this, new OnSuccessListener<Location>() {
+            @Override
+            public void onSuccess(Location location) {
+                LatLng latLng = new LatLng(location);
+                ReverseGeocodingGenerator nowRegion = new ReverseGeocodingGenerator(location.getLongitude(), location.getLatitude());
+                napi.getRegion(nowRegion.getHeaders(), nowRegion.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
+                    @Override
+                    public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
+                        if (response.isSuccessful()) {
+                            Object obj = response.body().getResult();
+                            String result = HibikeUtils.regionJsonToString(obj);
+                            startText.setText(result);
+                            startEndPoint[0] = latLng;
+                            startMarker.setPosition(latLng);
+                            startMarker.setMap(naverMapObj);
+                        }
+                    }
+                    @Override
+                    public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {}
+                });
+
+            }
+        });
+
         endText.setTextIsSelectable(true);
         endText.setShowSoftInputOnFocus(false);
         endText.setLongClickable(false);
@@ -679,44 +690,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-//        dangerDelete.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                dangerDelete.setEnabled(false);
-//
-//                DeleteDanger deleteDanger = new DeleteDanger();
-//                deleteDanger.setUserId(id);
-//                deleteDanger.setLatitude(informationMarkerList.get(target_i).getPosition().latitude);
-//                deleteDanger.setLongitude(informationMarkerList.get(target_i).getPosition().longitude);
-//                deleteDanger.setMyLatitude(fusedLocationSource.getLastLocation().getLatitude());
-//                deleteDanger.setMyLongitude(fusedLocationSource.getLastLocation().getLongitude());
-//
-//                api.deleteDanger(deleteDanger).enqueue(new Callback<DeleteDanger>() {
-//                    @Override
-//                    public void onResponse(Call<DeleteDanger> call, Response<DeleteDanger> response) {
-//                        if (response.isSuccessful()) {
-//                            behavior.setState(BottomSheetBehavior.STATE_HIDDEN);
-//                            informationMarkerList.get(target_i).setMap(null);
-//                            informationMarkerList.remove(target_i);
-//
-//                            Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
-//                        } else {
-//                            Log.e("delete Danger error", response.message());
-//                            Toast.makeText(getApplicationContext(), "위험요소와 너무 멀리있거나 지나온 기록이 없습니다.", Toast.LENGTH_SHORT).show();
-//                            dangerDelete.setEnabled(true);
-//                        }
-//                    }
-//
-//                    @Override
-//                    public void onFailure(Call<DeleteDanger> call, Throwable t) {
-//                        Log.e("deleteDanger error", t.toString());
-//                    }
-//                });
-//
-//            }
-//        });
-
-            //출발,도착지점 변경버튼 changeButton
+        //출발,도착지점 변경버튼 changeButton
         changeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -813,13 +787,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
             }
         });
 
-
-        // test--------------------------------------------------------------  위험지점
-
-
-
-
-
     }//onCreate()
 
 
@@ -861,7 +828,6 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 });
             }
         });
-
     }
 
     //가변 ui 숨기기

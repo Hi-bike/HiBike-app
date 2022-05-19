@@ -193,8 +193,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         });
 
 
-
-
         //userId
         pref = getSharedPreferences("pref", Activity.MODE_PRIVATE);
         editor = pref.edit();
