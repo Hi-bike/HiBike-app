@@ -12,7 +12,10 @@ import android.net.Uri;
 import android.provider.MediaStore;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
+
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -72,6 +75,7 @@ public class ImageApi extends Activity{
             connection.connect(); //연결
             InputStream is = connection.getInputStream(); //
             retBitmap = BitmapFactory.decodeStream(is);
+
         }catch(Exception e) {
             e.printStackTrace();
             return null;
@@ -82,10 +86,37 @@ public class ImageApi extends Activity{
             return retBitmap;
         }
     }
-    public Uri getImageUri(Context inContext, Bitmap inImage) {
-        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
-        return Uri.parse(path);
+    public Bitmap getBitmap(InputStream is) throws IOException {
+        ExifInterface ei = new ExifInterface(is);
+        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
+                ExifInterface.ORIENTATION_UNDEFINED);
+
+        Bitmap rotatedBitmap = null;
+        switch(orientation) {
+
+            case ExifInterface.ORIENTATION_ROTATE_90:
+                rotatedBitmap = rotateImage(bitmap, 90);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_180:
+                rotatedBitmap = rotateImage(bitmap, 180);
+                break;
+
+            case ExifInterface.ORIENTATION_ROTATE_270:
+                rotatedBitmap = rotateImage(bitmap, 270);
+                break;
+
+            case ExifInterface.ORIENTATION_NORMAL:
+            default:
+                rotatedBitmap = bitmap;
+        }
+        return rotatedBitmap;
     }
+
+    public Bitmap rotateImage(Bitmap src, float degree) {
+        Matrix matrix = new Matrix();
+        matrix.postRotate(degree);
+        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
+    }
+
 }

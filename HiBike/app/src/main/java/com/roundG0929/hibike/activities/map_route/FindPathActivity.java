@@ -142,6 +142,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     TextView dateText;
     TextView contentText;
     TextView locationText;
+    TextView userNickname;
     ImageView informationImage;
     TextView dangerDelete;
     ApiInterface api;
@@ -186,6 +187,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         dateText = findViewById(R.id.dateText);
         contentText = findViewById(R.id.contentText);
         locationText = findViewById(R.id.locationText);
+        userNickname = findViewById(R.id.userNickname);
         informationImage = findViewById(R.id.informationImage);
 
         dangerDelete = findViewById(R.id.dangerDelete);
@@ -214,7 +216,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
         }
 
         //초기맵설정
-            //맵 뷰 객체 할당
+        //맵 뷰 객체 할당
         FragmentManager fragmentManager = getSupportFragmentManager();
         mapFragment = (MapFragment) fragmentManager.findFragmentById(R.id.map);
         if (mapFragment == null) {
@@ -250,6 +252,27 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                 }
             }
         });
+
+        //TODO: 초기 위치 설정
+//        Location location = fusedLocationSource.getLastLocation();
+//        LatLng startLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+//        ReverseGeocodingGenerator nowRegion = new ReverseGeocodingGenerator(location.getLongitude(), location.getLatitude());
+//        napi.getRegion(nowRegion.getHeaders(), nowRegion.getQueries()).enqueue(new Callback<ReverseGeocodingDto>() {
+//            @Override
+//            public void onResponse(Call<ReverseGeocodingDto> call, Response<ReverseGeocodingDto> response) {
+//                if (response.isSuccessful()) {
+//                    Object obj = response.body().getResult();
+//                    String result = HibikeUtils.regionJsonToString(obj);
+//                    startText.setText(result);
+//                    startEndPoint[0] = startLatLng;
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(Call<ReverseGeocodingDto> call, Throwable t) {
+//
+//            }
+//        });
         endText.setTextIsSelectable(true);
         endText.setShowSoftInputOnFocus(false);
         endText.setLongClickable(false);
@@ -540,6 +563,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                                 dateText.setText(createTime);
                                                                 contentText.setText(response.body().result.getContents());
                                                                 locationText.setText(response.body().result.getRegion() + " " + response.body().result.getRegion_detail());
+                                                                userNickname.setText(response.body().result.getNickname());
                                                                 imageApi.getImage(informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
 
                                                                 dangerDelete.setOnClickListener(new View.OnClickListener() {

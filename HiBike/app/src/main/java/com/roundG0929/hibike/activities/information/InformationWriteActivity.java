@@ -201,7 +201,6 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
                             String result = HibikeUtils.regionJsonToString(obj);
                             locationText.setText(result);
                             postInformation.setRegion(locationText.getText().toString());
-
                         }
                     }
                     @Override
