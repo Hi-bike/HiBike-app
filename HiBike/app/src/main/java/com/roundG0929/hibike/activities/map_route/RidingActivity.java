@@ -44,6 +44,7 @@ import com.naver.maps.map.NaverMap;
 import com.naver.maps.map.OnMapReadyCallback;
 import com.naver.maps.map.overlay.LocationOverlay;
 import com.naver.maps.map.overlay.Marker;
+import com.naver.maps.map.overlay.Overlay;
 import com.naver.maps.map.overlay.OverlayImage;
 import com.naver.maps.map.overlay.PathOverlay;
 import com.naver.maps.map.overlay.PolylineOverlay;
@@ -59,6 +60,7 @@ import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
 import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
+import com.roundG0929.hibike.api.server.dto.GetAllDanger;
 import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.PostRidingMulti;
 import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
@@ -105,7 +107,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     PathOverlay routeline = new PathOverlay(); //경로 오버레이 객체
     ArrayList<Marker> markerPoints = new ArrayList<>(); //실질 마커(위험정보) 배열
     ArrayList<Boolean> dangerPointSpeakFlag = new ArrayList<>();
-
+    ArrayList<Marker> informationMarkerList = new ArrayList<>();  //위험정보 마커객체
 
     double speed;
     boolean ridingStartFlag = false;
@@ -141,6 +143,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     PostRidingMulti postRidingMulti = new PostRidingMulti();
     File file;
     AlertDialog endDialog;
+    String fromString;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -149,7 +152,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
         //어떤 액티비티에서 넘어왔는지 구분후 길찾기에서 넘어왔으면 경로, 위험정보 데이터 표기
         Intent intent = getIntent();
-        String fromString = intent.getStringExtra("from");
+        fromString = intent.getStringExtra("from");
         if(fromString.equals("findpath")){
             ArrayList<ArrayList<Double>> routePoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("route_point");
             ArrayList<ArrayList<Double>> markerPoints_double = (ArrayList<ArrayList<Double>>) intent.getSerializableExtra("marker_point");
@@ -188,8 +191,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                 }
             }
         });
-
-
 
 
         //userId
@@ -240,8 +241,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         mapFragment.getMapAsync(this::onMapReady);
 
         //Toast.makeText(getApplicationContext(),"속도와 위치정보는 정확하지 않을 수 있습니다.",Toast.LENGTH_SHORT).show();
-
-
 
 
         //위험 요소 거리 확인 쓰레드
@@ -417,6 +416,10 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
             for(int i =0;i<markerPoints.size();i++){
                 markerPoints.get(i).setMap(naverMapObj);
             }
+        }
+        if (!fromString.equals("findpath")) {
+            setDangerOnMap();
+
         }
     }
 
@@ -647,6 +650,40 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         endDialog.show();
     }
 
+    public void setDangerOnMap() {
+        // 위험요소 화면에 표시
+        api.getDangerAll().enqueue(new Callback<GetAllDanger>() {
+            @Override
+            public void onResponse(Call<GetAllDanger> call, Response<GetAllDanger> response) {
+                ArrayList<ArrayList<Double>> resultList = response.body().getResult();
+
+                for (ArrayList<Double> result : resultList) {
+                    Marker marker = new Marker(new LatLng(result.get(0), result.get(1)));
+                    marker.setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
+                    marker.setWidth(convertDpToPx(getApplicationContext(),40));
+                    marker.setHeight(convertDpToPx(getApplicationContext(),40));
+
+                    informationMarkerList.add(marker);
+                    marker.setMap(naverMapObj);
+
+                    marker.setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+                            RidingBottomSheetFragment bottomSheetFragment = new RidingBottomSheetFragment();
+                            Bundle bundle = new Bundle();
+                            bundle.putInt("dangerId", result.get(2).intValue());
+                            bottomSheetFragment.setArguments(bundle);
+                            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+
+                            return false;
+                        }
+                    });
+                }
+            }
+            @Override
+            public void onFailure(Call<GetAllDanger> call, Throwable t) {}
+        });
+    }
 
     //남서쪽 북동쪽 좌표 구하기 (FOR 주행종료후 카메라 위치이동)
     private ArrayList<LatLng> getLatLngBounds(ArrayList<LatLng> record){

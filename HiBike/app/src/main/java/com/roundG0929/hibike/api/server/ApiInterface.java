@@ -4,6 +4,8 @@ package com.roundG0929.hibike.api.server;
 import com.roundG0929.hibike.api.server.dto.BasicProfile;
 import com.roundG0929.hibike.api.server.dto.DeleteDanger;
 import com.roundG0929.hibike.api.server.dto.DeleteMyBoard;
+import com.roundG0929.hibike.api.server.dto.GetAllDanger;
+import com.roundG0929.hibike.api.server.dto.GetDangerOne;
 import com.roundG0929.hibike.api.server.dto.GetPost;
 import com.roundG0929.hibike.api.server.dto.GetRidingAll;
 import com.roundG0929.hibike.api.server.dto.GetRidingOne;
@@ -146,7 +148,12 @@ public interface ApiInterface {
     @POST("api/board/delete-mypost")
     Call<DeleteMyBoard> deleteMyBoard(@Body DeleteMyBoard deleteMyBoard);
 
-
     @POST("api/board/shift-mydanger")
     Call<ShiftDanger> shiftMyDanger(@Body ShiftDanger shiftDanger);
+
+    @GET("api/board/danger/{dangerId}")
+    Call<GetDangerOne> getDangerOne(@Path("dangerId") int dangerId);
+
+    @GET("api/board/all-danger")
+    Call<GetAllDanger> getDangerAll();
 }

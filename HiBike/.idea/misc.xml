@@ -68,6 +68,7 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_list_view.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main.xml" value="0.264" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_main_2.xml" value="0.2" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_my_danger_one.xml" value="0.24947916666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_my_post.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_reply_list_view.xml" value="0.12132725430597771" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/activity_riding.xml" value="0.12132725430597771" />
@@ -86,6 +87,8 @@
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_board.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_danger.xml" value="0.25" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_my_post.xml" value="0.3115942028985507" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_riding_activity_bottom_sheet.xml" value="0.17777777777777778" />
+        <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/fragment_riding_bottom_sheet.xml" value="0.3609375" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/item_searchplace.xml" value="0.3619791666666667" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item.xml" value="0.22" />
         <entry key="..\:/Workspaces/HiBike/hibike/HiBike-app/HiBike/app/src/main/res/layout/list_item_board.xml" value="0.3619791666666667" />
