@@ -10,14 +10,13 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.speech.tts.TextToSpeech;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
@@ -26,6 +25,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContract;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
@@ -33,7 +37,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.FragmentManager;
 
-import com.google.gson.Gson;
 import com.naver.maps.geometry.LatLng;
 import com.naver.maps.geometry.LatLngBounds;
 import com.naver.maps.map.CameraAnimation;
@@ -53,7 +56,6 @@ import com.roundG0929.hibike.HibikeUtils;
 import com.roundG0929.hibike.MainActivity;
 import com.roundG0929.hibike.R;
 import com.roundG0929.hibike.activities.information.InformationWriteActivity;
-import com.roundG0929.hibike.api.map_route.graphhopperRoute.map_routeDto.Path;
 import com.roundG0929.hibike.api.map_route.navermap.MapSetting;
 import com.roundG0929.hibike.api.map_route.navermap.NaverApiInterface;
 import com.roundG0929.hibike.api.map_route.navermap.NaverRetrofitClient;
@@ -61,10 +63,8 @@ import com.roundG0929.hibike.api.map_route.navermap.ReverseGeocodingGenerator;
 import com.roundG0929.hibike.api.server.ApiInterface;
 import com.roundG0929.hibike.api.server.RetrofitClient;
 import com.roundG0929.hibike.api.server.dto.GetAllDanger;
-import com.roundG0929.hibike.api.server.dto.PostRiding;
 import com.roundG0929.hibike.api.server.dto.PostRidingMulti;
 import com.roundG0929.hibike.api.server.dto.ReverseGeocodingDto;
-import com.roundG0929.hibike.api.server.dto.RidingImage;
 import com.roundG0929.hibike.api.server.dto.RidingRegion;
 
 import org.json.JSONArray;
@@ -86,9 +86,8 @@ import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Part;
 
-public class RidingActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class RidingActivity extends AppCompatActivity implements OnMapReadyCallback, RidingBottomSheetFragment.IsDeleteListener {
 
     //일반변수 선언
     NaverMap naverMapObj;
@@ -144,6 +143,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     File file;
     AlertDialog endDialog;
     String fromString;
+    boolean isDangerDeleted = false;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -169,11 +169,41 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
 
             if(!markerPoints_double.isEmpty()){
                 for(int i =0;i<markerPoints_double.size();i++){ //마커배열 할당
-                    markerPoints.add(new Marker(new LatLng(markerPoints_double.get(i).get(0),markerPoints_double.get(i).get(1))));
+                    Marker marker = new Marker(new LatLng(markerPoints_double.get(i).get(0), markerPoints_double.get(i).get(1)));
+                    marker.setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
+                    marker.setHeight(convertDpToPx(getApplicationContext(),40));
+                    marker.setWidth(convertDpToPx(getApplicationContext(),40));
+
+                    Log.v("markerPoints", String.valueOf(markerPoints_double.get(i)));
+
+                    markerPoints.add(marker);
                     dangerPointSpeakFlag.add(false);
-                    markerPoints.get(i).setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
-                    markerPoints.get(i).setHeight(convertDpToPx(getApplicationContext(),40));
-                    markerPoints.get(i).setWidth(convertDpToPx(getApplicationContext(),40));
+
+                    int finalI = i;
+                    markerPoints.get(i).setOnClickListener(new Overlay.OnClickListener() {
+                        @Override
+                        public boolean onClick(@NonNull Overlay overlay) {
+                            RidingBottomSheetFragment bottomSheetFragment = new RidingBottomSheetFragment();
+                            Bundle bundle = new Bundle();
+
+                            bundle.putInt("dangerId", -1);
+                            bundle.putInt("index", finalI);
+
+                            bundle.putString("userId", userId);
+
+                            double[] dangerLocation = {markerPoints_double.get(finalI).get(0), markerPoints_double.get(finalI).get(1)};
+                            bundle.putDoubleArray("dangerLocation", dangerLocation);
+
+                            Location location = fusedLocationSource.getLastLocation();
+                            double[] myLocation = {location.getLatitude(), location.getLongitude()};
+                            bundle.putDoubleArray("myLocation", myLocation);
+
+                            bottomSheetFragment.setArguments(bundle);
+                            bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
+
+                            return false;
+                        }
+                    });
                 }
             }
 
@@ -376,7 +406,7 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
             @Override
             public void onClick(View view) {
                 Intent intent1 = new Intent(getApplicationContext(), InformationWriteActivity.class);
-                startActivity(intent1);
+                launcher.launch(intent1);
             }
         });
 
@@ -650,13 +680,23 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
         endDialog.show();
     }
 
+    ActivityResultLauncher<Intent> launcher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+        new ActivityResultCallback<ActivityResult>() {
+            @Override
+            public void onActivityResult(ActivityResult result) {
+                if (result.getResultCode() == RESULT_OK) {
+                    setDangerOnMap();
+                }
+            }
+        });
+
     public void setDangerOnMap() {
         // 위험요소 화면에 표시
         api.getDangerAll().enqueue(new Callback<GetAllDanger>() {
             @Override
             public void onResponse(Call<GetAllDanger> call, Response<GetAllDanger> response) {
                 ArrayList<ArrayList<Double>> resultList = response.body().getResult();
-
+                int markerIndex = 0;
                 for (ArrayList<Double> result : resultList) {
                     Marker marker = new Marker(new LatLng(result.get(0), result.get(1)));
                     marker.setIcon(OverlayImage.fromResource(R.drawable.marker_danger));
@@ -666,18 +706,32 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     informationMarkerList.add(marker);
                     marker.setMap(naverMapObj);
 
+                    int finalIndex = markerIndex;
                     marker.setOnClickListener(new Overlay.OnClickListener() {
                         @Override
                         public boolean onClick(@NonNull Overlay overlay) {
                             RidingBottomSheetFragment bottomSheetFragment = new RidingBottomSheetFragment();
                             Bundle bundle = new Bundle();
+
                             bundle.putInt("dangerId", result.get(2).intValue());
+                            bundle.putInt("index", finalIndex);
+
+                            bundle.putString("userId", userId);
+
+                            double[] dangerLocation = {result.get(0), result.get(1)};
+                            bundle.putDoubleArray("dangerLocation", dangerLocation);
+
+                            Location location = fusedLocationSource.getLastLocation();
+                            double[] myLocation = {location.getLatitude(), location.getLongitude()};
+                            bundle.putDoubleArray("myLocation", myLocation);
+
                             bottomSheetFragment.setArguments(bundle);
                             bottomSheetFragment.show(getSupportFragmentManager(), bottomSheetFragment.getTag());
 
                             return false;
                         }
                     });
+                    markerIndex++;
                 }
             }
             @Override
@@ -744,6 +798,21 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
     public String getUniqueId() {
         String uniqueId = UUID.randomUUID().toString().substring(0,8);
         return uniqueId;
+    }
+
+    @Override
+    public void isDelete(boolean isDelete, int index) {
+        if (fromString.equals("findpath")) {
+            isDangerDeleted = isDelete;
+            markerPoints.get(index).setMap(null);
+            markerPoints.remove(index);
+        } else {
+            isDangerDeleted = isDelete;
+            informationMarkerList.get(index).setMap(null);
+            informationMarkerList.remove(index);
+        }
+
+        Toast.makeText(getApplicationContext(), "위험요소가 삭제되었습니다.", Toast.LENGTH_SHORT).show();
     }
 
     private class SRGCall extends AsyncTask<Call, Void, String> {

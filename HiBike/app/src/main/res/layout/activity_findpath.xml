@@ -285,7 +285,6 @@
         app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
         app:behavior_peekHeight="0dp"
         app:behavior_fitToContents="true"
-        android:background="@drawable/button_rounded_corner"
         app:behavior_skipCollapsed="true">
 
         <androidx.cardview.widget.CardView
