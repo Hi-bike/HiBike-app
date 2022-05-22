@@ -261,8 +261,8 @@
         </LinearLayout>
         <ImageView
             android:id="@+id/targetPoint"
-            android:layout_width="14dp"
-            android:layout_height="14dp"
+            android:layout_width="17dp"
+            android:layout_height="17dp"
             android:layout_gravity="center"
             android:src="@drawable/crosshair"
             android:visibility="gone"

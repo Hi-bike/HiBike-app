@@ -13,6 +13,7 @@ import android.provider.MediaStore;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.roundG0929.hibike.R;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;

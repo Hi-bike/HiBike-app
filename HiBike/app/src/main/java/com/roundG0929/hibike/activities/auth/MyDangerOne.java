@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -26,7 +27,7 @@ public class MyDangerOne extends AppCompatActivity {
     ApiInterface api;
     ImageApi imageApi;
 
-    ImageView myPostBack; //뒤로가기
+    ImageView myDangerBack; //뒤로가기
     ImageView myDangerOneImage; //이미지 이름
 
     TextView myDangerOneTitle; //제목
@@ -54,7 +55,7 @@ public class MyDangerOne extends AppCompatActivity {
         myDangerOneTime = findViewById(R.id.myDangerOneTime);
         myDangerOneContent = findViewById(R.id.myDangerOneContent);
         myDangerOneImage = findViewById(R.id.myDangerOneImage);
-        myPostBack = findViewById(R.id.myPostBack);
+        myDangerBack = findViewById(R.id.myDangerBack);
 
         api.getDangerOne(dangerId).enqueue(new Callback<GetDangerOne>() {
             @Override
@@ -81,6 +82,13 @@ public class MyDangerOne extends AppCompatActivity {
             @Override
             public void onFailure(Call<GetDangerOne> call, Throwable t) {
                 Log.e("getDangerOne", t.toString());
+            }
+        });
+
+        myDangerBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                finish();
             }
         });
 

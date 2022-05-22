@@ -103,6 +103,7 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
     Uri imageUri;
     String imageFilePath;
     boolean isFile = false;
+    boolean isMapViewOpen = false;
 
     private static final int CAMERA_REQUEST = 1888;
     private static final int MY_CAMERA_PERMISSION_CODE = 100;
@@ -156,11 +157,13 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
 
 
 
+
         //경위도 텍스트 클릭시 맵뷰 보이기
         View.OnClickListener viewMap = new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 mapLayout.setVisibility(View.VISIBLE);
+                isMapViewOpen = true;
             }
         };
         locationText.setOnClickListener(viewMap);
@@ -333,6 +336,16 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
     }
 
     @Override
+    public void onBackPressed() {
+        if (isMapViewOpen) {
+            mapLayout.setVisibility(View.INVISIBLE);
+            isMapViewOpen = false;
+        } else {
+            finish();
+        }
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults)
     {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
@@ -382,33 +395,8 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
             infoImage.getLayoutParams().width = 600;
             infoImage.requestLayout();
         }
-//        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
-//            Bitmap bitmap = BitmapFactory.decodeFile(imageFilePath);
-//            ExifInterface exif = null;
-//
-//            try {
-//                exif = new ExifInterface(imageFilePath);
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//
-//            int exifOrientation;
-//            int exifDegree;
-//
-//            if (exif != null) {
-//                exifOrientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
-//                exifDegree = exifOrientationToDegrees(exifOrientation);
-//            } else {
-//                exifDegree = 0;
-//            }
-//
-//            infoImage.setImageBitmap(rotate(bitmap, exifDegree));
-//        }
-//        Cursor cursor = getContentResolver().query(Uri.parse(selectedImage.toString()), null, null, null, null);
-//        assert cursor != null;
-//        cursor.moveToFirst();
-//        mediaPath = cursor.getString(cursor.getColumnIndex(MediaStore.MediaColumns.DATA));
     }
+
     //임시 파일 저장
     private File createImageFile() throws IOException {
         // 파일이름을 세팅 및 저장경로 세팅
@@ -421,21 +409,5 @@ public class InformationWriteActivity extends AppCompatActivity implements OnMap
         );
         imageFilePath = image.getAbsolutePath();
         return image;
-    }
-    private int exifOrientationToDegrees(int exifOrientation) {
-        if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
-            return 90;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_180) {
-            return 180;
-        } else if (exifOrientation == ExifInterface.ORIENTATION_ROTATE_270) {
-            return 270;
-        }
-        return 0;
-    }
-
-    private Bitmap rotate(Bitmap bitmap, float degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 }
