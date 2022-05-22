@@ -191,8 +191,6 @@ public class BasicProfileActivity extends Activity {
                         if (response.isSuccessful()) {
                             Bitmap myBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
                             ivMainProfileImage.setImageBitmap(myBitmap);
-//                            imageApi = new ImageApi();
-//                            imageApi.getImage(ivMainProfileImage, imageApi.getProfileImageUrl(id));
                         } else {
                             Log.v("profile_image",response.code()+"");
                         }

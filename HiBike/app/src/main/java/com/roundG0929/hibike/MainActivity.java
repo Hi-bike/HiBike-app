@@ -217,7 +217,7 @@ public class MainActivity extends AppCompatActivity {
 
             ivProfileImage = (ImageView) findViewById(R.id.iv_profile_image);
             imageApi = new ImageApi();
-            imageApi.getImage(ivProfileImage, imageApi.getProfileImageUrl(id));
+            imageApi.setImageOnImageView(this, ivProfileImage, imageApi.getProfileImageUrl(id));
 
 
             postFrameLayout = findViewById(R.id.postFrameLayout);

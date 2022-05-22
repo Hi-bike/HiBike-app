@@ -99,7 +99,7 @@ public class RidingBottomSheetFragment extends BottomSheetDialogFragment {
                         dateText.setText(times[2] + " " + times[1] + " " + times[0]);
                         userNickname.setText(result.getNickname());
                         contentText.setText(result.getContents());
-                        imageApi.getImage(informationImage, imageApi.getDangerImageUrl(result.getImage()));
+                        imageApi.setImageOnImageView(getActivity(), informationImage, imageApi.getDangerImageUrl(result.getImage()));
                     }
                 }
                 @Override
@@ -119,7 +119,7 @@ public class RidingBottomSheetFragment extends BottomSheetDialogFragment {
                         dateText.setText(times[2] + " " + times[1] + " " + times[0]);
                         userNickname.setText(result.getNickname());
                         contentText.setText(result.getContents());
-                        imageApi.getImage(informationImage, imageApi.getDangerImageUrl(result.getImage()));
+                        imageApi.setImageOnImageView(getActivity(), informationImage, imageApi.getDangerImageUrl(result.getImage()));
                     }
                 }
                 @Override

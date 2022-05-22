@@ -155,13 +155,13 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
     String id;
     int target_i; // 위험요소 자세한 정보 index
 
-    FusedLocationProviderClient fusedLocationClient;
-
+    Activity activity;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_findpath);
+        activity = this;
 
         //ui 객체 할당
         startText = findViewById(R.id.startText);
@@ -575,7 +575,7 @@ public class FindPathActivity extends AppCompatActivity implements OnMapReadyCal
                                                                 contentText.setText(response.body().result.getContents());
                                                                 locationText.setText(response.body().result.getRegion() + " " + response.body().result.getRegion_detail());
                                                                 userNickname.setText(response.body().result.getNickname());
-                                                                imageApi.getImage(informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
+                                                                imageApi.setImageOnImageView(activity, informationImage, imageApi.getDangerImageUrl(response.body().result.getImage()));
 
                                                                 dangerDelete.setOnClickListener(new View.OnClickListener() {
                                                                     @Override

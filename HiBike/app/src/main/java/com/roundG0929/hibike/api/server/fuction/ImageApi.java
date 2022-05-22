@@ -21,13 +21,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class ImageApi extends Activity{
-    /*
-    **이미지 api 사용법**
-    1. ImageApi에 이미지 url을 적는다 ex) String profileImageUrl = http://132.226.232.31/api/auth/image/eui
-    2. 이미지가 필요한 엑티비티에서 getImage(이미지 뷰 객체, 이미지 url)호출해서 이미지 뷰에 사진을 보여줍니다.
-    ex) imageApi.getImage(ivProfile, profileImageUrl)
-     */
-    Bitmap bitmap;
     String profileImageUrl = "http://132.226.232.31/api/auth/image/";
     String ridingImageUrl = "http://132.226.232.31/api/auth/rimage/";
     String dangerImageUrl = "http://132.226.232.31/api/board/dimage/";
@@ -43,80 +36,7 @@ public class ImageApi extends Activity{
         return dangerImageUrl+filename;
     }
 
-    public void getImage(ImageView imageView, String imageUrl){
-        new Thread(new Runnable() {
-            public void run() {
-                try {
-                    bitmap = getBitmap(imageUrl);
-                }catch(Exception e) { }
-                finally {
-                    if(bitmap!=null) {
-                        runOnUiThread(new Runnable() {
-                            @SuppressLint("NewApi")
-                            public void run() {
-//                                Bitmap rotatedBitmap = RotateBitmap(bitmap, 90);
-                                // 변환된 이미지 사용
-                                imageView.setImageBitmap(bitmap);
-                            }
-                        });
-                    }
-                }
-            }
-        }).start();
+    public void setImageOnImageView(Activity activity, ImageView imageView, String imageUri) {
+        Glide.with(activity).load(imageUri).into(imageView);
     }
-
-    public Bitmap getBitmap(String url) {
-        HttpURLConnection connection = null;
-        Bitmap retBitmap = null;
-        try{
-            URL imgUrl = new URL(url);
-            connection = (HttpURLConnection) imgUrl.openConnection();
-            connection.setDoInput(true);
-            connection.connect(); //연결
-            InputStream is = connection.getInputStream(); //
-            retBitmap = BitmapFactory.decodeStream(is);
-
-        }catch(Exception e) {
-            e.printStackTrace();
-            return null;
-        }finally {
-            if(connection!=null) {
-                connection.disconnect();
-            }
-            return retBitmap;
-        }
-    }
-    public Bitmap getBitmap(InputStream is) throws IOException {
-        ExifInterface ei = new ExifInterface(is);
-        int orientation = ei.getAttributeInt(ExifInterface.TAG_ORIENTATION,
-                ExifInterface.ORIENTATION_UNDEFINED);
-
-        Bitmap rotatedBitmap = null;
-        switch(orientation) {
-
-            case ExifInterface.ORIENTATION_ROTATE_90:
-                rotatedBitmap = rotateImage(bitmap, 90);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_180:
-                rotatedBitmap = rotateImage(bitmap, 180);
-                break;
-
-            case ExifInterface.ORIENTATION_ROTATE_270:
-                rotatedBitmap = rotateImage(bitmap, 270);
-                break;
-
-            case ExifInterface.ORIENTATION_NORMAL:
-            default:
-                rotatedBitmap = bitmap;
-        }
-        return rotatedBitmap;
-    }
-
-    public Bitmap rotateImage(Bitmap src, float degree) {
-        Matrix matrix = new Matrix();
-        matrix.postRotate(degree);
-        return Bitmap.createBitmap(src, 0, 0, src.getWidth(), src.getHeight(), matrix, true);
-    }
-
 }

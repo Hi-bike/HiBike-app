@@ -3,6 +3,7 @@ package com.roundG0929.hibike.activities.riding_record;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -34,10 +35,14 @@ public class RidingRecordActivity extends AppCompatActivity {
     ImageView ivRidingImage;
     ImageView ivRidingBack;
 
+    Activity activity;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_riding_record);
+
+        activity = this;
 
         Intent intent = getIntent();
         uniqueId = intent.getStringExtra("uniqueId");
@@ -87,8 +92,8 @@ public class RidingRecordActivity extends AppCompatActivity {
                         tvTime.setText(tvTime.getText() +"    "+ ridingTime);
                         tvSpeed.setText(tvSpeed.getText() +"    "+ aveSpeed+" km/h");
                         tvDistance.setText(tvDistance.getText() +"    "+ distance+" m");
-                        imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
 
+                        imageApi.setImageOnImageView(activity, ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
                     } catch (JSONException e) {
                         Log.e("eeee", e.toString());
                     }
@@ -102,12 +107,7 @@ public class RidingRecordActivity extends AppCompatActivity {
                 Log.e("tttt", t.toString());
             }
         });
-//        try {
-//            imageApi = new ImageApi();
-//            imageApi.getImage(ivRidingImage, imageApi.getRidingImageUrl(uniqueId));
-//        } catch (Exception e) {
-//
-//        }
+
         ivRidingImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

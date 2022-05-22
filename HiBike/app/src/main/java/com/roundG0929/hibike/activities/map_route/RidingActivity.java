@@ -206,8 +206,6 @@ public class RidingActivity extends AppCompatActivity implements OnMapReadyCallb
                     });
                 }
             }
-
-
         }
 
         //text to speak 객체 초기화

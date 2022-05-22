@@ -27,8 +27,7 @@ public class FullScreenActivity extends AppCompatActivity {
         fullScreen = findViewById(R.id.fullscreen);
 
         imageApi = new ImageApi();
-        imageApi.getImage(fullScreen, imageApi.getRidingImageUrl(uniqueId));
-
+        imageApi.setImageOnImageView(this, fullScreen, imageApi.getRidingImageUrl(uniqueId));
         fullScreenFinish = findViewById(R.id.fullscreenFinish);
         fullScreenFinish.bringToFront();
         fullScreenFinish.setOnClickListener(new View.OnClickListener() {

@@ -73,7 +73,7 @@ public class MyDangerOne extends AppCompatActivity {
                         myDangerOneContent.setText(result.getContents());
                     }
 
-                    imageApi.getImage(myDangerOneImage, imageApi.getDangerImageUrl(result.getImage()));
+                    imageApi.setImageOnImageView(activity, myDangerOneImage, imageApi.getDangerImageUrl(result.getImage()));
                 } else {
                     Toast.makeText(getApplicationContext(), response.message(), Toast.LENGTH_SHORT).show();
                 }
